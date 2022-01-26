@@ -46,8 +46,8 @@ Route::get('/login', "$controllersPath\Auth\LoginController@login")->name('login
 Route::post('/login-email', "$controllersPath\Auth\LoginController@authenticateEmail")->name('login.email');
 Route::get('/logout', "$controllersPath\Auth\LoginController@logout")->name('logout');
 
-Route::get('/politicas-de-privacidade', "$controllersPath\controller@policy")->name('policy');
-Route::get('/termos-de-servico', "$controllersPath\controller@terms")->name('terms');
+Route::get('/politicas-de-privacidade', "$controllersPath\Controller@policy")->name('policy');
+Route::get('/termos-de-servico', "$controllersPath\Controller@terms")->name('terms');
 
 Route::middleware(['auth'])->group(function () use ($controllersPath) {
     Route::get('/home',"$controllersPath\HomeController@index")->name('home');
