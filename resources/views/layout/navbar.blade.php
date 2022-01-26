@@ -1,3 +1,11 @@
+<style>
+  @media(max-width: 991px){
+    .dropdown-menu.dropdown-menu-animation.dropdown-md{
+      max-height: fit-content;
+      overflow: hidden;
+    }
+  }
+</style>
 <div class="container position-sticky z-index-sticky top-0">
   <div class="row">
     <div class="col-12">
@@ -48,8 +56,9 @@
                       <img src="{{ asset('assets/img/down-arrow-dark.svg') }}" alt="down-arrow" class="arrow ms-1">
                     </a>
                     <div class="dropdown-menu dropdown-menu-animation dropdown-md p-3 border-radius-lg mt-0 mt-lg-3"
-                      aria-labelledby="dropdownMenuScale">
-                      <div class="d-none d-lg-block">
+                      aria-labelledby="dropdownMenuScale"
+                    >
+                      <div>
                         <a href="./pages/contact-us.html" class="dropdown-item border-radius-md">
                           <span class="ps-3">Escala da Semana</span>
                         </a>
@@ -72,8 +81,9 @@
                       <img src="{{ asset('assets/img/down-arrow-dark.svg') }}" alt="down-arrow" class="arrow ms-1">
                     </a>
                     <div class="dropdown-menu dropdown-menu-animation dropdown-md p-3 border-radius-lg mt-0 mt-lg-3"
-                      aria-labelledby="dropdownMenuPraises">
-                      <div class="d-none d-lg-block">
+                      aria-labelledby="dropdownMenuPraises"
+                    >
+                      <div>
                         <a href="{{ route('praise.index') }}" class="dropdown-item border-radius-md">
                           <span class="ps-3">Todos Louvores</span>
                         </a>
@@ -103,8 +113,9 @@
                     <img src="{{ asset('assets/img/down-arrow-dark.svg') }}" alt="down-arrow" class="arrow ms-1">
                   </a>
                   <div class="dropdown-menu dropdown-menu-animation dropdown-md p-3 border-radius-lg mt-0 mt-lg-3"
-                    aria-labelledby="dropdownMenuMinistries">
-                    <div class="d-none d-lg-block">
+                    aria-labelledby="dropdownMenuMinistries"
+                  >
+                    <div>
                       @foreach(auth()->user()->ministries as $ministry)
                         <a href="{{ route('ministry.select', ['id' => $ministry->id])}}" class="dropdown-item border-radius-md d-flex align-items-center">
                           <span class="avatar avatar-xs rounded-circle">
