@@ -20,6 +20,7 @@ class CreateMinistriesTable extends Migration
             $table->text('image')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('user_id')->constrained('users');
+            $table->boolean('free_entry')->default(false);
             $table->timestamps();
         });
     }

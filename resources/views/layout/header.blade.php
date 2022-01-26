@@ -3,8 +3,18 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-7 text-center mx-auto">
-            <h1 class="text-white pt-3 mt-n5">Praiser</h1>
-            <p class="lead text-white mt-3">Free & Open Source Web UI Kit built over Bootstrap 5. <br /> Join over 1.4 million developers around the world. </p>
+            <h1 class="text-white pt-3 mt-n5">
+              @if(isset($header) && $header->title)
+                {!! $header->title !!}
+              @else Praiser @endif
+            </h1>
+            <p class="lead text-white mt-3">
+              @if(isset($header) && $header->subtitle)
+                {!! $header->subtitle !!}
+              @elseif(auth()->user() && auth()->user()->current_ministry)
+                {{ auth()->user()->currentMinistry->name }}
+              @endif
+            </p>
           </div>
         </div>
       </div>

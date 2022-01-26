@@ -15,6 +15,7 @@ class CreateUserMinistriesTable extends Migration
     {
         Schema::create('user_ministries', function (Blueprint $table) {
             $table->id();
+            $table->string('permission')->nullable();
             $table->string('caption')->nullable();
             $table->enum('status',['active','disabled'])->default('active');
             $table->text('obs')->nullable();

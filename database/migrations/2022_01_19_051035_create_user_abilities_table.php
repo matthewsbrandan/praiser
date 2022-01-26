@@ -15,7 +15,7 @@ class CreateUserAbilitiesTable extends Migration
     {
         Schema::create('user_abilities', function (Blueprint $table) {
             $table->id();
-            $table->integer('exp');
+            $table->integer('exp')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('ability_id')->constrained('abilities');
             $table->timestamps();

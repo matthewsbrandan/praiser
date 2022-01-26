@@ -12,6 +12,7 @@ class UserMinistry extends Model
     protected $fillable = [
         'user_id',
         'ministry_id',
+        'permission',
         'caption',
         'status',
         'obs'
@@ -26,61 +27,89 @@ class UserMinistry extends Model
     }
     #endregion RELATIONSHIP
     #region LOCAL FUNCTIONS
-    public function getCaptionFormatted(){
-        return explode(',',$this->caption ?? '');
+    public function getCaptionFormatted($object = false){
+        $captions = array_filter(explode(',',$this->caption ?? ''), function($caption){
+            return !!$caption && strlen($caption) > 0;
+        });
+        if($object){
+            $availables = UserMinistry::getAvailableCaptions();
+            return array_map(function($caption) use ($availables) {
+                return $availables[$caption] ?? null;
+            },$captions);
+        }
+        return $captions;
+    }
+    public function getPermissionFormatted($translated = true){
+        $permissions = array_filter(explode(',',$this->permission), function ($permission){
+            return !!$permission && strlen($permission) > 0;
+        });
+        if(!$translated) return $permissions;
+
+        $availablePermission = UserMinistry::getAvailablePermissions();
+
+        return array_map(function($permission) use ($availablePermission){
+            return $availablePermission[$permission] ?? null;
+        },$permissions);
     }
     #endregion LOCAL FUNCTIONS
     #region STATIC FUNCTIONS
     public static function getAvailableCaptions($onlyKeys = false){
         $captions = [
-            'leader' => (object)[
+            'lider' => (object)[
                 'name' => 'Líder',
-                'short' => 'líder',
-                'class' => 'badge-danger'
+                'short' => 'lider',
+                'class' => 'bg-danger'
             ],
-            'vice_leader' => (object)[
+            'vice' => (object)[
                 'name' => 'Vice Líder',
                 'short' => 'vice',
-                'class' => 'badge-warning'
+                'class' => 'bg-warning'
             ],
-            'secretary' => (object)[
+            'secratario' => (object)[
                 'name' => 'Secratário(a)',
-                'short' => 'secratário',
-                'class' => 'badge-warning'
+                'short' => 'secratario',
+                'class' => 'bg-warning'
             ],
-            'musician' => (object)[
+            'musico' => (object)[
                 'name' => 'Músico/Musicista',
                 'short' => 'musico',
-                'class' => 'badge-info'
+                'class' => 'bg-info'
             ],
-            'minister' => (object)[
+            'ministro' => (object)[
                 'name' => 'Ministro',
                 'short' => 'ministro',
-                'class' => 'badge-dark'
+                'class' => 'bg-dark'
             ],
             'backvocal' => (object)[
                 'name' => 'Back Vocal',
-                'short' => 'Back Vocal',
-                'class' => 'badge-secondary'
+                'short' => 'backvocal',
+                'class' => 'bg-secondary'
             ],
-            'table' => (object)[
+            'mesario' => (object)[
                 'name' => 'Mesário',
-                'short' => 'Mesário',
-                'class' => 'badge-light'
+                'short' => 'mesario',
+                'class' => 'bg-light'
             ],
             'datashow' => (object)[
                 'name' => 'Datashow',
-                'short' => 'Datashow',
-                'class' => 'badge-light'
+                'short' => 'datashow',
+                'class' => 'bg-light'
             ],
-            'dance' => (object)[
+            'danca' => (object)[
                 'name' => 'Dança',
-                'short' => 'Dança',
-                'class' => 'badge-success'
+                'short' => 'danca',
+                'class' => 'bg-success'
             ],
         ];
 
         return $onlyKeys ? array_keys($captions) : $captions;
+    }
+    public static function getAvailablePermissions($onlyKeys = false){
+        $availablePermission = [
+            'can_manage_scale' => 'Gerenciar escalas',
+            'can_manage_integrant' => 'Gerenciar integrantes'
+        ];
+        return $onlyKeys ? array_keys($availablePermission) : $availablePermission;
     }
     #endregion STATIC FUNCTIONS
 }

@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/img/curved-images/curved11.jpg') }}">
-  <link rel="icon" type="image/jpg" href="{{ asset('assets/img/curved-images/curved11.jpg') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('logo.png') }}">
+  <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
   <title>
     Praiser
   </title>
@@ -18,6 +19,28 @@
   <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('assets/css/soft-design-system.css?v=1.0.5') }}" rel="stylesheet" />
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  
+  <style>
+    ::-webkit-scrollbar{
+      height: 6px;
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track{
+      background: #fff;
+      border-radius: .4rem;
+    }
+    ::-webkit-scrollbar-thumb{
+      background: #666;
+      border-radius: .4rem;
+    }
+    button,[onclick]{
+      cursor: pointer;
+    }
+  </style>
+
+  @yield('header')
 </head>
 
 <body class="index-page">
@@ -27,6 +50,7 @@
   @yield('content')
 
   @if(!(isset($disable) && array_search('footer', $disable) !== false)) @include('layout.footer') @endif
+  @include('utils.modals.message')
   <!--   Core JS Files   -->
   <script src="{{ asset('assets/js/core/popper.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('assets/js/core/bootstrap.min.js') }}" type="text/javascript"></script>
@@ -74,5 +98,20 @@
       };
     }
   </script>
+  <!-- BEGIN:: HANDLE MESSAGE -->
+  <script>
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    $(function(){
+      @if(session()->has('message'))
+        callModalMessage(`{!! session()->get('message') !!}`);
+      @endif
+    });
+  </script>
+  <!-- END:: HANDLE MESSAGE -->
+  @yield('scripts')
 </body>
 </html>

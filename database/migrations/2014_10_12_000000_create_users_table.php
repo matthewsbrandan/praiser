@@ -19,10 +19,10 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->text('profile')->nullable();
 
             $table->string('google_id')->nullable()->unique();
             $table->string('whatsapp')->nullable();
-            $table->string('permission')->nullable();
             $table->enum('type',['user','admin','dev'])->default('user');
             $table->unsignedBigInteger('current_ministry')->nullable();
             $table->text('availability')->nullable();

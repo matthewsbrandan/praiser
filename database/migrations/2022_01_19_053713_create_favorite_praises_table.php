@@ -15,10 +15,11 @@ class CreateFavoritePraisesTable extends Migration
     {
         Schema::create('favorite_praises', function (Blueprint $table) {
             $table->id();
-            $table->text('youtube_link');
+            $table->text('youtube_link')->nullable();
             $table->text('cipher_link')->nullable();
             $table->string('tone')->nullable();
             $table->foreignId('praise_id')->constrained('praises');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }

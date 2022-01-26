@@ -1,0 +1,38 @@
+<script>
+  const classesAlerts = {
+    primary: "alert alert-primary text-white font-weight-bold",
+    secondary: "alert alert-secondary text-white font-weight-bold",
+    success: "alert alert-success text-white font-weight-bold",
+    danger: "alert alert-danger text-white font-weight-bold",
+    warning: "alert alert-warning text-white font-weight-bold",
+    info: "alert alert-info text-white font-weight-bold",
+    light: "alert alert-light text-white font-weight-bold",
+    dark: "alert alert-dark text-white font-weight-bold",
+  };
+  function notify(type, text, timeout = 6000){
+    let notify_id = `${type}_${$('#container-alerts .alert').length}`;
+    $('#container-alerts').prepend(`
+      <div
+        class="${classesAlerts[type]}"
+        role="alert"
+        id="${notify_id}"
+        style="display: none; min-width: 8rem; max-width: 90vw;"
+        onclick="$(this).hide('slow');"
+      >${text}</div>
+    `);
+    $(`#${notify_id}`).show('slow');
+
+    setTimeout(() => { $(`#${notify_id}`).hide('slow'); }, timeout);
+  }
+  $(function(){
+    $('body').prepend(`
+      <div class="d-flex flex-column justify-content-end" style="
+        position: fixed;
+        top: 0;
+        right: 0;
+        padding: 1rem;
+        z-index: 999;
+      " id="container-alerts"></div>
+    `);
+  });
+</script>
