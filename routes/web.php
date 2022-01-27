@@ -81,4 +81,11 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
         Route::get('/louvores/novo/{import?}', "$controllersPath\PraiseController@create")->name('create');
         Route::post('/louvores/salvar', "$controllersPath\PraiseController@store")->name('store');
     });
+
+    Route::name('scale.')->group(function() use ($controllersPath) {
+        Route::get('/escala/semanal', "$controllersPath\ScaleController@week")->name('week');
+        Route::get('/escala/mesal', "$controllersPath\ScaleController@month")->name('month');
+        Route::get('/escala/nova/{import?}', "$controllersPath\ScaleController@create")->name('create');
+        Route::post('/escala/salvar', "$controllersPath\ScaleController@store")->name('store');
+    });
 });

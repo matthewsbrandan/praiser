@@ -53,6 +53,9 @@ class User extends Authenticatable
     public function favoritePraises(){
         return $this->hasMany(FavoritePraise::class, 'user_id');
     }
+    public function scaleUsers(){
+        return $this->hasMany(ScaleUser::class, 'user_id');
+    }
     #endregion RELATIONSHIP
     #region ACCESS_FUNCTIONS
     public function selectMinistry($ministry_id){
@@ -107,8 +110,8 @@ class User extends Authenticatable
     #endregion FORMATTE
     #endregion ACCESS_FUNCTIONS
     #region STATIC FUNCTIONS
-    public static function getAvailableWeekdays(){
-        return [
+    public static function getAvailableWeekdays($filter = null){
+        $weekdays = [
             'monday' => 'Segunda-Feira',
             'tuesday' => 'Terça-Feira',
             'wednesday' => 'Quarta-Feira',
@@ -116,7 +119,8 @@ class User extends Authenticatable
             'friday' => 'Sexta-Feira',
             'saturday' => 'Sábado',
             'sunday' => 'Domingo'
-        ];
+        ]; 
+        return $filter ? $weekdays[$filter] ?? null : $weekdays;
     }
     public static function getDefaultProfile(){
         return asset('assets/img/profile-default.jpg');

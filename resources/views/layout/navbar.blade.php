@@ -59,15 +59,23 @@
                       aria-labelledby="dropdownMenuScale"
                     >
                       <div>
-                        <a href="./pages/contact-us.html" class="dropdown-item border-radius-md">
+                        <a href="{{ route('scale.week') }}" class="dropdown-item border-radius-md">
                           <span class="ps-3">Escala da Semana</span>
                         </a>
-                        <a href="./pages/about-us.html" class="dropdown-item border-radius-md">
+                        <a href="{{ route('scale.month') }}" class="dropdown-item border-radius-md">
                           <span class="ps-3">Escala do Mês</span>
                         </a>
                         @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))                    
-                          <a href="./pages/author.html" class="dropdown-item border-radius-md">
+                          <a href="{{ route('scale.create') }}" class="dropdown-item border-radius-md">
                             <span class="ps-3">Nova Escala</span>
+                          </a>
+                        @endif
+                        @if(auth()->user()->devOnly())
+                          <a
+                            href="{{ route('scale.create',['import' => 'importar']) }}"
+                            class="dropdown-item border-radius-md"
+                          >
+                            <span class="ps-3">Importar Escala</span>
                           </a>
                         @endif
                       </div>

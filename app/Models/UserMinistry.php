@@ -15,6 +15,7 @@ class UserMinistry extends Model
         'permission',
         'caption',
         'status',
+        'nickname',
         'obs'
     ];
 

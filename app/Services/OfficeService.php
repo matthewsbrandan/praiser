@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Carbon\Carbon;
 use Exception;
 
 class OfficeService{
@@ -52,6 +53,32 @@ class OfficeService{
     }
     return $praises;
   }
+  public function loadScale(){
+    $loaded = $this->removeRowsNull();
+    $scales = [];
+
+    foreach($loaded as $index => $row){
+      if($index < 2) continue;
+      $scaled = [['user' => $row[3],'abilities' => ['ministro']]];
+      $backs = explode(', ',$row[4]);
+      foreach($backs as $back){
+        $scaled = $this->handleScaleUsers($scaled, $back, 'back-vocal');
+      }
+      $abilities = ['violao','baixo','guitarra','teclado','bateria','cajon','datashow','mesario'];
+      foreach($abilities as $index => $ability){
+        $user = $row[$index + 5];
+        if(trim($user) != '-' && !!$user){
+          $scaled = $this->handleScaleUsers($scaled, $user, $ability); 
+        }
+      }
+      $scales[]=[
+        'theme' => $row[0],
+        'date' => Carbon::createFromFormat('Y-m-d', "2022-01-".$row[1]),
+        'scaled' => $scaled,
+      ];
+    }
+    return $scales;
+  }
   protected function removeRowsNull(){
     $loaded = [];
     foreach($this->worksheet as $row){
@@ -65,5 +92,11 @@ class OfficeService{
       if(!$isEmpty) $loaded[] = $row;
     }
     return $loaded; 
+  }
+  protected function handleScaleUsers($scaled, $user, $ability){
+    $index = array_search($user, array_column($scaled, 'user'));
+    if($index === false) $scaled[]= ['user' => $user, 'abilities' => [$ability]];
+    else $scaled[$index]['abilities'][]= $ability;
+    return $scaled;
   }
 }

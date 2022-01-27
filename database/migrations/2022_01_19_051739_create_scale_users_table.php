@@ -16,8 +16,9 @@ class CreateScaleUsersTable extends Migration
         Schema::create('scale_users', function (Blueprint $table) {
             $table->id();
             $table->string('ability');
+            $table->string('nickname');
             $table->foreignId('scale_id')->constrained('scales');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

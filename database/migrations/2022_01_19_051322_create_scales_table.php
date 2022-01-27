@@ -18,6 +18,7 @@ class CreateScalesTable extends Migration
             $table->date('date');
             $table->string('weekday');
             $table->string('hour');
+            $table->string('theme')->default('A definir');
             $table->text('obs')->nullable();
             $table->foreignId('ministry_id')->constrained('ministries');
             $table->timestamps();
