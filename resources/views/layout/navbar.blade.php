@@ -5,6 +5,13 @@
       overflow: hidden;
     }
   }
+  @media(max-width: 1200px){
+    .ms-lg-12{
+      margin-left: 1rem !important;
+    }
+  }
+
+  
 </style>
 <div class="container position-sticky z-index-sticky top-0">
   <div class="row">
@@ -109,6 +116,29 @@
                             <span class="ps-3">Importar Lista</span>
                           </a>
                         @endif
+                      </div>
+                    </div>
+                  </li>
+                  <!-- MINISTRATIONS -->
+                  <li class="nav-item dropdown dropdown-hover mx-2">
+                    <a class="nav-link ps-2 d-flex justify-content-between cursor-pointer align-items-center"
+                      id="dropdownMenuPraises" data-bs-toggle="dropdown" aria-expanded="false">
+                      Ministrações
+                      <img src="{{ asset('assets/img/down-arrow-dark.svg') }}" alt="down-arrow" class="arrow ms-1">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-animation dropdown-md p-3 border-radius-lg mt-0 mt-lg-3"
+                      aria-labelledby="dropdownMenuPraises"
+                    >
+                      <div>
+                        <a href="{{ route('scale_praise.index') }}" class="dropdown-item border-radius-md">
+                          <span class="ps-3">Todas Ministrações</span>
+                        </a>
+                        <a href="{{ route('scale_praise.my') }}" class="dropdown-item border-radius-md">
+                          <span class="ps-3">Minhas Ministrações</span>
+                        </a>
+                        <a href="{{ route('scale_praise.create') }}" class="dropdown-item border-radius-md">
+                          <span class="ps-3">Nova Ministração</span>
+                        </a>
                       </div>
                     </div>
                   </li>

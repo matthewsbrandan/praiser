@@ -88,4 +88,12 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
         Route::get('/escala/nova/{import?}', "$controllersPath\ScaleController@create")->name('create');
         Route::post('/escala/salvar', "$controllersPath\ScaleController@store")->name('store');
     });
+
+    Route::name('scale_praise.')->group(function () use ($controllersPath){
+        Route::get('/ministracoes', "$controllersPath\ScalePraiseController@index")->name('index');
+        Route::get('/ministracoes/minhas', "$controllersPath\ScalePraiseController@my")->name('my');
+        Route::get('/ministracoes/nova', "$controllersPath\ScalePraiseController@create")->name('create');
+        Route::post('/ministracoes/salvar', "$controllersPath\ScalePraiseController@store")->name('store');
+    });
+
 });

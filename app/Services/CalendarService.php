@@ -38,7 +38,18 @@ class CalendarService{
     return [$calendar, $this->month_name];
   }
   public function getWeek(){
-
+    $firstDayOfWeek = Carbon::createFromFormat('Y-m-d',$this->date->format('Y-m-d'));
+    $currentWeekday = $this->date->dayOfWeek;
+    if($currentWeekday != 0){
+      $firstDayOfWeek->subDays($currentWeekday);
+    }
+    $week_name = $firstDayOfWeek->format('d/m');
+    $calendar = [$this->formatteDateToCalendar($firstDayOfWeek)];
+    for($i = 0; $i < 6; $i++){
+      $calendar[]= $this->formatteDateToCalendar($firstDayOfWeek->addDay());
+    }
+    $week_name.= " - ".$firstDayOfWeek->format('d/m');
+    return [$calendar, $week_name];
   }
   protected function getMonthName($month){
     $month_names = [
@@ -47,12 +58,14 @@ class CalendarService{
     return $month_names[$month - 1] ?? null;
   }
   protected function formatteDateToCalendar($date){
+    $diff = $date->diffInDays(null, false);
     return (object)[
       'date' => Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d')),
       'date_formatted' => $date->format('d/m/Y'),
       'weekday' => Scale::getWeekdayByIndex($date->dayOfWeek),
       'weekday_index' => $date->dayOfWeek,
-      'is_current_month' => $this->date->format('m') == $date->format('m')
+      'is_current_month' => $this->date->format('m') == $date->format('m'),
+      '_time' => $diff == 0 ? 'present' : ($diff < 0 ? 'future':'past')
     ];
   }
 }

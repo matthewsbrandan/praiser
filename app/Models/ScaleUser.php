@@ -26,7 +26,6 @@ class ScaleUser extends Model
     #endregion RELATIONSHIP
     #region LOCAL FUNCTIONS
     public function getAbilities(){
-        
     }
     #endregion LOCAL FUNCTIONS
     #region STATIC FUNCTIONS

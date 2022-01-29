@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Exception;
 use Carbon\Carbon;
 
+use App\Models\User;
 use App\Models\Scale;
 use App\Models\ScaleUser;
 
@@ -15,20 +16,63 @@ use App\Services\CalendarService;
 class ScaleController extends Controller
 {
     public function week(){
-        return view('scale.week');
+        $date = Carbon::now();
+        $service = new CalendarService($date);
+        [$calendar, $week_name] = $service->getWeek();
+        $table = collect([]);
+        foreach($calendar as &$day){
+            $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
+                ->whereDate('date',$day->date)
+                ->get();
+            $day->scales = $scales->map(function($scale){
+                $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+                $scale->resume = $scale->getResume();
+                $scale->resume_table = $scale->getResumeTable($scale->resume);
+                $arrDate = explode('-',$scale->date);
+                $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+                return $scale;
+            });
+
+            $table = collect([
+                ...$table,
+                ...$day->scales
+            ]);
+        }
+
+        return view('scale.week',[
+            'calendar' => $calendar,
+            'week_name' => $week_name,
+            'table' => $table
+        ]);
     }
     public function month(){
         $date = Carbon::now();
         $service = new CalendarService($date);
         [$calendar,$month_name] = $service->getMonth();
+        $table = collect([]);
         foreach($calendar as &$day){
-            $day->scales = Scale::whereMinistryId(auth()->user()->current_ministry)
+            $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
                 ->whereDate('date',$day->date)
                 ->get();
+
+            $day->scales = $scales->map(function($scale){
+                $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+                $scale->resume = $scale->getResume();
+                $scale->resume_table = $scale->getResumeTable($scale->resume);
+                $arrDate = explode('-',$scale->date);
+                $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+                return $scale;
+            });
+
+            $table = collect([
+                ...$table,
+                ...$day->scales
+            ]);
         }
         return view('scale.month',[
             'calendar' => $calendar,
-            'month_name' => $month_name
+            'month_name' => $month_name,
+            'table' => $table
         ]);
     }
     public function create($import = null){
