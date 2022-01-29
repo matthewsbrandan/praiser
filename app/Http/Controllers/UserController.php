@@ -25,7 +25,12 @@ class UserController extends Controller
         $this->take = 20;
     }
     public function index($skip = 0, $json = false){
-        // 
+        if(auth()->user()->type != 'dev') return redirect()->back()->with(
+            'message',
+            'Você não tem permissão de acessar essa página'
+        );
+        $users = User::get();
+        return view('user.index',['users' => $users]);
     }
     public function create($email = null){
         if(auth()->user() && auth()->user()->password) return redirect()->back()->with(

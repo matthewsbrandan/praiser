@@ -64,6 +64,8 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
     Route::name('user.')->group(function() use ($controllersPath) {
         Route::get('/perfil/{email?}', "$controllersPath\UserController@profile")->name('profile');
         Route::post('/usuário/atualizar/disponibilidade', "$controllersPath\UserController@updateAvailability")->name('update.availability');
+        Route::get('/usuarios', "$controllersPath\UserController@index")->name('index');
+        Route::get('/usuarios/acessar/{user_id}', "$controllersPath\UserController@loginWith")->name('login');
     });
 
     Route::name('ability.')->group(function() use ($controllersPath) {
