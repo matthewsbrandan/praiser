@@ -20,6 +20,7 @@ class CreateMinisterScalesTable extends Migration
             $table->enum('privacy_about',['public','private'])->default('private');
             $table->foreignId('scale_id')->constrained('scales');
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('ministry_id')->constrained('ministries');
             $table->timestamps();
         });
     }

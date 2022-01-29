@@ -146,7 +146,17 @@
       e.preventDefault();
       
       if(pagesValidated.length < 3){
-        notify('danger', 'É obrigatório concluir todas as etapas do cadastro.<br/>Reveja o preenchimento!');
+        let index = pagesValidated.length + 1;
+        if(index < pages.length){
+          if(!pagesValidated.includes(pages[index])){
+            handlePagination(index + 1);
+            return false;
+          }
+        }
+        notify(
+          'danger',
+          'É obrigatório concluir todas as etapas do cadastro.<br/>Reveja o preenchimento!'
+        );
         return false;
       }
 
