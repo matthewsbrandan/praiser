@@ -13,9 +13,54 @@ use App\Services\OfficeService;
 
 class PraiseController extends Controller
 {
-    public function index(){
-        $praises = Praise::orderBy('updated_at','desc')->get();
-        return view('praise.index', ['praises' => $praises]);
+    public function index(Request $request){
+        $data = $this->more($request, false);
+        if(!$data->result) return redirect()->back()->with(
+            'message', $data->response
+        );
+        $total_praises = Praise::whereMinistryId(auth()->user()->current_ministry)->count();
+        $praises = $data->response;
+        return view('praise.index', [
+            'praises' => $praises,
+            'total_praises' => $total_praises
+        ]);
+    }
+    public function more(Request $request, $json = true){
+        $ids = [];
+        $search = null;
+        if($request){
+            if($request->ids) $ids = explode(',', $request->ids);
+            if($request->search) $search = $request->search;
+        }
+
+        $praises = Praise::whereNotIn('id',$ids)
+            ->whereMinistryId(auth()->user()->current_ministry)
+            ->when(!!$search, function($query) use ($search){
+                return $query->where(function($q) use ($search){
+                    $q->where('name','like',"%$search%")
+                      ->orWhere('singer','like',"%$search%")
+                      ->orWhere('tags','like',"%$search%");
+                });
+            })
+            ->inRandomOrder()
+            ->take(20)
+            ->get();
+
+        $praises = $praises->map(function($praise){
+            $praise->is_favorite = !!$praise->favorite();
+            $praise->has_reference = $praise->hasReference();
+            $praise->main_cipher = $praise->mainCipher();
+            $praise->main_youtube = $praise->mainYoutube();
+            $praise->hashtags = $praise->getHashtagsFormatted();
+            return $praise;
+        });
+
+        $data = [
+            'result' => true,
+            'response' => $praises,
+            'search' => $request
+        ];
+        return $json ? response()->json($data) : (object) $data;
     }
     public function favorite(){
         $praises = auth()->user()->favoritePraises;
@@ -34,6 +79,7 @@ class PraiseController extends Controller
         $data = [
             'name' => $request->name,
             'singer' => $request->singer,
+            'ministry_id' => auth()->user()->current_ministry
         ];
         if(!$praise = Praise::updateOrCreate($data,$data + [
             'tags' => $request->has('tags') && strlen($request->tags) > 0 ? $request->tags : null

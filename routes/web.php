@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
 
     Route::name('praise.')->group(function() use ($controllersPath) {
         Route::get('/louvores', "$controllersPath\PraiseController@index")->name('index');
+        Route::post('/louvores/mais', "$controllersPath\PraiseController@more")->name('more');
         Route::get('/louvores/favoritos', "$controllersPath\PraiseController@favorite")->name('favorite');
         Route::post('/louvores/favoritos/alternar', "$controllersPath\PraiseController@toggleFavorite")->name('favorite.toggle');
         Route::get('/louvores/novo/{import?}', "$controllersPath\PraiseController@create")->name('create');

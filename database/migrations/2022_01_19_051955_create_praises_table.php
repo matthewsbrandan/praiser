@@ -18,6 +18,7 @@ class CreatePraisesTable extends Migration
             $table->string('name');
             $table->string('singer')->nullable();
             $table->string('tags')->nullable();
+            $table->foreignId('ministry_id')->constrained('ministries');
             $table->timestamps();
         });
     }

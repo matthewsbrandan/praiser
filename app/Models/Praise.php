@@ -13,6 +13,7 @@ class Praise extends Model
         'name',
         'singer',
         'tags',
+        'ministry_id'
     ];
 
     #region RELATIONSHIP
@@ -24,6 +25,9 @@ class Praise extends Model
     }
     public function favorites(){
         return $this->hasMany(FavoritePraise::class, 'praise_id');
+    }
+    public function ministry(){
+        return $this->belongsTo(Ministry::class, 'ministry_id');
     }
     #endregion RELATIONSHIP
     #region ACCESS FUNCTIONS
@@ -43,6 +47,11 @@ class Praise extends Model
     #region LOCAL FUNCTIONS
     public function getTagsFormatted(){
         return explode(',',$this->tags ?? '');
+    }
+    public function getHashtagsFormatted(){
+        return $this->tags ? array_map(function($tag){
+            return '#'.$tag;
+        }, $this->getTagsFormatted()) : [];
     }
     #endregion LOCAL FUNCTIONS
     #region STATIC FUNCTIONS
