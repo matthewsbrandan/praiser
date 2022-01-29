@@ -25,7 +25,18 @@
             <div class="card d-flex blur justify-content-center p-4 shadow-lg my-sm-0 my-sm-6 mt-8 mb-5">
               <div class="d-flex justify-content-between align-items-center text-center">
                 <div></div>
-                <h3 class="text-gradient text-primary">Escala de {{ $week_name }}</h3>
+                <div class="d-flex align-items-center mb-1">
+                  <a
+                    href="{{ route('scale.week', ['date' => $link->prev]) }}"
+                    class="px-2"
+                  >@include('utils.icons.larr')</a>
+                  <h3 class="text-gradient text-primary mb-0">Escala de {{ $week_name }}</h3>
+                  <a
+                    href="{{ route('scale.week', ['date' => $link->next]) }}"
+                    class="px-2"
+                  >@include('utils.icons.rarr')</a>
+                </div>
+                
                 <button
                   class="btn btn-link text-dark mb-0 p-1"
                   onclick="toggleTableCalendar($(this))"

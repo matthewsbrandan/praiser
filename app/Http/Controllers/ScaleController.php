@@ -15,8 +15,16 @@ use App\Services\CalendarService;
 
 class ScaleController extends Controller
 {
-    public function week(){
-        $date = Carbon::now();
+    public function week($date = null){
+        if(!$date) $date = Carbon::now();
+        else $date = Carbon::createFromFormat('d-m-Y', $date);
+        $prevWeek = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->subDays(7);
+        $nextWeek = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->addDays(7);
+        $link = (object) [
+            'prev' => $prevWeek->format('d-m-Y'),
+            'next' => $nextWeek->format('d-m-Y'),
+        ];
+
         $service = new CalendarService($date);
         [$calendar, $week_name] = $service->getWeek();
         $table = collect([]);
@@ -42,11 +50,21 @@ class ScaleController extends Controller
         return view('scale.week',[
             'calendar' => $calendar,
             'week_name' => $week_name,
-            'table' => $table
+            'table' => $table,
+            'link' => $link
         ]);
     }
-    public function month(){
-        $date = Carbon::now();
+    public function month($date = null){
+        if(!$date) $date = Carbon::now();
+        else $date = Carbon::createFromFormat('d-m-Y', "01-".$date);
+        $neutro = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->startOfMonth();
+        $prevMonth = Carbon::createFromFormat('Y-m-d',$neutro->format('Y-m-d'))->subMonth();
+        $nextMonth = Carbon::createFromFormat('Y-m-d',$neutro->format('Y-m-d'))->addMonth();
+        $link = (object) [
+            'prev' => $prevMonth->format('m-Y'),
+            'next' => $nextMonth->format('m-Y'),
+        ];
+
         $service = new CalendarService($date);
         [$calendar,$month_name] = $service->getMonth();
         $table = collect([]);
@@ -69,10 +87,12 @@ class ScaleController extends Controller
                 ...$day->scales
             ]);
         }
+
         return view('scale.month',[
             'calendar' => $calendar,
             'month_name' => $month_name,
-            'table' => $table
+            'table' => $table,
+            'link' => $link
         ]);
     }
     public function create($import = null){
