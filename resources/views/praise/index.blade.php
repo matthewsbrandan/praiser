@@ -54,7 +54,10 @@
                               @else <i class="far fa-star"></i> @endif
                             </a>
                           
-                            <div class="d-flex flex-column justify-content-center">
+                            <div
+                              class="d-flex flex-column justify-content-center" style="flex: 1;"
+                              onclick="callModalEditPraise({{ $praise->toJson() }})"
+                            >
                               <h6 class="mb-0 text-xs" style="white-space: normal;">{{ $praise->name }}</h6>
                               <p class="text-xs text-secondary mb-0">
                                 {{ $praise->singer }}
@@ -99,7 +102,7 @@
                         <td>
                           <div class="d-flex" style="gap: .4rem">
                             @foreach($praise->hashtags as $hashtag)
-                              <span class="badge bg-gradient-secondary">{{ $hashtag }}</span>
+                              <span class="badge text-dark">{{ $hashtag }}</span>
                             @endforeach
                           </div>
                         </td>
@@ -123,7 +126,7 @@
       </div>
     </div>
   </header>
-  @include('utils.scripts.mirror-image')
+  @include('praise.modals.edit')
 @endsection
 @section('scripts')
   <script>
@@ -191,7 +194,7 @@
     }
     function handleAddPraise(praise){
       let hashtags = praise.hashtags.map(hashtag => {
-        return `<span class="badge bg-gradient-secondary">${ hashtag }</span>`;
+        return `<span class="badge text-dark">${ hashtag }</span>`;
       }).join('');
       return `
         <tr class="row-praise" data-name="${ praise.name }" data-singer="${ praise.singer }" data-tags="${ praise.tags }">
@@ -200,7 +203,10 @@
               <a href="javascript:;" class="pe-3" onclick="handleToggleFavorite(${ praise.id }, $(this).children())">
                 ${ praise.is_favorite ? `<i class="fa fa-star"></i>`:`<i class="far fa-star"></i>` }
               </a>
-              <div class="d-flex flex-column justify-content-center">
+              <div
+                class="d-flex flex-column justify-content-center" style="flex: 1;"
+                onclick='callModalEditPraise(${ JSON.stringify(praise) })'
+              >
                 <h6 class="mb-0 text-xs" style="white-space: normal;">${ praise.name }</h6>
                 <p class="text-xs text-secondary mb-0">
                   ${ praise.singer }

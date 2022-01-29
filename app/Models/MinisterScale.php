@@ -15,6 +15,7 @@ class MinisterScale extends Model
         'verse',
         'about',
         'privacy_about',
+        'ministry_id'
     ];
 
     public function scale(){
@@ -22,5 +23,8 @@ class MinisterScale extends Model
     }
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
+    }
+    public function ministry(){
+        return $this->belongsTo(Ministry::class, 'ministry_id');
     }
 }

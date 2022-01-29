@@ -115,7 +115,6 @@
       </div>
     </div>
   </header>
-  @include('utils.scripts.mirror-image')
 @endsection
 @section('scripts')
   <script>

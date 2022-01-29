@@ -33,7 +33,7 @@ class PraiseController extends Controller
             if($request->search) $search = $request->search;
         }
 
-        $praises = Praise::whereNotIn('id',$ids)
+        $praises = Praise::with('youtubes','ciphers')->whereNotIn('id',$ids)
             ->whereMinistryId(auth()->user()->current_ministry)
             ->when(!!$search, function($query) use ($search){
                 return $query->where(function($q) use ($search){
@@ -76,14 +76,29 @@ class PraiseController extends Controller
         if($request->file('import')){
             return $this->handleImport($request->file('import'));
         }
+
         $data = [
             'name' => $request->name,
             'singer' => $request->singer,
-            'ministry_id' => auth()->user()->current_ministry
-        ];
-        if(!$praise = Praise::updateOrCreate($data,$data + [
+            'ministry_id' => auth()->user()->current_ministry,
             'tags' => $request->has('tags') && strlen($request->tags) > 0 ? $request->tags : null
-        ])) return redirect()->back()->with(
+        ];
+        if($request->id){
+            if(!$praise = Praise::whereId($request->id)
+                ->whereMinistryId(auth()->user()->current_ministry)
+                ->first()
+            ) return redirect()->back()->with(
+                'message',
+                'Louvor não encontrado'
+            );
+
+            $praise->update($data);
+        }else
+        if(!$praise = Praise::updateOrCreate([
+            'name' => $request->name,
+            'singer' => $request->singer,
+            'ministry_id' => auth()->user()->current_ministry,
+        ],$data)) return redirect()->back()->with(
             'message',
             'Houve um erro ao adicionar/editar este louvor'
         );
