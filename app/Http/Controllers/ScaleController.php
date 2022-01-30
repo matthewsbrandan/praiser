@@ -184,6 +184,28 @@ class ScaleController extends Controller
             'response' => 'Houve um erro ao criar a escala'
         ]);
     }
+    public function lastScales($ids = ''){
+        $arrIds = array_filter(explode(',',$ids), function($id){ return !!$id; });
+        $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
+            ->whereNotIn('id',$arrIds)
+            ->orderBy('date','desc')
+            ->take(10)
+            ->get();
+
+        $scales = $scales->map(function($scale){
+            $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+            $scale->resume = $scale->getResume();
+            $scale->resume_table = $scale->getResumeTable($scale->resume);
+            $arrDate = explode('-',$scale->date);
+            $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+            return $scale;
+        });
+
+        return response()->json([
+            'result' => true,
+            'response' => $scales
+        ]);
+    }
     protected function handleImport($file){
         $sheet = new OfficeService($file->getRealPath());
         $scales = $sheet->loadScale();

@@ -42,6 +42,8 @@
                     ],(object)[
                       'id' => 'to-content-scale', 'onclick' => 'handlePagination(2)'
                     ]
+                  ],'pagination_config' => (object)[
+                    'disabled' => false
                   ]])
                   
                   @include('scale.create.steps.days')
@@ -59,7 +61,10 @@
 @section('scripts')
   <script>
     var days = [];
-    const weekdays = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"];
+    const weekdays = {!! json_encode(array_keys(\App\Models\User::getAvailableWeekdays())) !!};
+    const defaultHours = {!! json_encode(\App\Models\Scale::getAvailableHoursByWeekday()) !!}
+    const translateWeekdays = {!! json_encode(\App\Models\User::getAvailableWeekdays()) !!}
+    
     // BEGIN:: DAYS
     function handleAddDays(){
       let day = $('#scale-days').val();
@@ -81,12 +86,12 @@
       $('#container-days-to-scale').html('');
       days.forEach((day, i) => {
         let date = new Date(day);
-        let index = date.getDay() + 1;
-        if(index == 7) index = 0;
+        let index = date.getDay();
+        // if(index == 7) index = 0;
         let [y, m, d] = day.split('-');
-
+        let weekday = weekdays[index];
         let content = `
-          <b class="text-uppercase text-sm">${weekdays[index]}</b>
+          <b class="text-uppercase text-sm">${translateWeekdays[weekday]}</b>
           <span style="font-size: 2rem; line-height: 2.6rem;">${d}/${m}</span>
         `;
 
@@ -106,16 +111,11 @@
           </div>
         `, i === 0, 3));
 
-        if(i === 0) $('#scale-date').val(day);
+        if(i === 0){
+          $('#scale-date').val(day);
+          if(defaultHours[weekday] != '-') $('#scale-hour').val(defaultHours[weekday]);
+        }
       });
-    }
-    function validateContentDays(){
-      if(days.length == 0){
-        focusInError($('#scale-days'));
-        notify('warning', 'Selecione pelo menos uma data para criar uma escala');
-        return false;
-      }
-      return true;
     }
     // END:: DAYS
 
@@ -128,10 +128,7 @@
     function handlePagination(to){
       pagesValidated = pagesValidated.filter(pages => pages != $('.to-page-contents.active').attr('id').substr(3));
       switch(to){
-        case 2:
-          if(!validateContentDays()) return;
-          $('#scale-hour').focus();
-          break;
+        case 2: $('#scale-theme').focus(); break;
       }
       $('.page-contents').hide();
       $(`#${pages[to - 1]}`).show('slow');

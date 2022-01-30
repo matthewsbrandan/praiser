@@ -4,7 +4,7 @@
 >
   @foreach($pagination as $index => $page)
     <li
-      class="to-page-contents page-item {{ $index == 0 ? 'active': 'disabled' }}"
+      class="to-page-contents page-item {{ $index == 0 ? 'active': (isset($pagination_config) && $pagination_config->disabled == false ? '': 'disabled') }}"
       id="{{ $page->id }}"
     >
       <a

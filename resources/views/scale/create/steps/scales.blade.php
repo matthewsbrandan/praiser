@@ -181,6 +181,11 @@
           </tbody>
         </table>
       </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-link text-dark text-center mx-auto d-block"
+        onclick="loadLastScales()"
+      >Carregar Anteriores</button>
     </div>
   </div>
 </div>
@@ -198,6 +203,7 @@
     datashow:'',
     mesario:'',
   };
+  var scale_ids = [];
   async function createScale(){
     let obs = $('#scale-obs').val();
     let data = {
@@ -210,8 +216,9 @@
     
     $.post('{{ route('scale.store') }}', data).done(data => {
       if(data.result){
+        scale_ids.push(data.response.id);
         if($('#tr-empty')[0])$('#tr-empty').remove();
-        $('#scales-created tbody').append(htmlScaleFinalized(data.response));
+        $('#scales-created tbody').preppend(htmlScaleFinalized(data.response));
         handleNextScale();
       }else callModalMessage(data.response);
     });
@@ -282,10 +289,13 @@
   }
   function htmlScaleFinalized(scale){
     return `
-      <tr class="${scale.weekday == 'sunday' ? 'tr-highlight':'' }">
+      <tr class="${scale.weekday == 'sunday' ? 'tr-highlight':'' }" id="tr-scale-id-${scale.id}">
         <td> 
           <div class="d-flex align-items-center">
-            <span class="p-1 pe-2 text-lg font-weight-bold">${ scale.day }</span>
+            <span
+              class="p-1 pe-2 text-lg font-weight-bold"
+              data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ scale.date }"
+            >${ scale.day }</span>
             <div class="text-sm">
               <strong class="d-block text-dark text-uppercase">
                 ${ scale.weekday_name }
@@ -315,15 +325,22 @@
       users_scaled[ability] = '';
       $(`#td-react-to-${ability}`).html('');
     });
-    $('#scale-theme,#scale-obs').val('');
+    $('#scale-obs').val('');
     $('#dynamic-input').val('');
     $('#users-available tbody').html('');
-    $('#scale-hour').val('').focus();
-    if(days.length == 0) {
-      callModalMessage(`
-        <p>Escalas finalizadas!<br/>Ver escalas no calendário</p>
-        <a  href="{{ route('scale.month') }}" class="btn bg-gradient-primary mt-3 mb-0">Calendário</a>
-      `)
-    }
+    $('#scale-theme').val('').focus();
+  }
+  function loadLastScales(){
+    let ids = scale_ids.length > 0 ? '/' + scale_ids.join(',') : '';
+    
+    $.get(`{{ route('scale.last') }}${ids}`).done(data => {
+      if(data.result){
+        if($('#tr-empty')[0])$('#tr-empty').remove();
+        data.response.forEach(scale => {
+          scale_ids.push(scale.id);
+          $('#scales-created tbody').append(htmlScaleFinalized(scale));
+        });
+      }
+    })
   }
 </script>

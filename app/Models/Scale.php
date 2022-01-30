@@ -68,7 +68,7 @@ class Scale extends Model
     }
     #endregion LOCAL FUNCTIONS
     #region STATIC FUNCTIONS
-    public static function getAvailableHoursByWeekday($weekday){
+    public static function getAvailableHoursByWeekday($weekday = null){
         $hours = [
             'sunday' => '18:00',
             'monday' => '-',
@@ -78,6 +78,7 @@ class Scale extends Model
             'friday' => '-',
             'saturday' => '19:30',
         ];
+        if(!$weekday) return $hours;
         return $hours[$weekday] ?? '-';
     }
     public static function getWeekdayByIndex($index){
