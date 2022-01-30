@@ -413,19 +413,19 @@
   function deleteScale(id){
     $.get(`{{ substr(route('scale.delete',['id' => 0]),0,-1) }}${id}`).done(data => {
       if(data.result){
-        callModalMessage(data.response);
+        notify('success', data.response);
         $(`#tr-scale-id-${id}`).remove();
       }
-      else callModalMessage(data.response);
+      else notify('danger', data.response);
     })
   }
   function handlePublish(id, elem, is_published) {
     $.get(`{{ substr(route('scale.toggle-publish',['id' => 0]),0,-1) }}${id}`).done(data => {
       if(data.result){
-        callModalMessage(data.response);
+        notify('success', data.response);
         elem.html(is_published ? icon.lock : icon.word);
       }
-      else callModalMessage(data.response);
+      else notify('danger', data.response);
     })
   }
 </script>
