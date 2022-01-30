@@ -191,6 +191,7 @@
 </div>
 <script>
   var currentAbilityInChange = null;
+  var scaleInEdition = null;
   var users_scaled = {
     ministro:'',
     backvocal:'',
@@ -211,14 +212,17 @@
       hour: $('#scale-hour').val(),
       theme: $('#scale-theme').val(),
       obs: obs.length > 0 ? obs : null,
-      users_scaled
+      users_scaled,
+      id: scaleInEdition ? scaleInEdition.id : null,
     };
     
     $.post('{{ route('scale.store') }}', data).done(data => {
       if(data.result){
         scale_ids.push(data.response.id);
         if($('#tr-empty')[0])$('#tr-empty').remove();
-        $('#scales-created tbody').preppend(htmlScaleFinalized(data.response));
+        console.log('>>>', data);
+        if(scaleInEdition) handleScaleEdited(data.response);
+        else $('#scales-created tbody').preppend(htmlScaleFinalized(data.response));
         handleNextScale();
       }else callModalMessage(data.response);
     });
@@ -287,39 +291,51 @@
     users_scaled[currentAbilityInChange] = dynamic;
     $(`#td-react-to-${currentAbilityInChange}`).html(dynamic);
   }
-  function htmlScaleFinalized(scale){
-    return `
-      <tr class="${scale.weekday == 'sunday' ? 'tr-highlight':'' }" id="tr-scale-id-${scale.id}">
-        <td> 
-          <div class="d-flex align-items-center">
-            <span
-              class="p-1 pe-2 text-lg font-weight-bold"
-              data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ scale.date }"
-            >${ scale.day }</span>
-            <div class="text-sm">
-              <strong class="d-block text-dark text-uppercase">
-                ${ scale.weekday_name }
-              </strong>
-              <span>${ scale.theme }</span>
-            </div>
+  function htmlScaleFinalized(scale, withoutWrapper = false){
+    let content = `
+      <td onclick='handleEditScale(${JSON.stringify(scale)})'> 
+        <div class="d-flex align-items-center">
+          <span
+            class="p-1 pe-2 text-lg font-weight-bold"
+            data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ scale.date }"
+          >${ scale.day }</span>
+          <div class="text-sm">
+            <strong class="d-block text-dark text-uppercase">
+              ${ scale.weekday_name }
+            </strong>
+            <span>${ scale.theme }</span>
           </div>
-          </td>
-        <td class="text-sm">${ scale.resume_table.ministro }</td>
-        <td class="text-sm">${ scale.resume_table.backvocal }</td>
-        <td class="text-sm">${ scale.resume_table.violao }</td>
-        <td class="text-sm">${ scale.resume_table.baixo }</td>
-        <td class="text-sm">${ scale.resume_table.guitarra }</td>
-        <td class="text-sm">${ scale.resume_table.teclado }</td>
-        <td class="text-sm">
-          ${ scale.resume_table.bateria != '-' ? scale.resume_table.bateria : scale.resume_table.cajon }
+        </div>
         </td>
-        <td class="text-sm">${ scale.resume_table.datashow }</td>
-        <td class="text-sm">${ scale.resume_table.mesario }</td>
+      <td class="text-sm">${ scale.resume_table.ministro }</td>
+      <td class="text-sm">${ scale.resume_table.backvocal }</td>
+      <td class="text-sm">${ scale.resume_table.violao }</td>
+      <td class="text-sm">${ scale.resume_table.baixo }</td>
+      <td class="text-sm">${ scale.resume_table.guitarra }</td>
+      <td class="text-sm">${ scale.resume_table.teclado }</td>
+      <td class="text-sm">
+        ${ scale.resume_table.bateria != '-' ? scale.resume_table.bateria : scale.resume_table.cajon }
+      </td>
+      <td class="text-sm">${ scale.resume_table.datashow }</td>
+      <td class="text-sm">${ scale.resume_table.mesario }</td>
+    `;
+    return withoutWrapper ? content : `
+      <tr class="${scale.weekday == 'sunday' ? 'tr-highlight':'' }" id="tr-scale-id-${scale.id}">
+        ${ content }
       </tr>
     `;
   }
+  function handleScaleEdited(scale){
+    console.log('edited',`#tr-scale-id-${scale.id}`, scale);
+    $(`#tr-scale-id-${scale.id}`).html(
+      htmlScaleFinalized(scale, true)
+    );
+    if(scale.weekday == 'sunday') $(`#tr-scale-id-${scale.id}`).addClass('tr-highlight');
+    else $(`#tr-scale-id-${scale.id}`).removeClass('tr-highlight');
+  }
   function handleNextScale(){
     handleRenderDays($('#scale-date').val(), true);
+    scaleInEdition = null;
     let abilities = ['ministro','backvocal','violao','baixo','guitarra','teclado','bateria','cajon','datashow','mesario'];
     abilities.forEach(ability => {
       users_scaled[ability] = '';
@@ -342,5 +358,22 @@
         });
       }
     })
+  }
+  function handleEditScale(scale){
+    $('#container-days-to-scale .bg-gradient-primary').toggleClass('bg-gradient-primary bg-gray-100')
+    $('#container-days-to-scale .text-light').removeClass('text-light');
+    scaleInEdition = scale;
+
+    let abilities = ['ministro','backvocal','violao','baixo','guitarra','teclado','bateria','cajon','datashow','mesario'];
+    users_scaled = scale.resume_table
+    abilities.forEach(ability => {
+      $(`#td-react-to-${ability}`).html(users_scaled[ability]);
+    });
+    $('#scale-obs').val(scale.obs);
+    $('#dynamic-input').val('');
+    $('#users-available tbody').html('');
+    $('#scale-theme').val(scale.theme).focus();
+    $('#scale-date').val(scale.date);
+    $('#scale-hour').val(scale.hour);
   }
 </script>

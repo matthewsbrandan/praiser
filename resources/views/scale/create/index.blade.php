@@ -5,6 +5,12 @@
 ?>
 @extends('layout.app')
 @section('content')
+  <style>
+    .tr-highlight{
+      --bs-table-accent-bg: var(--bs-table-hover-bg);
+      color: var(--bs-table-hover-color);
+    }
+  </style>
   <header>
     <div class="page-header min-vh-85">
       <div>

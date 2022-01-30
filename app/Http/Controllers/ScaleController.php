@@ -111,77 +111,90 @@ class ScaleController extends Controller
                 'response' => 'Data inválida'
             ]);
         }
-        $weekdays = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
-        
+        $weekdays = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+        $index = $date->dayOfWeek;
         $data = [
             'ministry_id' => auth()->user()->current_ministry,
             'date' => $date->format('Y-m-d'),
-            'weekday' => $weekdays[$date->dayOfWeek],
+            'weekday' => $weekdays[$index],
             'hour' => $request->hour,
             'theme' => $request->theme,
             'obs' => $request->obs
         ];
 
-        if($scale = Scale::create($data)){
-            $scaled = [];
-            $arrScaled = [
-                'ministro' => $request->users_scaled['ministro'],
-                'backvocal' => $request->users_scaled['backvocal'],
-                'violao' => $request->users_scaled['violao'],
-                'baixo' => $request->users_scaled['baixo'],
-                'guitarra' => $request->users_scaled['guitarra'],
-                'teclado' => $request->users_scaled['teclado'],
-                'bateria' => $request->users_scaled['bateria'],
-                'cajon' => $request->users_scaled['cajon'],
-                'datashow' => $request->users_scaled['datashow'],
-                'mesario' => $request->users_scaled['mesario'],
-            ];
-            foreach($arrScaled as $ability => $nicknames){
-                if(!$nicknames || strlen($nicknames) == 0) continue;
-                $nicknames = explode(',',$nicknames);
-                foreach($nicknames as $nickname){
-                    $nickname = trim($nickname);
-                    $index = array_search($nickname,array_column($scaled, 'user'));
-                    if($index === false) $scaled[]= ['user' => $nickname, 'abilities' => [$ability]];
-                    else $scaled[$index]['abilities'][]= $ability;
-                }
-            }
-            
-            $errors = [];
-            foreach($scaled as $user){
-                try{
-                    $nickname = $user['user'];
-                    $user_id = ScaleUser::findUserByNickname(
-                        $nickname,
-                        auth()->user()->current_ministry
-                    );
-                    $data = [
-                        'scale_id' => $scale->id,
-                        'user_id' => $user_id,
-                        'nickname' => $nickname,
-                        'ability' => implode(',',$user['abilities']),
-                    ];
-                    ScaleUser::create($data);
-                }catch(Exception $e){
-                    $errors[] = "Houve um erro ao escalar ".$user['user']." no dia ".$scale['date'];
-                }
-            }
-
-            $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
-            $scale->resume = $scale->getResume();
-            $scale->resume_table = $scale->getResumeTable($scale->resume);
-            $arrDate = explode('-',$scale->date);
-            $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
-
-            return response()->json([
-                'result' => true,
-                'response' => $scale,
-                'errors' => $errors
+        if($request->id){
+            if(!$scale = Scale::whereId($request->id)
+                ->whereMinistryId(auth()->user()->current_ministry)
+                ->first()
+            ) return response()->json([
+                'result' => false,
+                'response' => 'Escala não encontrada'
             ]);
+            $scale->update($data);
+
+            foreach($scale->scaleUsers as $scaled){
+                $scaled->delete();
+            }
         }
-        else return response()->json([
+        else if(!$scale = Scale::create($data)) return response()->json([
             'result' => false,
             'response' => 'Houve um erro ao criar a escala'
+        ]);
+        $scaled = [];
+        $arrScaled = [
+            'ministro' => $request->users_scaled['ministro'],
+            'backvocal' => $request->users_scaled['backvocal'],
+            'violao' => $request->users_scaled['violao'],
+            'baixo' => $request->users_scaled['baixo'],
+            'guitarra' => $request->users_scaled['guitarra'],
+            'teclado' => $request->users_scaled['teclado'],
+            'bateria' => $request->users_scaled['bateria'],
+            'cajon' => $request->users_scaled['cajon'],
+            'datashow' => $request->users_scaled['datashow'],
+            'mesario' => $request->users_scaled['mesario'],
+        ];
+        foreach($arrScaled as $ability => $nicknames){
+            if(!$nicknames || strlen($nicknames) == 0) continue;
+            $nicknames = explode(',',$nicknames);
+            foreach($nicknames as $nickname){
+                $nickname = trim($nickname);
+                $index = array_search($nickname,array_column($scaled, 'user'));
+                if($index === false) $scaled[]= ['user' => $nickname, 'abilities' => [$ability]];
+                else $scaled[$index]['abilities'][]= $ability;
+            }
+        }
+        
+        $errors = [];
+        foreach($scaled as $user){
+            try{
+                $nickname = $user['user'];
+                $user_id = ScaleUser::findUserByNickname(
+                    $nickname,
+                    auth()->user()->current_ministry
+                );
+                $data = [
+                    'scale_id' => $scale->id,
+                    'user_id' => $user_id,
+                    'nickname' => $nickname,
+                    'ability' => implode(',',$user['abilities']),
+                ];
+                ScaleUser::create($data);
+            }catch(Exception $e){
+                $errors[] = "Houve um erro ao escalar ".$user['user']." no dia ".$scale['date'];
+            }
+        }
+
+        $scale = Scale::whereId($scale->id)->first();
+        $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+        $scale->resume = $scale->getResume();
+        $scale->resume_table = $scale->getResumeTable($scale->resume);
+        $arrDate = explode('-',$scale->date);
+        $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+
+        return response()->json([
+            'result' => true,
+            'response' => $scale,
+            'errors' => $errors
         ]);
     }
     public function lastScales($ids = ''){
