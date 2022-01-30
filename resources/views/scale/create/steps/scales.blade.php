@@ -151,6 +151,7 @@
       <button 
         type="button" class="btn bg-gradient-primary mt-3 mb-0"
         onclick="createScale()"
+        id="btn-create-edit-scale"
       >Criar Escala</button>
     </div>
     <div class="col-12">
@@ -358,6 +359,7 @@
       users_scaled[ability] = '';
       $(`#td-react-to-${ability}`).html('');
     });
+    $('#btn-create-edit-scale').html('Criar Escala');
     $('#scale-obs').val('');
     $('#dynamic-input').val('');
     $('#users-available tbody').html('');
@@ -380,6 +382,8 @@
     $('#container-days-to-scale .bg-gradient-primary').toggleClass('bg-gradient-primary bg-gray-100')
     $('#container-days-to-scale .text-light').removeClass('text-light');
     scaleInEdition = scale;
+
+    $('#btn-create-edit-scale').html('Editar Escala');
 
     let abilities = ['ministro','backvocal','violao','baixo','guitarra','teclado','bateria','cajon','datashow','mesario'];
     users_scaled = scale.resume_table
