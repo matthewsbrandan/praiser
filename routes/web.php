@@ -90,7 +90,11 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
     Route::name('scale.')->group(function() use ($controllersPath) {
         Route::get('/escala/semanal/{date?}', "$controllersPath\ScaleController@week")->name('week');
         Route::get('/escala/mesal/{date?}', "$controllersPath\ScaleController@month")->name('month');
-        Route::get('/escala/nova/{import?}', "$controllersPath\ScaleController@create")->name('create');
+        Route::get('/escala/mesal-edicao/{date?}', function($date = null) {
+            $controller = new \App\Http\Controllers\ScaleController();
+            return $controller->month($date, true);
+        })->name('month.edition');
+        Route::get('/escala/gerenciar/{import?}', "$controllersPath\ScaleController@create")->name('create');
         Route::post('/escala/salvar', "$controllersPath\ScaleController@store")->name('store');
         Route::get('/escala/excluir/{id}',"$controllersPath\ScaleController@delete")->name('delete');
         Route::get('/escala/ultimas/{ids?}',"$controllersPath\ScaleController@lastScales")->name('last');

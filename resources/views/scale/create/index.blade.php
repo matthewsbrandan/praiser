@@ -21,7 +21,7 @@
           <div class="col-12 d-flex justify-content-center flex-column mt-sm-4">
             <div class="card d-flex blur justify-content-center p-4 shadow-lg my-sm-0 my-sm-6 mt-8 mb-5">
               <div class="text-center">
-                <h3 class="text-gradient text-primary">Criar Escala</h3>
+                <h3 class="text-gradient text-primary">Gerenciar Escala</h3>
                 <p class="mb-0">
                   Cadastre as escalas aqui e organize sua equipe.
                 </p>

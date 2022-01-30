@@ -74,7 +74,10 @@
                         </a>
                         @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))                    
                           <a href="{{ route('scale.create') }}" class="dropdown-item border-radius-md">
-                            <span class="ps-3">Nova Escala</span>
+                            <span class="ps-3">Gerenciar Escala</span>
+                          </a>
+                          <a href="{{ route('scale.month.edition') }}" class="dropdown-item border-radius-md">
+                            <span class="ps-3">Escalas em Edição</span>
                           </a>
                         @endif
                         @if(auth()->user()->devOnly())

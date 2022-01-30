@@ -55,7 +55,7 @@ class ScaleController extends Controller
             'link' => $link
         ]);
     }
-    public function month($date = null){
+    public function month($date = null, $edition = false){
         if(!$date) $date = Carbon::now();
         else $date = Carbon::createFromFormat('d-m-Y', "01-".$date);
         $neutro = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->startOfMonth();
@@ -72,7 +72,7 @@ class ScaleController extends Controller
         foreach($calendar as &$day){
             $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
                 ->whereDate('date',$day->date)
-                ->wherePublished(true)
+                ->wherePublished(!$edition)
                 ->get();
 
             $day->scales = $scales->map(function($scale){
@@ -94,7 +94,8 @@ class ScaleController extends Controller
             'calendar' => $calendar,
             'month_name' => $month_name,
             'table' => $table,
-            'link' => $link
+            'link' => $link,
+            'edition' => $edition
         ]);
     }
     public function create($import = null){

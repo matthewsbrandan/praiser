@@ -18,6 +18,10 @@
     </div>
     <div class="col-md-12">
       <div class="d-flex flex-wrap" style="gap: .6rem;" id="container-days-selected"></div>
+      <p class="text-sm mt-3">
+        Selecione aqui os dias que você deseja adicionar escalas.<br/>
+        Depois clique em prosseguir para adicionar e editar escalas existentes
+      </p>
     </div>
     <div class="col-md-12 text-center">
       <button 

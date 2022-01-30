@@ -27,12 +27,12 @@
                 <div></div>
                 <div class="d-flex align-items-center mb-1">
                   <a
-                    href="{{ route('scale.month', ['date' => $link->prev]) }}"
+                    href="{{ $edition ? route('scale.month.edition', ['date' => $link->prev]) : route('scale.month', ['date' => $link->prev]) }}"
                     class="px-2"
                   >@include('utils.icons.larr')</a>
                   <h3 class="text-gradient text-primary mb-0">Escala de {{ $month_name }}</h3>
                   <a
-                    href="{{ route('scale.month', ['date' => $link->next]) }}"
+                    href="{{ $edition ? route('scale.month.edition', ['date' => $link->next]) : route('scale.month', ['date' => $link->next]) }}"
                     class="px-2"
                   >@include('utils.icons.rarr')</a>
                 </div>
