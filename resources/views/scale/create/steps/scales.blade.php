@@ -318,17 +318,44 @@
           </div>
         </div>
         </td>
-      <td class="text-sm">${ scale.resume_table.ministro }</td>
-      <td class="text-sm">${ scale.resume_table.backvocal }</td>
-      <td class="text-sm">${ scale.resume_table.violao }</td>
-      <td class="text-sm">${ scale.resume_table.baixo }</td>
-      <td class="text-sm">${ scale.resume_table.guitarra }</td>
-      <td class="text-sm">${ scale.resume_table.teclado }</td>
-      <td class="text-sm">
+      <td
+        class="text-sm" 
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ministro"
+      >${ scale.resume_table.ministro }</td>
+      <td
+        class="text-sm" 
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Backvocal"
+      >${ scale.resume_table.backvocal }</td>
+      <td
+        class="text-sm" 
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Violão"
+      >${ scale.resume_table.violao }</td>
+      <td
+        class="text-sm" 
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Baixo"
+      >${ scale.resume_table.baixo }</td>
+      <td
+        class="text-sm" 
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Guitarra"
+      >${ scale.resume_table.guitarra }</td>
+      <td
+        class="text-sm" 
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Teclado"
+      >${ scale.resume_table.teclado }</td>
+      <td
+        class="text-sm" 
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Bateria/Cajon"
+      >
         ${ scale.resume_table.bateria != '-' ? scale.resume_table.bateria : scale.resume_table.cajon }
       </td>
-      <td class="text-sm">${ scale.resume_table.datashow }</td>
-      <td class="text-sm">${ scale.resume_table.mesario }</td>
+      <td
+        class="text-sm"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Datashow"
+      >${ scale.resume_table.datashow }</td>
+      <td
+        class="text-sm"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Mesário"
+      >${ scale.resume_table.mesario }</td>
       <td class="text-sm">
         <button
           type="button"
