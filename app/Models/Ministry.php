@@ -43,7 +43,7 @@ class Ministry extends Model
     public function hasPermissionTo($permission){
         if($this->user_id == auth()->user()->id) return true;
         if(!$user = $this->userMinistry->where('user_id', auth()->user()->id)->first()) return false;
-        return in_array($permission, $user->getPermissionFormatted());
+        return in_array($permission, $user->getPermissionFormatted(false));
     }    
     #endregion ACCESS_FUNCTIONS
 
