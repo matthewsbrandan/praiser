@@ -75,6 +75,7 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
 
     Route::name('user_ministry.')->group(function() use ($controllersPath) {
         Route::post('ministerio/usuario/editar', "$controllersPath\UserMinistryController@update")->name('update');
+        Route::get('ministerio/usuario/remover/{ministry_id}/{user_id}', "$controllersPath\UserMinistryController@remove")->name('remove');
     });
 
     Route::name('praise.')->group(function() use ($controllersPath) {

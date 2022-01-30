@@ -13,6 +13,17 @@
           {{ csrf_field() }}
           <input type="hidden" name="user_id" id="edit-integrant-user-id"/>
           <input type="hidden" name="ministry_id" value="{{$ministry->id}}"/>
+          <h6 class="mb-2">Apelido</h6>
+          <div class="input-group mb-3">
+            <input
+              class="form-control"
+              placeholder="Nome nas escalas"
+              aria-label="Nome nas escalas"
+              type="text"
+              name="nickname"
+              id="ministry-nickname"
+            />
+          </div>
           <h6 class="mb-2">Títulos</h6>
           <div id="edit-integrant-captions">
             @foreach(\App\Models\UserMinistry::getAvailableCaptions() as $caption)
@@ -32,6 +43,11 @@
                 type="submit"
                 class="btn bg-gradient-primary mt-3 mb-0"
               >Salvar Edição</button>
+              <button
+                type="button"
+                class="btn btn-link text-dark mt-3 mb-0"
+                onclick="handleConfirmRemove()"
+              >Remover</button>
             </div>
           </div>
         </form>
@@ -40,11 +56,9 @@
   </div>
 </div>
 <script>
-  function callEditIntegrant(user, abilities, captions){
-    console.log(captions);
+  function callEditIntegrant(user, abilities, captions, nickname = ''){
     $('#edit-integrant-user-id').val(user.id);
     handleRenderAbilities(abilities);
-
     // BEGIN:: HANDLE CAPTIONS
     $('#edit-integrant-caption-input').val(captions);
     $('.edit-integrant-caption-item').removeClass('bg-dark').addClass('bg-light text-dark');
@@ -54,6 +68,7 @@
     });
     // END:: HANDLE CAPTIONS
 
+    $('#ministry-nickname').val(nickname);
     $('#modalEditIntegrant').modal('show');
   }
   function handleRenderAbilities(abilities){
@@ -81,5 +96,21 @@
     );
     else captions.push(short);
     $('#edit-integrant-caption-input').val(captions.join(','));
+  }
+  function handleConfirmRemove(){
+    let user_id = $('#edit-integrant-user-id').val();
+    callModalMessage(`
+      <p>Tem certeza que quer remover este membro do ministério?</p>
+      <a
+        href="{{ substr(route('user_ministry.remove', ['ministry_id' => $ministry->id, 'user_id' => 0]),0,-1) }}${user_id}"
+        class="btn bg-gradient-primary mt-3"
+      >Sim</a>
+      <button
+        type="button"
+        class="btn btn-link text-dark mt-3"
+        data-bs-dismiss="modal"
+      >Não</button>
+    `);
+    
   }
 </script>

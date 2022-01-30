@@ -24,9 +24,9 @@
                 </div>
 
                 @if(auth()->user()->id == $ministry->user_id)
-                <div class="d-block">
+                <!-- <div class="d-block">
                   <button type="button" class="btn btn-sm btn-outline-info text-nowrap mb-0">Editar</button>
-                </div>
+                </div> -->
                 @endif
               </div>
               <div class="row mb-4">
@@ -152,7 +152,7 @@
                         class="text-secondary font-weight-bold text-xs"
                         data-toggle="tooltip"
                         data-original-title="Editar {{ $user->name }}"
-                        onclick="callEditIntegrant({{ $user->toJson() }},{{ $user->userAbilities()->with('ability')->get()->toJson() }},'{{ $userMinistry ? $userMinistry->caption : '' }}')"
+                        onclick="callEditIntegrant({{ $user->toJson() }},{{ $user->userAbilities()->with('ability')->get()->toJson() }},'{{ $userMinistry ? $userMinistry->caption : '' }}','{{ $userMinistry ? $userMinistry->nickname : '' }}')"
                       >Editar</a>
                     </td>
                   @endif
