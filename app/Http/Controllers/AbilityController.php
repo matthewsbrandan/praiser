@@ -29,4 +29,35 @@ class AbilityController extends Controller
             'Habilidades Editadas'
         );
     }
+    public function search($ability, $json = true){
+        if(!$ability = Ability::whereSlug($ability)->first()){
+            $data = [
+                'result' => false,
+                'response' => 'Habilidade não encontrada'
+            ];
+            return $json ? response()->json($data) : (object) $data;
+        }
+        $users = UserAbility::join('user_ministries', 'user_abilities.user_id', '=', 'user_ministries.user_id')
+            ->where('user_ministries.ministry_id', auth()->user()->current_ministry)
+            ->where('user_abilities.ability_id', $ability->id)
+            ->get();
+
+        $users = $users->map(function($user){
+            $user->name = $user->user->name;
+            $user->profile_formatted = $user->user->getProfile();
+            $user->email = $user->user->email;
+            $user->availability = $user->user->getAvailability();
+            $user->availability_formatted = array_map(function($availability) use ($user){
+                return $user->user->getAvailabilityFormatted($availability);
+            }, $user->availability);
+            $user->outhers_availability = $user->user->outhers_availability;
+            return $user;
+        });
+
+        $data = [
+            'result' => true,
+            'response' => $users
+        ];
+        return $json ? response()->json($data) : (object) $data;
+    }
 }

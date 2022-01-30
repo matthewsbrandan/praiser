@@ -31,7 +31,7 @@
         top: 0;
         right: 0;
         padding: 1rem;
-        z-index: 999;
+        z-index: 9999;
       " id="container-alerts"></div>
     `);
   });

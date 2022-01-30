@@ -32,7 +32,7 @@
       border-radius: .4rem;
     }
     ::-webkit-scrollbar-thumb{
-      background: #666;
+      background: #ddd;
       border-radius: .4rem;
     }
     button,[onclick]{
