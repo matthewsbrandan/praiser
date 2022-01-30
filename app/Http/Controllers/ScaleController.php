@@ -33,12 +33,14 @@ class ScaleController extends Controller
                 ->whereDate('date',$day->date)
                 ->wherePublished(true)
                 ->get();
-            $day->scales = $scales->map(function($scale){
+            $day->scales = $scales->map(function($scale) use ($day) {
                 $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
                 $scale->resume = $scale->getResume();
                 $scale->resume_table = $scale->getResumeTable($scale->resume);
                 $arrDate = explode('-',$scale->date);
                 $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+                $scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->date;
+                $scale->is_current_month = $day->is_current_month;
                 return $scale;
             });
 
@@ -75,12 +77,14 @@ class ScaleController extends Controller
                 ->wherePublished(!$edition)
                 ->get();
 
-            $day->scales = $scales->map(function($scale){
+            $day->scales = $scales->map(function($scale) use ($day) {
                 $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
                 $scale->resume = $scale->getResume();
                 $scale->resume_table = $scale->getResumeTable($scale->resume);
                 $arrDate = explode('-',$scale->date);
                 $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+                $scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->date;
+                $scale->is_current_month = $day->is_current_month;
                 return $scale;
             });
 

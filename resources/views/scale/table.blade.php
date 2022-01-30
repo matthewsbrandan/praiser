@@ -21,7 +21,16 @@
       <tr @class(['tr-highlight' => $row->weekday == 'sunday'])>
         <td> 
           <div class="d-flex align-items-center">
-            <span class="p-1 pe-2 text-lg font-weight-bold">{{ $row->day }}</span>
+            @if($row->is_current_month)
+              <span class="p-1 pe-2 text-lg font-weight-bold">{{ $row->day }}</span>
+            @else
+              <span
+                class="p-1 pe-2 font-weight-bold d-flex flex-column text-center"
+              >
+                <span class="border-bottom">{{ $row->day }}</span>
+                <span>{{ $row->month }}</span>
+              </span>
+            @endif
             <div class="text-sm">
               <strong class="d-block text-dark text-uppercase">
                 {{ $row->weekday_name }}
