@@ -16,6 +16,7 @@ class Scale extends Model
         'hour',
         'theme',
         'obs',
+        'published'
     ];
     
     protected $date = ['date'];

@@ -16,6 +16,7 @@ class HomeController extends Controller
     $next_scale = Scale::join('scale_users', 'scales.id', '=', 'scale_users.scale_id')
       ->where('ministry_id', auth()->user()->current_ministry)
       ->whereDate('scales.date','>=',Carbon::now())
+      ->where('scales.published', true)
       ->where('scale_users.user_id', auth()->user()->id)
       ->orderBy('scales.date')
       ->first();

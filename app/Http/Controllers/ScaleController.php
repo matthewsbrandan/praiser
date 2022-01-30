@@ -31,6 +31,7 @@ class ScaleController extends Controller
         foreach($calendar as &$day){
             $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
                 ->whereDate('date',$day->date)
+                ->wherePublished(true)
                 ->get();
             $day->scales = $scales->map(function($scale){
                 $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
@@ -71,6 +72,7 @@ class ScaleController extends Controller
         foreach($calendar as &$day){
             $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
                 ->whereDate('date',$day->date)
+                ->wherePublished(true)
                 ->get();
 
             $day->scales = $scales->map(function($scale){
@@ -202,7 +204,7 @@ class ScaleController extends Controller
         $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
             ->whereNotIn('id',$arrIds)
             ->orderBy('date','desc')
-            ->take(10)
+            ->take(5)
             ->get();
 
         $scales = $scales->map(function($scale){
@@ -236,6 +238,23 @@ class ScaleController extends Controller
         return response()->json([
             'result' => true,
             'response' => 'Escala excluída com sucesso'
+        ]);
+    }
+    public function togglePublish($id){
+        if(!$scale = Scale::whereId($id)
+            ->whereMinistryId(auth()->user()->current_ministry)
+            ->first()
+        ) return response()->json([
+            'result' => false,
+            'response' => 'Escala não encontrada'
+        ]);
+
+        $response = $scale->published ? 'Escala em edição' : 'Escala publicada';
+        $scale->update(['published' => !$scale->published]);
+
+        return response()->json([
+            'result'=> true,
+            'response' => $response
         ]);
     }
     protected function handleImport($file){

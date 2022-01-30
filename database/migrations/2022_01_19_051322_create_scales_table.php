@@ -20,6 +20,7 @@ class CreateScalesTable extends Migration
             $table->string('hour');
             $table->string('theme')->default('A definir');
             $table->text('obs')->nullable();
+            $table->boolean('published')->default(false);
             $table->foreignId('ministry_id')->constrained('ministries');
             $table->timestamps();
         });

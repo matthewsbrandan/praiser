@@ -159,6 +159,7 @@
         <table class="table table-hover align-items-center mb-0">
           <thead>
             <tr>
+              <th></th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Data/Tema</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Ministro</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Vozes</th>
@@ -175,7 +176,7 @@
           <tbody>
             <tr id="tr-empty">
               <td
-                colspan="10"
+                colspan="12"
                 class="text-sm text-center"
               >Nenhuma escala finalizada</td>
             </tr>
@@ -206,6 +207,7 @@
     mesario:'',
   };
   var scale_ids = [];
+
   async function createScale(){
     let obs = $('#scale-obs').val();
     let data = {
@@ -294,6 +296,13 @@
   }
   function htmlScaleFinalized(scale, withoutWrapper = false){
     let content = `
+      <td>
+        <button
+          type="button"
+          class="btn btn-sm btn-link text-dark px-1 mb-0"
+          onclick="handlePublish(${scale.id}, $(this), ${ scale.published })"
+        >${ scale.published ? icon.word : icon.lock }</button>
+      </td>
       <td onclick='handleEditScale(${JSON.stringify(scale)})'> 
         <div class="d-flex align-items-center">
           <span
@@ -324,10 +333,7 @@
           type="button"
           class="btn btn-sm btn-link text-dark px-1 mb-0"
           onclick="handleDelete(${scale.id})"
-        >@include('utils.icons.trash',['icon' => (object)[
-          'width' => '18px',
-          'height' => '18px'
-        ]])</button>
+        >${ icon.trash }</button>
       </td>
     `;
     return withoutWrapper ? content : `
@@ -405,6 +411,15 @@
       if(data.result){
         callModalMessage(data.response);
         $(`#tr-scale-id-${id}`).remove();
+      }
+      else callModalMessage(data.response);
+    })
+  }
+  function handlePublish(id, elem, is_published) {
+    $.get(`{{ substr(route('scale.toggle-publish',['id' => 0]),0,-1) }}${id}`).done(data => {
+      if(data.result){
+        callModalMessage(data.response);
+        elem.html(is_published ? icon.lock : icon.word);
       }
       else callModalMessage(data.response);
     })

@@ -94,6 +94,8 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
         Route::post('/escala/salvar', "$controllersPath\ScaleController@store")->name('store');
         Route::get('/escala/excluir/{id}',"$controllersPath\ScaleController@delete")->name('delete');
         Route::get('/escala/ultimas/{ids?}',"$controllersPath\ScaleController@lastScales")->name('last');
+        Route::get('/escala/publicar-editar/{id}',"$controllersPath\ScaleController@togglePublish")->name('toggle-publish');
+        
     });
 
     Route::name('scale_praise.')->group(function () use ($controllersPath){

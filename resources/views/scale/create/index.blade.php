@@ -70,7 +70,11 @@
     const weekdays = {!! json_encode(array_keys(\App\Models\User::getAvailableWeekdays())) !!};
     const defaultHours = {!! json_encode(\App\Models\Scale::getAvailableHoursByWeekday()) !!}
     const translateWeekdays = {!! json_encode(\App\Models\User::getAvailableWeekdays()) !!}
-    
+    const icon = {
+      trash:`@include('utils.icons.trash',['icon' => (object)['width' => '18px','height' => '18px']])`,
+      word: `@include('utils.icons.word',['icon' => (object)['width' => '18px','height' => '18px']])`,
+      lock: `@include('utils.icons.lock',['icon' => (object)['width' => '18px','height' => '18px']])`
+    };
     // BEGIN:: DAYS
     function handleAddDays(){
       let day = $('#scale-days').val();
