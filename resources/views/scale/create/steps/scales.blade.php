@@ -222,7 +222,7 @@
         if($('#tr-empty')[0])$('#tr-empty').remove();
         console.log('>>>', data);
         if(scaleInEdition) handleScaleEdited(data.response);
-        else $('#scales-created tbody').preppend(htmlScaleFinalized(data.response));
+        else $('#scales-created tbody').prepend(htmlScaleFinalized(data.response));
         handleNextScale();
       }else callModalMessage(data.response);
     });
