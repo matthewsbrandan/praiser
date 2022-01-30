@@ -169,6 +169,7 @@
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Bateria/Cajon</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Datashow</th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Mesário</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -318,6 +319,16 @@
       </td>
       <td class="text-sm">${ scale.resume_table.datashow }</td>
       <td class="text-sm">${ scale.resume_table.mesario }</td>
+      <td class="text-sm">
+        <button
+          type="button"
+          class="btn btn-sm btn-link text-dark px-1 mb-0"
+          onclick="handleDelete(${scale.id})"
+        >@include('utils.icons.trash',['icon' => (object)[
+          'width' => '18px',
+          'height' => '18px'
+        ]])</button>
+      </td>
     `;
     return withoutWrapper ? content : `
       <tr class="${scale.weekday == 'sunday' ? 'tr-highlight':'' }" id="tr-scale-id-${scale.id}">
@@ -375,5 +386,27 @@
     $('#scale-theme').val(scale.theme).focus();
     $('#scale-date').val(scale.date);
     $('#scale-hour').val(scale.hour);
+  }
+  function handleDelete(id){
+    callModalMessage(`
+      <p>Tem certeza que deseja excluir essa escala?</p>
+      <button
+        type="button" class="btn bg-gradient-primary mt-3 mb-0"
+        onclick="deleteScale(${id})"
+      >Sim</button>
+      <button
+        type="button" class="btn btn-link text-dark mt-3 mb-0"
+        data-bs-dismiss="modal"
+      >Não</button>
+    `);
+  }
+  function deleteScale(id){
+    $.get(`{{ substr(route('scale.delete',['id' => 0]),0,-1) }}${id}`).done(data => {
+      if(data.result){
+        callModalMessage(data.response);
+        $(`#tr-scale-id-${id}`).remove();
+      }
+      else callModalMessage(data.response);
+    })
   }
 </script>

@@ -219,6 +219,25 @@ class ScaleController extends Controller
             'response' => $scales
         ]);
     }
+    public function delete($id){
+        if(!$scale = Scale::whereId($id)
+            ->whereMinistryId(auth()->user()->current_ministry)
+            ->first()
+        ) return response()->json([
+            'result' => false,
+            'response' => 'Escala não encontrada'
+        ]);
+
+        foreach($scale->scaleUsers as $scaled){
+            $scaled->delete();
+        }
+        $scale->delete();
+
+        return response()->json([
+            'result' => true,
+            'response' => 'Escala excluída com sucesso'
+        ]);
+    }
     protected function handleImport($file){
         $sheet = new OfficeService($file->getRealPath());
         $scales = $sheet->loadScale();
