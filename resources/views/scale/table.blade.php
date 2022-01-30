@@ -1,5 +1,5 @@
 <table
-  id="container-table" style="display: none;"
+  id="container-table"
   class="table table-hover align-items-center mb-0"
 >
   <thead>
