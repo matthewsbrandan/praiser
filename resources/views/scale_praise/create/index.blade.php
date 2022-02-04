@@ -297,7 +297,7 @@
             target="_blank"
             href="${scale.playlist}"
             class="btn btn-sm bg-gradient-primary mt-2 mb-4"
-          >Ver Playlist</a>
+          >Ouvir Playlist</a>
         `:''}
         <br/>
         ${scale.verse ? `<strong>${scale.verse}</strong>` : ''}

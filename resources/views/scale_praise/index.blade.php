@@ -98,7 +98,7 @@
                 target="_blank"
                 href="{{ $minister->playlist }}"
                 class="btn btn-sm bg-gradient-primary mt-2 mb-4"
-              >Ver Playlist</a>
+              >Ouvir Playlist</a>
             @endif
             <br/>
             @if($minister->verse) <strong>{{ $minister->verse }}</strong> @endif
