@@ -16,7 +16,24 @@ use App\Models\MinisterScale;
 class ScalePraiseController extends Controller
 {
   public function index(){
-    return view('scale_praise.index');
+    $ministers = MinisterScale::with(['scale_praises' => function($query){
+      $query->with('praise');
+    }])->whereNotNull('scale_id')
+       ->whereMinistryId(auth()->user()->current_ministry)
+       ->orderBy('created_at','desc')->get();
+
+    $ministers = $ministers->map(function($minister){
+      if($minister->scale){
+        $date = Carbon::createFromFormat('Y-m-d', $minister->scale->date);
+        $minister->scale->date_formatted = $date->format('d/m');
+        $minister->scale->weekday_formatted = User::getAvailableWeekdays($minister->scale->weekday);
+      }
+      return $minister;
+    });
+
+    return view('scale_praise.index',[
+      'ministers' => $ministers
+    ]);
   }
   public function my(){
     $ministers = MinisterScale::with(['scale_praises' => function($query){
@@ -24,6 +41,15 @@ class ScalePraiseController extends Controller
     }])->whereUserId(auth()->user()->id)
        ->whereMinistryId(auth()->user()->current_ministry)
        ->orderBy('created_at','desc')->get();
+
+    $ministers = $ministers->map(function($minister){
+      if($minister->scale){
+        $date = Carbon::createFromFormat('Y-m-d', $minister->scale->date);
+        $minister->scale->date_formatted = $date->format('d/m');
+        $minister->scale->weekday_formatted = User::getAvailableWeekdays($minister->scale->weekday);
+      }
+      return $minister;
+    });
 
     return view('scale_praise.my',[
       'ministers' => $ministers
@@ -62,7 +88,14 @@ class ScalePraiseController extends Controller
       'ministry_id' => auth()->user()->current_ministry
     ];
     
-    if(!$scale = MinisterScale::create($data)) return response()->json([
+    if($request->scale_id) $scale = MinisterScale::updateOrCreate([
+      'scale_id' => $request->scale_id,
+      'user_id' => auth()->user()->id,
+      'ministry_id' => auth()->user()->current_ministry
+    ],$data);
+    else $scale = MinisterScale::create($data);
+
+    if(!$scale) return response()->json([
       'result' => false,
       'response' => 'Houve um erro ao criar a escala'
     ]);

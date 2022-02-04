@@ -5,7 +5,7 @@
 ?>
 @extends('layout.app')
 @section('content')
-  <div class="container mt-7">
+  <div class="container mt-7" style="min-height: calc(100vh - 4rem)">
     <div style="margin: auto; max-width: 900px">
       <div class="card my-3 bg-light">
         <div class="card-body p-3">
@@ -31,12 +31,26 @@
                     style="height: 100%; object-fit: cover;"
                   />
                 </a>
-                <h6 class="mb-0 ms-2">
-                  Escala @include('utils.icons.'.($minister->privacy == 'public' ? 'word' : 'lock'),['icon' => (object)[
-                    'width' => '18px',
-                    'height' => '18px'
-                  ]])
-                </h6>
+                @if($minister->scale)
+                  <div class="mx-2">
+                    <h6 class="mb-0">
+                      Escala {{ $minister->scale->weekday_formatted }} @include('utils.icons.'.(
+                        $minister->privacy == 'public' ? 'word' : 'lock'
+                      ),['icon' => (object)[
+                        'width' => '18px',
+                        'height' => '18px'
+                      ]])
+                    </h6>
+                    <span class="text-muted text-sm d-block" style="margin-top: -0.2rem;">{{ $minister->scale->date_formatted }}</span>
+                  </div>
+                @else
+                  <h6 class="mb-0 ms-2">
+                    Escala Particular @include('utils.icons.'.($minister->privacy == 'public' ? 'word' : 'lock'),['icon' => (object)[
+                      'width' => '18px',
+                      'height' => '18px'
+                    ]])
+                  </h6>
+                @endif
               </div>
               @if($minister->user_id == auth()->user()->id)
                 <button
@@ -100,6 +114,9 @@
           </div>
         </div>
       @endforeach
+      @if($ministers->count() === 0)
+        <p class="text-center text-muted text-sm">Nenhuma escala cadastrada</p>
+      @endif
     </div>
   </div>
 @endsection
