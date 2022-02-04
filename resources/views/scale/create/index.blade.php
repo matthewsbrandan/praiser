@@ -62,7 +62,6 @@
       </div>
     </div>
   </header>
-  @include('utils.alerts')
 @endsection
 @section('scripts')
   <script>

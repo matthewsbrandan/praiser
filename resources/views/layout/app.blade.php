@@ -51,6 +51,7 @@
 
   @if(!(isset($disable) && array_search('footer', $disable) !== false)) @include('layout.footer') @endif
   @include('utils.modals.message')
+  @include('utils.alerts')
   <!--   Core JS Files   -->
   <script src="{{ asset('assets/js/core/popper.min.js') }}" type="text/javascript"></script>
   <script src="{{ asset('assets/js/core/bootstrap.min.js') }}" type="text/javascript"></script>
@@ -108,6 +109,9 @@
     $(function(){
       @if(session()->has('message'))
         callModalMessage(`{!! session()->get('message') !!}`);
+      @endif
+      @if(session()->has('notify'))
+        notify('{{ session()->get('notify-type') ?? 'success' }}', `{!! session()->get('notify') !!}`)
       @endif
     });
   </script>

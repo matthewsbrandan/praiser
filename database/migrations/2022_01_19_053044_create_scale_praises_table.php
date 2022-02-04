@@ -16,7 +16,7 @@ class CreateScalePraisesTable extends Migration
         Schema::create('scale_praises', function (Blueprint $table) {
             $table->id();
             $table->text('youtube_link');
-            $table->text('cipher_link');
+            $table->text('cipher_link')->nullable();
             $table->string('tone')->nullable();
             $table->foreignId('praise_id')->constrained('praises');
             $table->foreignId('user_id')->constrained('users');

@@ -14,3 +14,13 @@
     </div>
   </section>
 @endsection
+@section('scripts')
+  <script>
+    function handleDeleteScale(scale_id){
+      callModalMessageConfirm(
+        `{{ substr(route('scale_praise.delete', ['id' => 0]),0,-1) }}${scale_id}`,
+        'Tem certeza que deseja excluir essa escala?'
+      );
+    }
+  </script>
+@endsection

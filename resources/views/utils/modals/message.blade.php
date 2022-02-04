@@ -20,4 +20,18 @@
 
     $('#modalMessage').modal('show');
   }
+  function callModalMessageConfirm(url, message = 'Tem certeza que deseja continuar?', header = 'Praise'){
+    callModalMessage(`
+      <p>${message}</p>
+      <a
+        href="${url}"
+        class="btn bg-gradient-primary mt-3"
+      >Sim</a>
+      <button
+        type="button"
+        class="btn btn-link text-dark mt-3"
+        data-bs-dismiss="modal"
+      >Não</button>
+    `, header);
+  }
 </script>

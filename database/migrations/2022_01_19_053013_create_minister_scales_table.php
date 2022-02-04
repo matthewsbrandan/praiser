@@ -17,8 +17,10 @@ class CreateMinisterScalesTable extends Migration
             $table->id();
             $table->text('verse')->nullable();
             $table->text('about')->nullable();
-            $table->enum('privacy_about',['public','private'])->default('private');
-            $table->foreignId('scale_id')->constrained('scales');
+            $table->enum('privacy',['public','private'])->default('private');
+            $table->string('playlist')->nullable();
+
+            $table->foreignId('scale_id')->nullable()->constrained('scales');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('ministry_id')->constrained('ministries');
             $table->timestamps();

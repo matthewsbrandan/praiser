@@ -40,7 +40,6 @@
       </div>
     </div>
   </section>
-  @include('utils.alerts')
 @endsection
 @section('scripts')
   <script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>

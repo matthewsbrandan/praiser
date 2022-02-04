@@ -19,6 +19,7 @@ class HomeController extends Controller
       ->where('scales.published', true)
       ->where('scale_users.user_id', auth()->user()->id)
       ->orderBy('scales.date')
+      ->select('scale_users.*','scale_users.id as scale_user_id','scales.*')
       ->first();
 
     if($next_scale){
@@ -26,7 +27,9 @@ class HomeController extends Controller
       $next_scale->date_formatted = $date->format('d/m');
       $next_scale->weekday_formatted = User::getAvailableWeekdays($next_scale->weekday);
       $next_scale->abilities = Ability::whereIn('slug',explode(',',$next_scale->ability))->get();
-    }    
+      $next_scale->is_minister = !!$next_scale->abilities->where('slug','ministro')->first();
+      $next_scale->minister_scales = $next_scale->ministerScales()->where('privacy','public')->get();
+    }
 
     return view('home.index',[
       'next_scale' => $next_scale

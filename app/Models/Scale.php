@@ -28,6 +28,9 @@ class Scale extends Model
     public function scaleUsers(){
         return $this->hasMany(ScaleUser::class, 'scale_id');
     }
+    public function ministerScales(){
+        return $this->hasMany(MinisterScale::class, 'scale_id');
+    }
     #endregion RELATIONSHIP
     #region LOCAL FUNCTIONS
     public function myScale(){
