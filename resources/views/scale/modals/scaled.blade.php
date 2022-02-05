@@ -53,7 +53,16 @@
     if(scale.minister_scales && scale.minister_scales.length > 0) scale.minister_scales.forEach(minister => {
       $('#scale-praises').append(handleFillPraiseScale(minister));
     })
-    else $('#scale-praises').html('<p class="text-muted text-sm my-2 bg-gradient-light w-100 p-3 rounded">A escala de louvores ainda não foi adicionada</p>');
+    else{
+      if(scale.need_make_scale) $('#scale-praises').html(`
+        <a
+          href="{{ route('scale_praise.create') }}/${scale.id}"
+          class="btn bg-gradient-primary d-block mt-3 text-center mx-auto"
+          style="width: fit-content; max-width: 100%;"
+        >Adicionar Ministração</a>      
+      `);
+      else $('#scale-praises').html(`<p class="text-muted text-sm my-2 bg-gradient-light w-100 p-3 rounded">A escala de louvores ainda não foi adicionada</p>`);
+    }
 
     $('#modalScaled .modal-body .scale-table-scaled tbody').html(scale.resume.map(item => {
       return `

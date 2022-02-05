@@ -302,10 +302,19 @@ class ScaleController extends Controller
                 $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
                 $scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->date;
                 $scale->is_current_month = $day->is_current_month;
+                $scale->is_ministry = $scale->scaleUsers()
+                    ->whereUserId(auth()->user()->id)
+                    ->where('ability','like','%ministro%')
+                    ->first();
                 $scale->ministerScales = $scale->ministerScales->map(function($minister){
                     $minister->user->profile_formatted = $minister->user->getProfile();
                     return $minister;
                 });
+                $scale->need_make_scale = $scale->is_ministry && !$scale->ministerScales
+                    ->where('user_id', auth()->user()->id)
+                    ->where('privacy', 'public')
+                    ->first();
+                    
                 return $scale;
             });
 

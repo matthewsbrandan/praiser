@@ -56,7 +56,7 @@ class Praise extends Model
     #endregion LOCAL FUNCTIONS
     #region STATIC FUNCTIONS
     public static function getAvailableTags(){
-        $tags = ['adoracao','agitado','congregacional','fogo','espiritual','oferta','agradecimento'];
+        $tags = ['adoracao','agitado','congregacional','fogo','espiritual','oferta','agradecimento','medley'];
         return $tags;
     }
     #endregion STATIC FUNCTIONS
