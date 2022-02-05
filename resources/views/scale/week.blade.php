@@ -54,13 +54,13 @@
                       grid-template-rows: auto 20rem;
                     "
                   >
-                    <div class="font-weight-bold text-center">Domingo</div>
-                    <div class="font-weight-bold text-center">Segunda</div>
-                    <div class="font-weight-bold text-center">Terça</div>
-                    <div class="font-weight-bold text-center">Quarta</div>
-                    <div class="font-weight-bold text-center">Quinta</div>
-                    <div class="font-weight-bold text-center">Sexta</div>
-                    <div class="font-weight-bold text-center">Sábado</div>
+                  <div class="font-weight-bold text-center text-uppercase text-sm">Seg</div>
+                  <div class="font-weight-bold text-center text-uppercase text-sm">Ter</div>
+                  <div class="font-weight-bold text-center text-uppercase text-sm">Qua</div>
+                  <div class="font-weight-bold text-center text-uppercase text-sm">Qui</div>
+                  <div class="font-weight-bold text-center text-uppercase text-sm">Sex</div>
+                  <div class="font-weight-bold text-center text-uppercase text-sm">Sáb</div>
+                  <div class="font-weight-bold text-center text-uppercase text-sm">Dom</div>
                     @foreach($calendar as $day)
                       <div @class([
                           "p-2 border text-center d-flex flex-column",

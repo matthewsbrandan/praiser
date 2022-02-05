@@ -18,8 +18,9 @@ class CalendarService{
     $startMonth = Carbon::createFromFormat('Y-m-d',$this->date->startOfMonth()->format('Y-m-d'));
     $firstDayOfWeek = $startMonth->dayOfWeek;
     $calendar = [];
-    if($firstDayOfWeek != 0){
+    if($firstDayOfWeek != 1){
       $temp = [];
+      $firstDayOfWeek = $firstDayOfWeek == 0 ? 6 : $firstDayOfWeek - 1;
       for($i = $firstDayOfWeek; $i > 0; $i--){
         $temp[]= $this->formatteDateToCalendar($startMonth->subDay());
       }
@@ -40,8 +41,10 @@ class CalendarService{
   public function getWeek(){
     $firstDayOfWeek = Carbon::createFromFormat('Y-m-d',$this->date->format('Y-m-d'));
     $currentWeekday = $this->date->dayOfWeek;
-    if($currentWeekday != 0){
-      $firstDayOfWeek->subDays($currentWeekday);
+    if($currentWeekday != 1){
+      $firstDayOfWeek->subDays(
+        $currentWeekday == 0 ? 6 : $currentWeekday - 1
+      );
     }
     $week_name = $firstDayOfWeek->format('d/m');
     $calendar = [$this->formatteDateToCalendar($firstDayOfWeek)];
