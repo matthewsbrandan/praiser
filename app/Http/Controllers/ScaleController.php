@@ -27,37 +27,7 @@ class ScaleController extends Controller
 
         $service = new CalendarService($date);
         [$calendar, $week_name] = $service->getWeek();
-        $table = collect([]);
-        foreach($calendar as &$day){
-            $scales = Scale::with(['ministerScales' => function($query){
-                $query->with(['user','scale_praises' => function($q){
-                    $q->with('praise');
-                }])->where('privacy','public');
-            }])->whereMinistryId(auth()->user()->current_ministry)
-              ->whereDate('date',$day->date)
-              ->wherePublished(true)
-              ->get();
-
-            $day->scales = $scales->map(function($scale) use ($day) {
-                $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
-                $scale->resume = $scale->getResume();
-                $scale->resume_table = $scale->getResumeTable($scale->resume);
-                $arrDate = explode('-',$scale->date);
-                $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
-                $scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->date;
-                $scale->is_current_month = $day->is_current_month;
-                $scale->ministerScales = $scale->ministerScales->map(function($minister){
-                    $minister->user->profile_formatted = $minister->user->getProfile();
-                    return $minister;
-                });
-                return $scale;
-            });
-
-            $table = collect([
-                ...$table,
-                ...$day->scales
-            ]);
-        }
+        [$calendar, $table] = $this->handleFillScaleInCalendar($calendar);
 
         return view('scale.week',[
             'calendar' => $calendar,
@@ -79,37 +49,8 @@ class ScaleController extends Controller
 
         $service = new CalendarService($date);
         [$calendar,$month_name] = $service->getMonth();
-        $table = collect([]);
-        foreach($calendar as &$day){
-            $scales = Scale::with(['ministerScales' => function($query){
-                $query->with(['user','scale_praises' => function($q){
-                    $q->with('praise');
-                }])->where('privacy','public');
-            }])->whereMinistryId(auth()->user()->current_ministry)
-               ->whereDate('date',$day->date)
-               ->wherePublished(!$edition)
-               ->get();
-
-            $day->scales = $scales->map(function($scale) use ($day) {
-                $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
-                $scale->resume = $scale->getResume();
-                $scale->resume_table = $scale->getResumeTable($scale->resume);
-                $arrDate = explode('-',$scale->date);
-                $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
-                $scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->date;
-                $scale->is_current_month = $day->is_current_month;
-                $scale->ministerScales = $scale->ministerScales->map(function($minister){
-                    $minister->user->profile_formatted = $minister->user->getProfile();
-                    return $minister;
-                });
-                return $scale;
-            });
-
-            $table = collect([
-                ...$table,
-                ...$day->scales
-            ]);
-        }
+        
+        [$calendar, $table] = $this->handleFillScaleInCalendar($calendar, $edition);
 
         return view('scale.month',[
             'calendar' => $calendar,
@@ -340,5 +281,42 @@ class ScaleController extends Controller
             }
         }
         return redirect()->route('scale.month')->with('message',$message);
+    }
+    protected function handleFillScaleInCalendar($calendar, $edition = false){
+        $table = collect([]);
+        foreach($calendar as &$day){
+            $scales = Scale::with(['ministerScales' => function($query){
+                $query->with(['user','scale_praises' => function($q){
+                    $q->with('praise');
+                }])->where('privacy','public');
+            }])->whereMinistryId(auth()->user()->current_ministry)
+               ->whereDate('date',$day->date)
+               ->wherePublished(!$edition)
+               ->get();
+
+            $day->scales = $scales->map(function($scale) use ($day) {
+                $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+                $scale->resume = $scale->getResume();
+                $scale->resume_table = $scale->getResumeTable($scale->resume);
+                $arrDate = explode('-',$scale->date);
+                $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+                $scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->date;
+                $scale->is_current_month = $day->is_current_month;
+                $scale->ministerScales = $scale->ministerScales->map(function($minister){
+                    $minister->user->profile_formatted = $minister->user->getProfile();
+                    return $minister;
+                });
+                return $scale;
+            });
+
+            $table = collect([
+                ...$table,
+                ...$day->scales
+            ]);
+        }
+        return [
+            $calendar,
+            $table,
+        ];
     }
 }
