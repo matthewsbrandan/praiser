@@ -1,6 +1,16 @@
 <?php
   $ministry = auth()->user()->currentMinistry;
 ?>
+<style>
+  @media (max-width: 600px){
+    #next-scale .date-theme{
+      text-align: center;
+    }
+    #next-scale .date-theme > div{
+      width: 100%;
+    }
+  }
+</style>
 <div class="row">
   <div class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto py-3 blur shadow-blur">
     <div class="row">
@@ -8,10 +18,17 @@
         <div class="p-3">
           <h5 class="mt-3 text-gradient text-primary text-center">Próxima Escala</h5>
           @if($next_scale)
-            <div class="d-flex flex-column align-items-center">
-              <div class="d-flex flex-wrap">
-                <time style="font-size: 3rem; line-height: 3rem;">{{ $next_scale->date_formatted }}</time>
-                <div class="d-flex flex-column px-3">
+            <div class="d-flex flex-column align-items-center" id="next-scale">
+              <div class="d-flex flex-wrap date-theme">
+                <time style="
+                  font-size: 3rem;
+                  line-height: 3rem;
+                  margin: auto;
+                ">{{ $next_scale->date_formatted }}</time>
+                <div
+                  class="d-flex flex-column px-3"
+                  style="margin: auto;"
+                >              
                   <strong>{{ $next_scale->weekday_formatted }}</strong>
                   <span>Tema: {{ $next_scale->theme }}</span>
                 </div>

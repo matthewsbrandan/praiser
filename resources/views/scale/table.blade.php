@@ -18,7 +18,10 @@
   </thead>
   <tbody>
     @foreach($table as $row)
-      <tr @class(['tr-highlight' => $row->weekday == 'sunday'])>
+      <tr 
+        @class(['tr-highlight' => $row->weekday == 'sunday'])
+        onclick="callModalScaled({{ $row->toJson() }})"
+      >
         <td> 
           <div class="d-flex align-items-center">
             @if($row->is_current_month)

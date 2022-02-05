@@ -119,7 +119,9 @@
   <script>
     const icon = {
       table: `@include('utils.icons.table')`,
-      calendar: `@include('utils.icons.calendar')`
+      calendar: `@include('utils.icons.calendar')`,
+      word: `@include('utils.icons.word',['icon' => (object)['width' => '18px','height' => '18px']])`,
+      lock: `@include('utils.icons.lock',['icon' => (object)['width' => '18px','height' => '18px']])`
     }
     var scaleType = 'table';
     function toggleTableCalendar(elem, slow = true){
