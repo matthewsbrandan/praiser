@@ -157,6 +157,44 @@ class PraiseController extends Controller
             'response' => 'Alterado com sucesso'
         ]);
     }
+    public function withoutLink(){
+        $praises = Praise::leftJoin('praise_youtubes','praises.id','=','praise_youtubes.praise_id')
+            ->whereNull('praise_youtubes.praise_id')
+            ->select('praises.*')->get();
+
+        return view('praise.without-link', [
+            'without_links' => $praises
+        ]);
+    }
+    public function goldMinerYoutube(Request $request){
+        $praises = [
+            'id' => $request->id,
+            'search' => $this->generateSlug($request->name.' '.$request->singer, '+')
+        ];
+        $fields = collect([
+            'praises' => [$praises]
+        ]);
+        try{
+            [$response,$err] = $this->post('youtube', $fields->toJson());
+            if(!$err){
+                $praisesWithLink = json_decode($response);
+                if($praisesWithLink) foreach($praisesWithLink as $praise_link){
+                    if($praise_link->href){
+                        $data = ['link' => $praise_link->href,'praise_id' => $praise_link->id];
+                        PraiseYoutube::updateOrCreate($data,$data);
+                    }
+                }
+            }
+        }catch(Exception $e){
+            return response()->json([
+                'result' => false
+            ]);
+        }
+        return response()->json([
+            'result' => true
+        ]);
+    }
+    public function goldMinerCipher(Request $request){}
     protected function handleImport($file){
         $sheet = new OfficeService($file->getRealPath());
         $praises = $sheet->loadPraises();
@@ -187,5 +225,27 @@ class PraiseController extends Controller
             }
         }
         return redirect()->route('praise.index')->with('message',$message);
+    }
+    protected function post($url,$fields){
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'http://localhost:3333/'.$url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 100,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $fields,
+            CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        return [$response,$err];
     }
 }

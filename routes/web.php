@@ -85,6 +85,12 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
         Route::post('/louvores/favoritos/alternar', "$controllersPath\PraiseController@toggleFavorite")->name('favorite.toggle');
         Route::get('/louvores/novo/{import?}', "$controllersPath\PraiseController@create")->name('create');
         Route::post('/louvores/salvar', "$controllersPath\PraiseController@store")->name('store');
+        Route::get('/louvores/sem-link', "$controllersPath\PraiseController@withoutLink")->name('without.link');
+    });
+
+    Route::name('gold_miner.')->group(function() use ($controllersPath) {
+        Route::post('/minerar/youtube', "$controllersPath\PraiseController@goldMinerYoutube")->name('youtube');
+        Route::post('/minerar/cifras-club', "$controllersPath\PraiseController@goldMinerCipher")->name('cipher');
     });
 
     Route::name('scale.')->group(function() use ($controllersPath) {

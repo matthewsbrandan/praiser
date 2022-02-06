@@ -118,6 +118,12 @@
                           >
                             <span class="ps-3">Importar Lista</span>
                           </a>
+                          <a
+                            href="{{ route('praise.without.link') }}"
+                            class="dropdown-item border-radius-md"
+                          >
+                            <span class="ps-3">Sem Link</span>
+                          </a>
                         @endif
                       </div>
                     </div>
