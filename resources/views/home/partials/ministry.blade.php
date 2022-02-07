@@ -48,7 +48,7 @@
                   </a>
                 @endforeach
               </div>
-              @foreach($next_scale->ministerScales as $minister)
+              @foreach($next_scale->minister_scales as $minister)
                 <div class="w-100">
                   <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="d-flex align-items-center">
@@ -128,18 +128,12 @@
                   @if($minister->about) <p class="text-sm">{{ $minister->about }}</p> @endif
                 </div>
               @endforeach              
-              @if(
-                $next_scale->is_ministry &&
-                !$next_scale->ministerScales()
-                  ->whereUserId(auth()->user()->id)
-                  ->wherePrivacy('public')
-                  ->first()
-              )
+              @if($next_scale->need_make_scale)
                 <a
                   href="{{ route('scale_praise.create',['scale_id' => $next_scale->scale_id]) }}"
                   class="btn bg-gradient-primary text-center mx-auto"
                 >Adicionar Ministração</a>
-              @elseif($next_scale->ministerScales->count() == 0)
+              @elseif($next_scale->minister_scales->count() == 0)
                 <p class="text-muted text-sm mt-2 mb-0 bg-light w-100 p-3 rounded">A escala de louvores ainda não foi adicionada</p>
               @endif
             </div>

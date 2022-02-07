@@ -306,7 +306,7 @@ class ScaleController extends Controller
                     ->whereUserId(auth()->user()->id)
                     ->where('ability','like','%ministro%')
                     ->first();
-                $scale->ministerScales = $scale->ministerScales()->where('privacy','public')->get()->map(
+                $scale->minister_scales = $scale->ministerScales()->where('privacy','public')->get()->map(
                     function($minister){
                         $minister->user->profile_formatted = $minister->user->getProfile();
                         return $minister;

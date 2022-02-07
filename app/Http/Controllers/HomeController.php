@@ -13,7 +13,11 @@ use App\Models\Ability;
 class HomeController extends Controller
 {
   public function index(){
-    $next_scale = Scale::join('scale_users', 'scales.id', '=', 'scale_users.scale_id')
+    $next_scale = Scale::with(['ministerScales' => function($query){
+      $query->with(['user','scale_praises' => function($q){
+          $q->with('praise');
+      }])->where('privacy','public');
+    }])->join('scale_users', 'scales.id', '=', 'scale_users.scale_id')
       ->where('ministry_id', auth()->user()->current_ministry)
       ->whereDate('scales.date','>=',Carbon::now())
       ->where('scales.published', true)
@@ -37,7 +41,7 @@ class HomeController extends Controller
         ->whereUserId(auth()->user()->id)
         ->where('ability','like','%ministro%')
         ->first();
-      $next_scale->ministerScales = $next_scale->ministerScales()->where('privacy','public')->get()->map(
+      $next_scale->minister_scales = $next_scale->ministerScales()->where('privacy','public')->get()->map(
         function($minister){
           $minister->user->profile_formatted = $minister->user->getProfile();
           return $minister;

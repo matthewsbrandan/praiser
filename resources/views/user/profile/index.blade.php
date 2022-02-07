@@ -24,11 +24,17 @@
                   <span>{{$user->email}}</span> | <a target="_blank" href="https://wa.me/{{$user->whatsapp}}">{{$user->whatsapp}}</a>
                 </div>
                 @if(auth()->user()->id == $user->id)
-                  <div class="d-block">
+                  <div class="d-flex flex-column">
                     <a
                       class="btn btn-sm btn-outline-danger text-nowrap mb-0"
                       href="{{ route('logout') }}"
                     >Sair</a>
+                    @if(auth()->user()->devOnly())
+                      <a
+                        class="btn btn-sm btn-dark text-nowrap mb-0 mt-2"
+                        href="{{ route('user.index') }}"
+                      >DEV</a>
+                    @endif
                   </div>
                 @endif
               </div>
