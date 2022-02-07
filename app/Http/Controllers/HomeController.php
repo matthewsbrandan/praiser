@@ -41,17 +41,17 @@ class HomeController extends Controller
         ->whereUserId(auth()->user()->id)
         ->where('ability','like','%ministro%')
         ->first();
-      $next_scale->minister_scales = $next_scale->ministerScales()->where('privacy','public')->get()->map(
+      $next_scale->minister_scales = $next_scale->ministerScales->where('privacy','public')->map(
         function($minister){
           $minister->user->profile_formatted = $minister->user->getProfile();
           return $minister;
         }
-      );      
+      ); 
+
       $next_scale->need_make_scale = $next_scale->is_ministry && !$next_scale->ministerScales
         ->where('user_id', auth()->user()->id)
         ->first();
     }
-
     return view('home.index',[
       'next_scale' => $next_scale
     ]);
