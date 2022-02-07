@@ -9,8 +9,11 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="rounded bg-gradient-light p-2 scale-header"></div>
-        <div class="row mt-2">
+        <div class="pb-2 scale-header"></div>
+        <div
+          class="row mt-2"
+          style="background: #34476708;"
+        >
           <div
             class="col-6 text-center text-sm opacity-7 btn btn-link mb-0"
             onclick="tooglePraiseToIntegrants(false)"
@@ -24,13 +27,7 @@
         </div>
         <div id="scale-praises"></div>
         <div class="table-responsive mt-3 scale-table-scaled">
-          <table class="table align-items-center mb-3">
-            <thead>
-              <tr>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Função</th>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Escalados</th>
-              </tr>
-            </thead>
+          <table class="table table-hover align-items-center mb-3">
             <tbody class="text-sm"></tbody>
           </table>
         </div>
@@ -61,13 +58,20 @@
           style="width: fit-content; max-width: 100%;"
         >Adicionar Ministração</a>      
       `);
-      else $('#scale-praises').html(`<p class="text-muted text-sm my-2 bg-gradient-light w-100 p-3 rounded">A escala de louvores ainda não foi adicionada</p>`);
+      else $('#scale-praises').html(`
+        <p class="text-muted text-sm my-2 w-100 p-3 text-center">
+          A escala de louvores ainda não foi adicionada
+        </p>
+      `);
     }
 
     $('#modalScaled .modal-body .scale-table-scaled tbody').html(scale.resume.map(item => {
       return `
         <tr>
-          <th>${handleFormatteFunction(item.ability)}</th>
+          <td
+            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+            style="width: 6rem"
+          >${handleFormatteFunction(item.ability)}</td>
           <td>${item.users.join(', ')}</td>
         </tr>
       `;
@@ -131,7 +135,7 @@
     }).join('');
 
     return `
-      <div class="d-flex align-items-center mb-1">
+      <div class="d-flex align-items-center mb-1 mt-3">
         <a
           href="{{ route('user.profile') }}/${scale.user.email}" target="_blank"
           class="avatar avatar-sm rounded-circle"

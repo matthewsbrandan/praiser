@@ -97,7 +97,12 @@
                       </div>
                       <div class="d-flex flex-column justify-content-center">
                         <a href="{{ route('user.profile', ['email' => $user->email]) }}">
-                          <h6 class="mb-0 text-xs">{{ $user->name }}</h6>
+                          <h6 class="mb-0 text-xs">
+                            {{ $user->name }}
+                            @if($userMinistry = $user->userMinistryId($ministry->id))
+                             ({{ $userMinistry->nickname }})
+                            @endif
+                          </h6>
                           <p class="text-xs text-secondary mb-0">{{ $user->email }}</p>
                         </a>
                       </div>
@@ -131,7 +136,7 @@
                     </div>
                   </td>
                   <td class="align-middle text-center text-sm">
-                    @if($userMinistry = $user->userMinistryId($ministry->id))
+                    @if($userMinistry)
                       <?php $captions = $userMinistry->getCaptionFormatted(true); ?>
                       <div class="d-flex flex-wrap" style="gap: .4rem">
                         @foreach($captions as $caption)

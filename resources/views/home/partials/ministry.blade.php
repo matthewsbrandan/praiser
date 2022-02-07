@@ -19,7 +19,7 @@
           <h5 class="mt-3 text-gradient text-primary text-center">Próxima Escala</h5>
           @if($next_scale)
             <div class="d-flex flex-column align-items-center" id="next-scale">
-              <div class="d-flex flex-wrap date-theme">
+              <div class="d-flex flex-wrap date-theme" onclick='callModalScaled({!! $next_scale->toJson() !!})'>
                 <time style="
                   font-size: 3rem;
                   line-height: 3rem;
@@ -29,7 +29,7 @@
                   class="d-flex flex-column px-3"
                   style="margin: auto;"
                 >              
-                  <strong>{{ $next_scale->weekday_formatted }}</strong>
+                  <strong>{{ $next_scale->weekday_name }}</strong>
                   <span>Tema: {{ $next_scale->theme }}</span>
                 </div>
               </div>
@@ -48,7 +48,7 @@
                   </a>
                 @endforeach
               </div>
-              @foreach($next_scale->minister_scales as $minister)
+              @foreach($next_scale->ministerScales as $minister)
                 <div class="w-100">
                   <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="d-flex align-items-center">
@@ -129,7 +129,7 @@
                 </div>
               @endforeach              
               @if(
-                $next_scale->is_minister &&
+                $next_scale->is_ministry &&
                 !$next_scale->ministerScales()
                   ->whereUserId(auth()->user()->id)
                   ->wherePrivacy('public')
@@ -139,7 +139,7 @@
                   href="{{ route('scale_praise.create',['scale_id' => $next_scale->scale_id]) }}"
                   class="btn bg-gradient-primary text-center mx-auto"
                 >Adicionar Ministração</a>
-              @elseif($next_scale->minister_scales->count() == 0)
+              @elseif($next_scale->ministerScales->count() == 0)
                 <p class="text-muted text-sm mt-2 mb-0 bg-light w-100 p-3 rounded">A escala de louvores ainda não foi adicionada</p>
               @endif
             </div>
@@ -150,4 +150,5 @@
       </div>
     </div>
   </div>
+  @include('scale.modals.scaled')
 </div>
