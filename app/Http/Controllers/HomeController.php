@@ -13,7 +13,7 @@ use App\Models\Ability;
 class HomeController extends Controller
 {
   public function index(){
-    $next_scale = Scale::with(['ministerScales' => function($query){
+    $next_scales = Scale::with(['ministerScales' => function($query){
       $query->with(['user','scale_praises' => function($q){
           $q->with('praise');
       }])->where('privacy','public');
@@ -24,9 +24,10 @@ class HomeController extends Controller
       ->where('scale_users.user_id', auth()->user()->id)
       ->orderBy('scales.date')
       ->select('scale_users.*','scale_users.id as scale_user_id','scales.*')
-      ->first();
+      ->take(10)
+      ->get();
 
-    if($next_scale){
+    $next_scales = $next_scales->map(function($next_scale){
       $date = Carbon::createFromFormat('Y-m-d', $next_scale->date);
       $next_scale->date_formatted = $date->format('d/m');
       $next_scale->weekday_name = User::getAvailableWeekdays($next_scale->weekday);
@@ -51,9 +52,12 @@ class HomeController extends Controller
       $next_scale->need_make_scale = $next_scale->is_ministry && !$next_scale->ministerScales
         ->where('user_id', auth()->user()->id)
         ->first();
-    }
+
+      return $next_scale;
+    });
+
     return view('home.index',[
-      'next_scale' => $next_scale
+      'next_scales' => $next_scales
     ]);
   }
 }
