@@ -61,7 +61,7 @@
       'content-resume',
     ];
     var praises_added = {!!
-      $minister ? $minister->praises_added->toJson() : '[]'
+      isset($minister) ? $minister->praises_added->toJson() : '[]'
     !!};
     var minister_scale_id = {{ $minister->id ?? 'null' }};
     var praiseInEdition = null;
