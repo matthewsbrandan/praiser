@@ -258,7 +258,7 @@
     }
     function handleEditPraiseAdded(praise){
       let index = findPraiseAdded(praise);
-      if(!index) return;
+      if(index === null) return;
 
       $('#minister-praise-id').val(praises_added[index].id ?? '');
       $('#minister-praise').val(praises_added[index].name ?? '').focus();
@@ -272,7 +272,7 @@
     }
     function handleRemovePraiseAdded(praise){
       let index = findPraiseAdded(praise);
-      if(!index) return;
+      if(index === null) return;
       praises_added.splice(index, 1);
       handleRenderPraisesAdded();
     }
