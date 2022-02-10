@@ -45,6 +45,17 @@ class HomeController extends Controller
       $next_scale->minister_scales = $next_scale->ministerScales->where('privacy','public')->map(
         function($minister){
           $minister->user->profile_formatted = $minister->user->getProfile();
+
+          $arrDate = explode('-',$minister->scale->date);
+          $minister->scale->day = count($arrDate) == 3 ? $arrDate[2] : $minister->scale->date;
+          $minister->scale->month = count($arrDate) == 3 ? $arrDate[1] : $minister->scale->date;
+          $minister->scale->weekday_name = User::getAvailableWeekdays($minister->scale->weekday);
+          
+          $minister->header = "*Escala ".$minister->scale->day."/".$minister->scale->month;
+          $minister->header.= " | ".$minister->scale->weekday_name;
+          $minister->header.= " - ".$minister->scale->hour."*\n";
+          $minister->header.= "_".$minister->scale->theme."_\n\n";
+
           return $minister;
         }
       ); 

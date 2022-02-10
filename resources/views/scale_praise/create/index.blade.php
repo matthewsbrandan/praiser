@@ -351,14 +351,18 @@
       });
     }
     function fillResume(scale){
+      let sharePraises = [];
       let listPraises = scale.scale_praises.map(praise => {
+        let description =
+          (praise.legend ? `${praise.legend}: ` : '') + 
+          praise.praise.name + 
+          (praise.tone ? ` - ${praise.tone}` : '')
+        ;
+        sharePraises.push(`- ${description.trim()}`);
+
         return `
           <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
-            <span>
-              ${praise.legend ? `${praise.legend}: ` : ''}
-              ${praise.praise.name} 
-              ${praise.tone ? ` - ${praise.tone}` : ''}
-            </span>
+            <span>${description}</span>
             <div>
               ${praise.youtube_link ? `
                 <a
@@ -390,6 +394,13 @@
           </li>
         `;
       }).join('');
+
+      if(scale.playlist) sharePraises.push(`\n${scale.playlist}`);
+      if(scale.verse) sharePraises.push(`\n*${scale.verse}*`);
+      if(scale.about) sharePraises.push(`${!scale.verse?'\n':''}${scale.about}`);
+
+      let shareMinistering = encodeURIComponent(scale.header + sharePraises.join('\n'));
+
       $('#content-resume .content').html(`
         <h6>Resumo da Escala ${scale.privacy === 'public' ? icon.word : icon.lock}</h6>
         <ul class="list-group list-group-flush">
@@ -403,10 +414,23 @@
             class="btn btn-sm bg-gradient-primary mt-2 mb-4"
           >Ouvir Playlist</a>
         `:''}
+        ${ handleHtmlShare(shareMinistering) }
         <br/>
         ${scale.verse ? `<strong>${scale.verse}</strong>` : ''}
         ${scale.about ? `<p class="text-sm">${scale.about}</p>` : ''}
       `);
+    }
+    function handleHtmlShare(share){
+      return `
+        <a
+          target="_blank"
+          href="https://api.whatsapp.com/send?text=${share}"
+          class="btn btn-sm bg-gradient-dark mt-2 mb-4"
+        >@include('utils.icons.share', ['icon' => (object)[
+          'width' => '18px',
+          'height' => '18px',
+        ]])</a>
+      `;
     }
 
     @isset($minister)

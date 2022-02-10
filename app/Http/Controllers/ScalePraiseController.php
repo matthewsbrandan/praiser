@@ -27,7 +27,21 @@ class ScalePraiseController extends Controller
         $date = Carbon::createFromFormat('Y-m-d', $minister->scale->date);
         $minister->scale->date_formatted = $date->format('d/m');
         $minister->scale->weekday_formatted = User::getAvailableWeekdays($minister->scale->weekday);
+      
+        $arrDate = explode('-',$minister->scale->date);
+        $minister->scale->day = count($arrDate) == 3 ? $arrDate[2] : $minister->scale->date;
+        $minister->scale->month = count($arrDate) == 3 ? $arrDate[1] : $minister->scale->date;
+        $minister->scale->weekday_name = User::getAvailableWeekdays($minister->scale->weekday);
+        
+        $minister->header = "*Escala ".$minister->scale->day."/".$minister->scale->month;
+        $minister->header.= " | ".$minister->scale->weekday_name;
+        $minister->header.= " - ".$minister->scale->hour."*\n";
+        $minister->header.= "_".$minister->scale->theme."_\n\n";
+      }else{
+        $minister->header = "*Escala Particular*\n";
+        $minister->header.= "_".$minister->user->name."_\n\n";
       }
+
       return $minister;
     });
 
@@ -47,7 +61,21 @@ class ScalePraiseController extends Controller
         $date = Carbon::createFromFormat('Y-m-d', $minister->scale->date);
         $minister->scale->date_formatted = $date->format('d/m');
         $minister->scale->weekday_formatted = User::getAvailableWeekdays($minister->scale->weekday);
+      
+        $arrDate = explode('-',$minister->scale->date);
+        $minister->scale->day = count($arrDate) == 3 ? $arrDate[2] : $minister->scale->date;
+        $minister->scale->month = count($arrDate) == 3 ? $arrDate[1] : $minister->scale->date;
+        $minister->scale->weekday_name = User::getAvailableWeekdays($minister->scale->weekday);
+        
+        $minister->header = "*Escala ".$minister->scale->day."/".$minister->scale->month;
+        $minister->header.= " | ".$minister->scale->weekday_name;
+        $minister->header.= " - ".$minister->scale->hour."*\n";
+        $minister->header.= "_".$minister->scale->theme."_\n\n";
+      }else{
+        $minister->header = "*Escala Particular*\n";
+        $minister->header.= "_".$minister->user->name."_\n\n";
       }
+
       return $minister;
     });
 
@@ -207,6 +235,21 @@ class ScalePraiseController extends Controller
     $scale = MinisterScale::with(['scale_praises' => function($query){
       $query->with('praise');
     }])->whereId($scale->id)->first();
+
+    if($scale->scale){
+      $arrDate = explode('-',$scale->scale->date);
+      $scale->scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->scale->date;
+      $scale->scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->scale->date;
+      $scale->scale->weekday_name = User::getAvailableWeekdays($scale->scale->weekday);
+      
+      $scale->header = "*Escala ".$scale->scale->day."/".$scale->scale->month;
+      $scale->header.= " | ".$scale->scale->weekday_name;
+      $scale->header.= " - ".$scale->scale->hour."*\n";
+      $scale->header.= "_".$scale->scale->theme."_\n\n";
+    }else{
+      $scale->header = "*Escala Particular*\n";
+      $scale->header.= "_".$scale->user->name."_\n\n";
+    }
 
     return response()->json([
       'result' => true,

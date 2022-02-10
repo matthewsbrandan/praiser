@@ -101,6 +101,40 @@
     class="btn btn-sm bg-gradient-primary mt-2 mb-4"
   >Ouvir Playlist</a>
 @endif
+<button
+  type="button"
+  class="btn btn-sm bg-gradient-dark mt-2 mb-4"
+  onclick='handleShareMinistring($(this).next(), {!! $minister->toJson() !!});'
+>@include('utils.icons.share', ['icon' => (object)[
+  'width' => '18px',
+  'height' => '18px',
+]])</button>
+<a target="_blank" href="javascript:;" class="d-none"></a>
 <br/>
 @if($minister->verse) <strong>{{ $minister->verse }}</strong> @endif
 @if($minister->about) <p class="text-sm">{{ $minister->about }}</p> @endif
+
+@once
+  <script>
+    function handleShareMinistring(target, scale){
+      let sharePraises = [];
+      scale.scale_praises.forEach(praise => {
+        let description =
+          (praise.legend ? `${praise.legend}: ` : '') + 
+          praise.praise.name + 
+          (praise.tone ? ` - ${praise.tone}` : '')
+        ;
+        sharePraises.push(`- ${description.trim()}`);
+      });
+
+      if(scale.playlist) sharePraises.push(`\n${scale.playlist}`);
+      if(scale.verse) sharePraises.push(`\n*${scale.verse}*`);
+      if(scale.about) sharePraises.push(`${!scale.verse?'\n':''}${scale.about}`);
+
+      let shareMinistering = encodeURIComponent(scale.header + sharePraises.join('\n'));
+
+      target.attr('href',"https://api.whatsapp.com/send?text="+shareMinistering);
+      target[0].click();
+    }
+  </script>
+@endonce
