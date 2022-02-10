@@ -30,12 +30,14 @@
           <table class="table table-hover align-items-center mb-3">
             <tbody class="text-sm"></tbody>
           </table>
+          <div class="text-center content-btn-share"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 <script>
+  const auth_id = {{ auth()->user()->id }};
   function callModalScaled(scale){
     let [_,month,day] = scale.date.split('-');
     $('#modalScaled .modal-title').html(`Escala ${day}/${month}`);
@@ -46,9 +48,11 @@
     `);
 
 
+    let header = `*Escala ${day}/${month} | ${scale.weekday_name} - ${scale.hour}*\n_${scale.theme}_\n\n`;
+    
     $('#scale-praises').html('');
     if(scale.minister_scales && scale.minister_scales.length > 0) scale.minister_scales.forEach(minister => {
-      $('#scale-praises').append(handleFillPraiseScale(minister));
+      $('#scale-praises').append(handleFillPraiseScale(minister, header));
     })
     else{
       if(scale.need_make_scale) $('#scale-praises').html(`
@@ -65,17 +69,27 @@
       `);
     }
 
+    let shareUsers = [];
     $('#modalScaled .modal-body .scale-table-scaled tbody').html(scale.resume.map(item => {
+      let ability = handleFormatteFunction(item.ability);
+      let users = item.users.join(', ');
+      if(users !== '-') shareUsers.push(`*${ability}:* ${users}`);
+
       return `
         <tr>
           <td
             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
             style="width: 6rem"
-          >${handleFormatteFunction(item.ability)}</td>
-          <td>${item.users.join(', ')}</td>
+          >${ability}</td>
+          <td>${users}</td>
         </tr>
       `;
     }).join(' '));
+
+    let shareScaled = encodeURIComponent(header + shareUsers.join('\n'));
+    $('#modalScaled .modal-body .scale-table-scaled .content-btn-share').html(
+      handleHtmlShare(shareScaled)
+    );
 
     tooglePraiseToIntegrants(false);
 
@@ -97,14 +111,19 @@
     }
     return functions[index] ?? index;
   }
-  function handleFillPraiseScale(scale){
+  function handleFillPraiseScale(scale, header){
+    let sharePraises = [];
     let listPraises = scale.scale_praises.map(praise => {
+      let description =
+        (praise.legend ? `${praise.legend}: ` : '') + 
+         praise.praise.name + 
+        (praise.tone ? ` - ${praise.tone}` : '')
+      ;
+      sharePraises.push(`- ${description.trim()}`);
       return `
         <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
           <span>
-            ${praise.legend ? `${praise.legend}: ` : ''}
-            ${praise.praise.name} 
-            ${praise.tone ? ` - ${praise.tone}` : ''}
+            ${description}
           </span>
           <div>
             ${praise.youtube_link ? `
@@ -138,6 +157,12 @@
       `;
     }).join('');
 
+    if(scale.playlist) sharePraises.push(`\n${scale.playlist}`);
+    if(scale.verse) sharePraises.push(`\n*${scale.verse}*`);
+    if(scale.about) sharePraises.push(`${!scale.verse?'\n':''}${scale.about}`);
+
+    let shareMinistering = encodeURIComponent(header + sharePraises.join('\n'));
+
     return `
       <div class="d-flex align-items-center mb-1 mt-3">
         <a
@@ -151,9 +176,14 @@
             style="height: 100%; object-fit: cover;"
           />
         </a>
-        <h6 class="mb-0 ms-2">
-          ${ scale.user.name }
-        </h6>
+        <a
+          href="${scale.user_id == auth_id ? `{{ substr(route('scale_praise.edit', ['id' => 0]),0,-1) }}${scale.id}`:'javascript:;' }"
+          class="mx-2" style="letter-spacing: inherit; flex: 1;"
+        >
+          <h6 class="mb-0 ms-2">
+            ${ scale.user.name }
+          </h6>
+        </a>
       </div>
       <ul class="list-group list-group-flush">
         ${listPraises}
@@ -163,9 +193,10 @@
         <a
           target="_blank"
           href="${scale.playlist}"
-          class="btn btn-sm bg-gradient-primary mt-2 mb-4"
+          class="btn btn-sm bg-gradient-primary mt-2 mb-2"
         >Ouvir Playlist</a>
       `:''}
+      ${ handleHtmlShare(shareMinistering) }
       <br/>
       ${scale.verse ? `<strong>${scale.verse}</strong>` : ''}
       ${scale.about ? `<p class="text-sm">${scale.about}</p>` : ''}
@@ -177,26 +208,16 @@
     $(toIntegrants ? '#scale-praises':'#modalScaled .modal-body .scale-table-scaled').hide();
     $(toIntegrants ? '#modalScaled .modal-body .scale-table-scaled':'#scale-praises').show('slow');
   }
-  function shareScaled(copy = false){
-    let body = `
-
+  function handleHtmlShare(share){
+    return `
+      <a
+        target="_blank"
+        href="https://api.whatsapp.com/send?text=${share}"
+        class="btn btn-sm bg-gradient-dark mt-2 mb-2"
+      >@include('utils.icons.share', ['icon' => (object)[
+        'width' => '18px',
+        'height' => '18px',
+      ]])</a>
     `;
-    if(copy) {
-      // COPIAR PARA AREA DE TRASNFERENCIA
-    }
-    else{
-      // COMPARTILHAR NO WHATSAPP
-    }
-  }
-  function shareMinistering(copy = false){
-    let body = `
-
-    `;
-    if(copy) {
-      // COPIAR PARA AREA DE TRASNFERENCIA
-    }
-    else{
-      // COMPARTILHAR NO WHATSAPP
-    }
   }
 </script>
