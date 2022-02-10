@@ -76,7 +76,6 @@
     const debounceEvent = (fn, wait = 1000, time) =>  (...args) =>
       clearTimeout(time, time = setTimeout(() => fn(...args), wait));
     $('#minister-praise').on('keyup',debounceEvent(searchPraise, 500));
-
     async function searchPraise(){
       let search = $('#minister-praise').val();
       if(search.length === 0){
@@ -101,6 +100,34 @@
           );
         }
       });
+    }
+    function handleReindexPraise(elem){
+      let index = findPraiseAdded({
+        name: elem.attr('data-name'),
+        singer: elem.attr('data-singer')
+      });
+      if(index === null) return;
+
+      let next_index = elem.val();
+      if(next_index > praises_added[index].index){
+        if(index + 1 < praises_added.length) praises_added[index + 1].index = next_index - 1;
+        praises_added[index].index = next_index;
+      }else
+      if(next_index < praises_added[index].index){
+        if(index - 1 >= 0) praises_added[index - 1].index = next_index + 1;
+        praises_added[index].index = next_index;
+      }else return;
+      
+      praises_added = [...praises_added.sort(function(a, b) {
+        return a.index - b.index;
+      })];
+
+      praises_added = praises_added.map((praise, i) => {
+        praise.index = i+1;
+        return praise;
+      })
+
+      handleRenderPraisesAdded();
     }
     function handleAddPraise(praise){
       return `
@@ -233,8 +260,11 @@
             max="${praises_added.length}"
             step="1"
             value="${praise.index}"
-            class="form-control me-2 py-1"
+            data-name="${praise.name}"
+            data-singer="${praise.singer}"
+            class="form-control me-2 py-1 praise-index"
             style="max-width: 3rem;"
+            onchange="handleReindexPraise($(this))"
           />
           <span 
             style="flex: 1"
@@ -380,6 +410,10 @@
     }
 
     @isset($minister)
+      praises_added = praises_added.map((praise, i) => {
+        praise.index = i+1;
+        return praise;
+      })
       handleRenderPraisesAdded();
       $('#finalize-scale').show('slow');
     @endisset
