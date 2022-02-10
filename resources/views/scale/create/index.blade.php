@@ -154,5 +154,13 @@
       return `<div class="info-horizontal ${ active ? 'bg-gradient-primary':'bg-gray-100' } border-radius-xl p-${padding}">${ body }</div>`;
     }
     // END:: UTILS
+    @isset($scales) handlePagination(2); @endisset
+    @isset($scales)
+    @foreach($scales as $scale)
+      scale_ids.push({{ $scale->id }});
+      $('#scales-created tbody').append(htmlScaleFinalized({!! $scale->toJson() !!}));
+    @endforeach
+    handleEditScale({!! $scales->last()->toJson() !!});
+  @endisset
   </script>
 @endsection

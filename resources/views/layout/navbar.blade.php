@@ -72,7 +72,7 @@
                         <a href="{{ route('scale.month') }}" class="dropdown-item border-radius-md">
                           <span class="ps-3">Escala do Mês</span>
                         </a>
-                        @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))                    
+                        @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))
                           <a href="{{ route('scale.create') }}" class="dropdown-item border-radius-md">
                             <span class="ps-3">Gerenciar Escala</span>
                           </a>

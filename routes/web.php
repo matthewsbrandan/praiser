@@ -101,6 +101,7 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
             return $controller->month($date, true);
         })->name('month.edition');
         Route::get('/escala/gerenciar/{import?}', "$controllersPath\ScaleController@create")->name('create');
+        Route::get('/escala/editar/{id}', "$controllersPath\ScaleController@edit")->name('edit');
         Route::post('/escala/salvar', "$controllersPath\ScaleController@store")->name('store');
         Route::get('/escala/excluir/{id}',"$controllersPath\ScaleController@delete")->name('delete');
         Route::get('/escala/ultimas/{ids?}',"$controllersPath\ScaleController@lastScales")->name('last');

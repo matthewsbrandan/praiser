@@ -32,6 +32,15 @@
           </table>
           <div class="text-center content-btn-share"></div>
         </div>
+        @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))
+          <a
+            href="#"
+            target="_blank"
+            class="btn btn-sm bg-gradient-info d-block mt-3 text-center mx-auto"
+            style="width: fit-content; max-width: 100%;"
+            id="to-edit-scale"
+          >Editar</a>
+        @endif
       </div>
     </div>
   </div>
@@ -93,6 +102,9 @@
 
     tooglePraiseToIntegrants(false);
 
+    @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))
+      $("#to-edit-scale").attr('href',`{{ substr(route('scale.edit', ['id' => 0]),0,-1) }}${scale.id}`);
+    @endif
     $('#modalScaled').modal('show');
   }
   function handleFormatteFunction(index){

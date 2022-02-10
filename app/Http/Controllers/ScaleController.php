@@ -63,6 +63,34 @@ class ScaleController extends Controller
     public function create($import = null){
         return view('scale.create.index',['import' => $import]);
     }
+    public function edit($id){
+        if(!$scale = Scale::whereId($id)->whereMinistryId(auth()->user()->current_ministry)->first()) return redirect()->back()->with(
+            'message',
+            'Escala não encontrada'
+        );
+        
+        $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
+            ->orderBy('date','desc')
+            ->whereNotIn('id',[$scale->id])
+            ->whereDate('date','>=',$scale->date)
+            ->get();
+
+        $scales->push($scale);
+
+        $scales = $scales->map(function($scale){
+            $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+            $scale->resume = $scale->getResume();
+            $scale->resume_table = $scale->getResumeTable($scale->resume);
+            $arrDate = explode('-',$scale->date);
+            $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+            return $scale;
+        });
+
+        return view('scale.create.index',[
+            'import' => null,
+            'scales' => $scales,
+        ]);
+    }
     public function store(Request $request){
         if($request->file('import')){
             return $this->handleImport($request->file('import'));

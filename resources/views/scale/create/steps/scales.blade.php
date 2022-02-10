@@ -391,6 +391,7 @@
     $('#dynamic-input').val('');
     $('#users-available tbody').html('');
     $('#scale-theme').val('').focus();
+    $('html').scrollTop(0);
   }
   function loadLastScales(){
     let ids = scale_ids.length > 0 ? '/' + scale_ids.join(',') : '';
@@ -406,6 +407,7 @@
     })
   }
   function handleEditScale(scale){
+    $('html').scrollTop(0);
     $('#container-days-to-scale .bg-gradient-primary').toggleClass('bg-gradient-primary bg-gray-100')
     $('#container-days-to-scale .text-light').removeClass('text-light');
     scaleInEdition = scale;
