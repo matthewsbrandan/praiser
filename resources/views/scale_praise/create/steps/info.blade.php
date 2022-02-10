@@ -8,6 +8,7 @@
         aria-label="Versículo de abertura"
         type="text"
         id="minister-verse"
+        value="{{ $minister->verse ?? '' }}"
       />
     </div>
   </div>
@@ -18,7 +19,7 @@
       class="form-control"
       rows="6"
       placeholder="Você pode descrever a mensagem da sua ministração nesta area."
-    ></textarea>
+    >{{ $minister->about ?? '' }}</textarea>
   </div>
   <div class="form-check form-switch mt-3">
     <input
@@ -26,7 +27,9 @@
       type="checkbox"
       name="privacy"
       id="checkbox-privacy"
-      checked
+      @if(!isset($minister) || $minister->privacy == 'public')
+        checked
+      @endif
     />
     <label class="form-check-label font-weight-bold" for="checkbox-privacy">
       Pública

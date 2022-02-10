@@ -66,8 +66,8 @@
               <div class="position-relative">
                 <img class="max-width-500 w-100 position-relative z-index-2" src="{{ asset('assets/img/illustrations/chat.png') }}">
               </div>
-              <h4 class="mt-5 text-white font-weight-bolder">"Atenção é a nova moeda"</h4>
-              <p class="text-white">Quanto mais fácil a escrita parece, mais esforço o escritor realmente coloca no processo.</p>
+              <h4 class="mt-5 text-white font-weight-bolder">Faça, realize!</h4>
+              <p class="text-white">Uma ideia simples colocada em prática é melhor do que uma ideia extraordinária que nunca sai do papel.</p>
             </div>
           </div>
         </div>

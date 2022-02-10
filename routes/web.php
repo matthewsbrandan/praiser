@@ -112,6 +112,7 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
         Route::get('/ministracoes', "$controllersPath\ScalePraiseController@index")->name('index');
         Route::get('/ministracoes/minhas', "$controllersPath\ScalePraiseController@my")->name('my');
         Route::get('/ministracoes/nova/{scale_id?}', "$controllersPath\ScalePraiseController@create")->name('create');
+        Route::get('/ministracoes/editar/{id}', "$controllersPath\ScalePraiseController@edit")->name('edit');
         Route::post('/ministracoes/salvar', "$controllersPath\ScalePraiseController@store")->name('store');
         Route::get('/ministracoes/excluir/{id}', "$controllersPath\ScalePraiseController@delete")->name('delete');
     });

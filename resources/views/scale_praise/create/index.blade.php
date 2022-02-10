@@ -9,7 +9,10 @@
     <!-- BEGIN:: HEADER -->
     <div class="row py-4">
       <div class="col-lg-6">
-        <h3 class="text-gradient text-primary mb-0 mt-2">Iniciar Ministração</h3>
+        <h3 class="text-gradient text-primary mb-0 mt-2">
+          @isset($minister) Editar Ministração
+          @else Iniciar Ministração @endisset
+        </h3>
         @if($scale)
           <div class="d-flex flex-wrap mx-auto mt-2 text-dark">
             <time style="font-size: 3rem; line-height: 3rem;">{{ $scale->date_formatted }}</time>
@@ -57,7 +60,11 @@
       'content-praises',
       'content-resume',
     ];
-    var praises_added = [];
+    var praises_added = {!!
+      $minister ? $minister->praises_added->toJson() : '[]'
+    !!};
+    var minister_scale_id = {{ $minister->id ?? 'null' }};
+    var praiseInEdition = null;
 
     function handlePagination(to){
       $('.page-contents').hide();
@@ -166,6 +173,7 @@
       let youtube =  $('#minister-youtube').val();
       let cipher =  $('#minister-cipher').val();
       let tone =  $('#minister-tone').val();
+      let legend =  $('#minister-legend').val();
       let index =  praises_added.length + 1;
 
       if(name.length === 0){
@@ -184,9 +192,24 @@
         return;
       }
 
-      praises_added.push({ id, name, singer, youtube, cipher, tone, index });
+      if(praiseInEdition){
+        let index = findPraiseAdded(praiseInEdition);
+        if(!index) return;
+        praises_added[index] = {
+          id,
+          name,
+          singer,
+          youtube,
+          cipher,
+          tone,
+          legend,
+          index: praiseInEdition.index
+        };
+        praiseInEdition = null;
+      }
+      else praises_added.push({ id, name, singer, youtube, cipher, tone, legend, index });
       
-      $('#minister-praise-id,#minister-praise,#minister-singer,#minister-youtube,#minister-cipher,#minister-tone').val('');
+      $('#minister-praise-id,#minister-praise,#minister-singer,#minister-youtube,#minister-cipher,#minister-tone,#minister-legend').val('');
       $('#minister-praise').focus();
 
       handleRenderPraisesAdded();
@@ -213,11 +236,56 @@
             class="form-control me-2 py-1"
             style="max-width: 3rem;"
           />
-          <span>
-            ${praise.name} - ${praise.tone}
+          <span 
+            style="flex: 1"
+            onclick='handleEditPraiseAdded(${JSON.stringify(praise)})'
+          >
+            ${
+              (praise.legend ? praise.legend + ': ' : '') + 
+              (praise.name) + 
+              (praise.tone ? ` - ${praise.tone}`:'')
+            }
           </span>
+          <button
+            type="button"
+            class="btn-close text-dark"
+            onclick='handleRemovePraiseAdded(${JSON.stringify(praise)})'
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
       `;
+    }
+    function handleEditPraiseAdded(praise){
+      let index = findPraiseAdded(praise);
+      if(!index) return;
+
+      $('#minister-praise-id').val(praises_added[index].id ?? '');
+      $('#minister-praise').val(praises_added[index].name ?? '').focus();
+      $('#minister-singer').val(praises_added[index].singer ?? '');
+      $('#minister-youtube').val(praises_added[index].youtube ?? '');
+      $('#minister-cipher').val(praises_added[index].cipher ?? '');
+      $('#minister-tone').val(praises_added[index].tone ?? '');
+      $('#minister-legend').val(praises_added[index].legend ?? '');
+
+      praiseInEdition = praises_added[index];
+    }
+    function handleRemovePraiseAdded(praise){
+      let index = findPraiseAdded(praise);
+      if(!index) return;
+      praises_added.splice(index, 1);
+      handleRenderPraisesAdded();
+    }
+    
+    function findPraiseAdded(praise){
+      let index = praises_added.findIndex(
+        added => added.name === praise.name && added.singer === praise.singer
+      );
+      if(index === -1){
+        notify('danger','Louvor não encontrados');
+        return null;
+      }
+      return index;
     }
     function focusInError(elem, timeout = 6000){
       elem.addClass('is-invalid').focus();
@@ -230,19 +298,21 @@
         return;
       }
       let data = {
+        id: minister_scale_id,
         scale_id: {{ $scale ? $scale->id : 'null' }},
         verse: $("#minister-verse").val() ?? null,
         about: $("#minister-about").val() ?? null,
-        privacy: $("#checkbox-privacy").val() ?? null,
+        privacy: $("#checkbox-privacy").prop('checked') ? 'on' : null,
         playlist: $("#minister-playlist").val() ?? null,
         praises: praises_added
       };
-
+      
       $.post(`{{ route('scale_praise.store') }}`, data).done(data => {
         if(!data.result){
           notify('danger',data.response);
           return;
         }
+        minister_scale_id = data.response.id;
         fillResume(data.response);
         // MONTAR A ESCALA NO TERCEIRO STEP
         handlePagination(3);
@@ -254,7 +324,11 @@
       let listPraises = scale.scale_praises.map(praise => {
         return `
           <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
-            <span>${praise.praise.name + (praise.tone ? ` - ${praise.tone}`:'')}</span>
+            <span>
+              ${praise.legend ? `${praise.legend}: ` : ''}
+              ${praise.praise.name} 
+              ${praise.tone ? ` - ${praise.tone}` : ''}
+            </span>
             <div>
               ${praise.youtube_link ? `
                 <a
@@ -286,7 +360,7 @@
           </li>
         `;
       }).join('');
-      $('#content-resume').html(`
+      $('#content-resume .content').html(`
         <h6>Resumo da Escala ${scale.privacy === 'public' ? icon.word : icon.lock}</h6>
         <ul class="list-group list-group-flush">
           ${listPraises}
@@ -304,5 +378,10 @@
         ${scale.about ? `<p class="text-sm">${scale.about}</p>` : ''}
       `);
     }
-  </script>  
+
+    @isset($minister)
+      handleRenderPraisesAdded();
+      $('#finalize-scale').show('slow');
+    @endisset
+  </script>
 @endsection

@@ -13,6 +13,8 @@ class ScalePraise extends Model
         'youtube_link',
         'cipher_link',
         'tone',
+        'legend',
+        'index',
         'praise_id',
         'user_id',
         'minister_scale_id',

@@ -101,7 +101,11 @@
     let listPraises = scale.scale_praises.map(praise => {
       return `
         <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
-          <span>${praise.praise.name + (praise.tone ? ` - ${praise.tone}`:'')}</span>
+          <span>
+            ${praise.legend ? `${praise.legend}: ` : ''}
+            ${praise.praise.name} 
+            ${praise.tone ? ` - ${praise.tone}` : ''}
+          </span>
           <div>
             ${praise.youtube_link ? `
               <a
@@ -172,5 +176,27 @@
     $(toIntegrants ? '#btn-to-integrants' : '#btn-to-scale-praises').removeClass('text-dark');
     $(toIntegrants ? '#scale-praises':'#modalScaled .modal-body .scale-table-scaled').hide();
     $(toIntegrants ? '#modalScaled .modal-body .scale-table-scaled':'#scale-praises').show('slow');
+  }
+  function shareScaled(copy = false){
+    let body = `
+
+    `;
+    if(copy) {
+      // COPIAR PARA AREA DE TRASNFERENCIA
+    }
+    else{
+      // COMPARTILHAR NO WHATSAPP
+    }
+  }
+  function shareMinistering(copy = false){
+    let body = `
+
+    `;
+    if(copy) {
+      // COPIAR PARA AREA DE TRASNFERENCIA
+    }
+    else{
+      // COMPARTILHAR NO WHATSAPP
+    }
   }
 </script>

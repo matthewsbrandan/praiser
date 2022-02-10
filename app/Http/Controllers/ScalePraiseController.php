@@ -77,32 +77,82 @@ class ScalePraiseController extends Controller
       'scale' => $scale
     ]);
   }
+  public function edit($id){
+    if(!$minister = MinisterScale::whereId($id)
+      ->whereUserId(auth()->user()->id)
+      ->first()
+    ) return redirect()->back()->with(
+      'message',
+      'Escala não encontrada, ou você não tem permissão para editar essa escala'
+    );
+        
+    if($scale = $minister->scale){
+      $date = Carbon::createFromFormat('Y-m-d', $scale->date);
+      $scale->date_formatted = $date->format('d/m');
+      $scale->weekday_formatted = User::getAvailableWeekdays($scale->weekday);
+    }
+
+    $minister->praises_added = $minister->scale_praises->map(function($scale_praise){
+      return (object)[
+        "id" => $scale_praise->praise_id,
+        "name" => $scale_praise->praise->name,
+        "singer" => $scale_praise->praise->singer,
+        "youtube" => $scale_praise->youtube_link,
+        "cipher" => $scale_praise->cipher_link,
+        "tone" => $scale_praise->tone,
+        "legend" => $scale_praise->legend,
+        "index" => $scale_praise->index
+      ];
+    });
+    
+    return view('scale_praise.create.index',[
+      'scale' => $scale,
+      'minister' => $minister
+    ]);
+  }
   public function store(Request $request){
     $data = [
       'scale_id' => $request->scale_id ?? null,
       'user_id' => auth()->user()->id,
       'verse' => $request->verse ?? null,
       'about' => $request->about ?? null,
-      'privacy' => $request->has('privacy') ? 'public' : 'private',
+      'privacy' => $request->privacy ? 'public' : 'private',
       'playlist' => $request->playlist ?? null,
       'ministry_id' => auth()->user()->current_ministry
     ];
     
-    if($request->scale_id) $scale = MinisterScale::updateOrCreate([
-      'scale_id' => $request->scale_id,
-      'user_id' => auth()->user()->id,
-      'ministry_id' => auth()->user()->current_ministry
-    ],$data);
-    else $scale = MinisterScale::create($data);
+    if($request->id){
+      if(!$scale = MinisterScale::whereId($request->id)
+        ->whereUserId(auth()->user()->id)
+        ->first()
+      ) return response()->json([
+        'result' => false,
+        'response' => 'Escala não encontrada, ou você não tem permissão para editá-la'
+      ]);
+
+      $scale->update($data);
+      foreach($scale->scale_praises as $scale_praise){
+        $scale_praise->delete();
+      }
+    }else{
+      if($request->scale_id) $scale = MinisterScale::updateOrCreate([
+        'scale_id' => $request->scale_id,
+        'user_id' => auth()->user()->id,
+        'ministry_id' => auth()->user()->current_ministry
+      ],$data);
+      else $scale = MinisterScale::create($data);
+    }
 
     if(!$scale) return response()->json([
       'result' => false,
       'response' => 'Houve um erro ao criar a escala'
     ]);
       
-    foreach($request->praises as $req_praise){
+    foreach($request->praises as $index => $req_praise){
       if($req_praise['id']) $praise = Praise::whereMinistryId(auth()->user()->current_ministry)
         ->whereId($req_praise['id'])
+        ->whereName($req_praise['name'])
+        ->whereSinger($req_praise['singer'])
         ->first();
 
       if(!$req_praise['id'] || !$praise){
@@ -144,6 +194,8 @@ class ScalePraiseController extends Controller
         'youtube_link' => $req_praise['youtube'],
         'cipher_link' => $req_praise['cipher'] ?? null,
         'tone' => $req_praise['tone'] ?? null,
+        'legend' => $req_praise['legend'] ?? null,
+        'index' => $req_praise['index'] ?? ($index + 1),
         'praise_id' => $praise->id ?? null,
         'user_id' => auth()->user()->id,
         'minister_scale_id' => $scale->id,

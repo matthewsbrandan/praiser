@@ -9,7 +9,6 @@
         aria-label="Nome do Louvor"
         type="text"
         id="minister-praise"
-        required
       />
     </div>
   </div>
@@ -39,7 +38,6 @@
         aria-label="Nome do Cantor/Banda"
         type="text"
         id="minister-singer"
-        required
       />
     </div>
   </div>
@@ -52,7 +50,6 @@
         aria-label="Link do youtube"
         type="text"
         id="minister-youtube"
-        required
       />
     </div>
   </div>
@@ -65,7 +62,6 @@
         aria-label="Link da cifra"
         type="text"
         id="minister-cipher"
-        required
       />
       <input
         class="form-control border ps-2"
@@ -74,9 +70,28 @@
         type="text"
         id="minister-tone"
         style="max-width: 5rem;"
-        required
       />
     </div>
+  </div>
+  <div>
+    <label>Legenda (opcional)</label>
+    <div class="input-group mb-3">
+      <input
+        class="form-control"
+        placeholder="Caso seja oferta, pós-palavra, ceia, etc..."
+        aria-label="Legenda"
+        type="text"
+        id="minister-legend"
+        list="complete-legend"
+      />
+    </div>
+    <datalist id="complete-legend">
+      <option value="Oferta">
+      <option value="Pós-palavra">
+      <option value="Ceia">
+      <option value="Abertura">
+      <option value="Encerramento">
+    </datalist>
   </div>
   <div class="text-center">
     <button
@@ -100,15 +115,18 @@
           aria-label="Link da Playlist do Youtube"
           type="text"
           id="minister-playlist"
+          value="{{ $minister->playlist ?? '' }}"
           required
         />
       </div>
     </div>
   
     <button
-      type="button"
-      class="btn bg-gradient-light mb-3 w-100"
+      type="button" class="btn bg-gradient-light mb-3 w-100"
       onclick="saveScale()"
-    >Criar Escala</button>
+    >
+      @isset($minister) Editar Escala
+      @else Criar Escala @endisset
+    </button>
   </div>
 </div>

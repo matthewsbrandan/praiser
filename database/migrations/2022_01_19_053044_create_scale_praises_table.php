@@ -18,6 +18,8 @@ class CreateScalePraisesTable extends Migration
             $table->text('youtube_link');
             $table->text('cipher_link')->nullable();
             $table->string('tone')->nullable();
+            $table->string('legend')->nullable();
+            $table->integer('index')->default(1);
             $table->foreignId('praise_id')->constrained('praises');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('minister_scale_id')->constrained('minister_scales');
