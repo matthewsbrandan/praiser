@@ -194,7 +194,7 @@
 
       if(praiseInEdition){
         let index = findPraiseAdded(praiseInEdition);
-        if(!index) return;
+        if(index === null) return;
         praises_added[index] = {
           id,
           name,
