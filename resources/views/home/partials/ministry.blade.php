@@ -66,7 +66,7 @@
               @endif
             </div>
           @else
-            <p class="text-sm">Ainda não há escalas futuras para você.</p>
+            <p class="text-sm text-center">Ainda não há escalas futuras para você.</p>
           @endif
         </div>
       </div>
