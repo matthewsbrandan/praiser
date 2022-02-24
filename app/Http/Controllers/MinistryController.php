@@ -67,6 +67,7 @@ class MinistryController extends Controller
                 'message',
                 'Você não faz parte deste ministério'
             );
+            return redirect()->back();
         }
         return redirect()->route('ministry.index', ['slug' => auth()->user()->currentMinistry->slug]);
 
