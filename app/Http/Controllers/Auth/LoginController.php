@@ -33,6 +33,8 @@ class LoginController extends Controller
             ->with('auth-error-type','password')
             ->with('auth-data', $request->all());
 
+        auth()->user()->closeTunel();
+        
         return redirect()->route('home');
     }
 
@@ -57,6 +59,7 @@ class LoginController extends Controller
     protected function handleLoginWithGoogle(Request $request){
         if($user = User::whereEmail($request->email)->first()){
             if($user->google_id == $request->google_id){
+                $user->closeTunel();
                 Auth::login($user, true);
                 return redirect()->route('home');
             }else return redirect()->back()->with(

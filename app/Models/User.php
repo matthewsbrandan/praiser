@@ -22,7 +22,8 @@ class User extends Authenticatable
         'type',
         'current_ministry',
         'availability',
-        'outhers_availability'
+        'outhers_availability',
+        'tunel'
     ];
 
     protected $hidden = [
@@ -106,6 +107,13 @@ class User extends Authenticatable
             },$captions);
         }
         else return $captions;
+    }
+    public function closeTunel(){
+        if($this->tunel){
+            $this->update(['tunel' => null]);
+            return true;
+        }
+        return false;
     }
     #endregion FORMATTE
     #endregion ACCESS_FUNCTIONS

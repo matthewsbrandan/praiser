@@ -28,6 +28,8 @@ class CreateUsersTable extends Migration
             $table->text('availability')->nullable();
             $table->text('outhers_availability')->nullable();
 
+            $table->string('tunel')->nullable()->unique();
+            
             $table->rememberToken();
             $table->timestamps();
         });

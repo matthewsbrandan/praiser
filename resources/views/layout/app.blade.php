@@ -113,7 +113,30 @@
       @if(session()->has('notify'))
         notify('{{ session()->get('notify-type') ?? 'success' }}', `{!! session()->get('notify') !!}`)
       @endif
+      @if(session()->has('open-tunel') && $open_tunel = explode(',',session()->get('open-tunel')))
+        sessionStorage.setItem('@praiser:tunel-name','{{ $open_tunel[0] }}');
+        sessionStorage.setItem('@praiser:tunel','{{ $open_tunel[1] }}');
+      @endif
+      @if(session()->has('close-tunel'))
+        sessionStorage.removeItem('@praiser:tunel-name');
+        sessionStorage.removeItem('@praiser:tunel');
+      @endif
+      handleTunelOpened();
     });
+
+    function handleTunelOpened(){
+      let tunel = sessionStorage.getItem('@praiser:tunel');
+      let name = sessionStorage.getItem('@praiser:tunel-name');
+      if(tunel && name){
+        $('body').prepend(`
+          <a
+            href="{{ substr(route('user.tunel',['tunel' => 0]),0,-1) }}${tunel}"
+            class="bg-gradient-primary text-white text-center text-xs w-100 p-1 text-decoration-underline text-lowercase"
+            style="z-index: 9999; position: fixed; top: 0; left: 0; right: 0;"
+          >voltar para ${name}</a>
+        `).addClass('pt-3');
+      }
+    }
   </script>
   <!-- END:: HANDLE MESSAGE -->
   @yield('scripts')

@@ -245,8 +245,22 @@ class UserController extends Controller
             ->back()
             ->with('message','Usuário não localizado!');
 
+        $tunel = $this->handleOpenTunel();
+        auth()->user()->update(['tunel' => $tunel]);
+        $tunel = auth()->user()->email.','.$tunel;
+
         Auth::login($user);
-        return redirect()->route('index');
+        return redirect()->route('index')->with('open-tunel', $tunel);
+    }
+    public function tunel($tunel){
+        if(!$user = User::whereTunel($tunel)->first()) return redirect()->back()->with(
+            'notify',
+            'Tunel fechado'
+        )->with('notify-type','danger')->with('close-tunel',true);
+        
+        $user->closeTunel();
+        Auth::login($user, true);
+        return redirect()->route('index')->with('close-tunel', true);
     }
     public function changePassword(Request $request){
         if(!Hash::check($request->current_password,auth()->user()->password)) return redirect()
@@ -326,6 +340,12 @@ class UserController extends Controller
         while(User::whereAccessToken($access_token)->first());
         
         return $access_token;
+    }
+    protected function handleOpenTunel(){
+        do{ $tunel = Str::random(15); }
+        while(User::whereTunel($tunel)->first());
+        
+        return $tunel;
     }
     // END:: LOCAL FUNCTIONS
 }
