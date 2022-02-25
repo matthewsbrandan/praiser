@@ -4,8 +4,53 @@
 >
   <thead>
     <tr>
-      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Data/Tema</th>
-      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Ministro</th>
+      <th
+        class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+        style="position: relative;"
+      >
+        <span
+          class="opacity-7"
+          onclick="$(this).next().toggle('slow');"
+        >Data/Tema</span>
+        <div class="card card-body p-3 border" style="
+          position: absolute;
+          display: none;
+        ">
+          <label>Filtrar</label>
+          <div class="input-group mb-3">
+            <input
+              class="form-control"
+              placeholder="Data ou tema"
+              aria-label="Data ou tema"
+              type="text"
+              id="filter-table-by-date-theme"
+              onkeyup="filterTable('date-theme',$(this).parent().parent().prev())"
+            />
+          </div>
+        </div>
+      </th>
+      <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">
+        <span
+          class="opacity-7"
+          onclick="$(this).next().toggle('slow');"
+        >Ministro</span>
+        <div class="card card-body p-3 border" style="
+          position: absolute;
+          display: none;
+        ">
+          <label>Filtrar</label>
+          <div class="input-group mb-3">
+            <input
+              class="form-control"
+              placeholder="Integrante"
+              aria-label="Integrante"
+              type="text"
+              id="filter-table-by-integrant"
+              onkeyup="filterTable('integrant',$(this).parent().parent().prev())"
+            />
+          </div>
+        </div>
+      </th>
       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Vozes</th>
       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Violão</th>
       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Baixo</th>
@@ -19,7 +64,15 @@
   <tbody>
     @foreach($table as $row)
       <tr 
-        @class(['tr-highlight' => $row->weekday == 'sunday'])
+        data-date="{{ $row->day . $row->month }}"
+        data-weekday="{{ $row->weekday_name }}"
+        data-theme="{{ $row->theme }}"
+        data-integrants="{{
+          implode(', ', array_map(function($res){
+            return implode(', ', $res['users']);
+          },$row->resume))
+        }}"
+        @class(['tr-highlight' => $row->weekday == 'sunday','row-table'])
         onclick="callModalScaled({{ $row->toJson() }})"
       >
         <td> 
@@ -57,3 +110,25 @@
     @endforeach
   </tbody>
 </table>
+<script>
+  function filterTable(type, target){
+    let search = $(type === 'date-theme' ? 
+      '#filter-table-by-date-theme' :
+      '#filter-table-by-integrant'
+    ).val();
+    
+    if(search.length > 0) target.addClass('text-dark').removeClass('opacity-7');
+    else target.addClass('opacity-7').removeClass('text-dark');
+
+    $('.row-table').each(function(){
+      if((
+        $(this).attr('data-date').includes($('#filter-table-by-date-theme').val()) ||
+        $(this).attr('data-weekday').includes($('#filter-table-by-date-theme').val()) ||
+        $(this).attr('data-theme').includes($('#filter-table-by-date-theme').val())
+      ) && (
+        $(this).attr('data-integrants').includes($('#filter-table-by-integrant').val())
+      )) $(this).show();
+      else $(this).hide();
+    });
+  }
+</script>
