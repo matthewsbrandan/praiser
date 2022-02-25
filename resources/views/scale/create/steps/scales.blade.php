@@ -269,14 +269,14 @@
       `;
     }).join(' ');
     return `
-      <tr>
+      <tr class="row-available-user" data-name="${ user.nickname }">
         <td>
           <div class="d-flex px-2 py-1">
             <div>
               <img src="${ user.profile_formatted }" class="avatar avatar-sm me-3">
             </div>
             <div class="d-flex flex-column justify-content-center">
-              <a href="{{ route('user.profile') }}/${ user.email }" target="_blank">
+              <a href="javascript:;" onclick="handleClickInUserAvailable('${ user.nickname }')">
                 <h6 class="mb-0 text-xs">${ user.nickname ?? '-' }</h6>
                 <p class="text-xs text-secondary mb-0">${ user.name}</p>
               </a>
@@ -289,11 +289,25 @@
       </tr>
     `;
   }
+  function handleClickInUserAvailable(name){
+    let dynamic = $('#dynamic-input').val().split(', ') ?? [];
+    if(dynamic.length > 0) dynamic.pop();
+    dynamic.push(name);
+    $('#dynamic-input').val(dynamic.join(', '));
+    reactDynamicInput();
+  }
+  
   function reactDynamicInput(){
     if(!currentAbilityInChange) return;
     let dynamic = $('#dynamic-input').val();
     users_scaled[currentAbilityInChange] = dynamic;
     $(`#td-react-to-${currentAbilityInChange}`).html(dynamic);
+
+    let search = dynamic.split(', ').pop();
+    $('.row-available-user').each(function(){
+      if($(this).attr('data-name').includes(search)) $(this).show();
+      else $(this).hide();
+    });
   }
   function htmlScaleFinalized(scale, withoutWrapper = false){
     let content = `
@@ -304,7 +318,7 @@
           onclick="handlePublish(${scale.id}, $(this), ${ scale.published })"
         >${ scale.published ? icon.word : icon.lock }</button>
       </td>
-      <td onclick='handleEditScale(${JSON.stringify(scale)})'> 
+      <td class="td-call-edit-scale" onclick='handleEditScale(${JSON.stringify(scale)})'> 
         <div class="d-flex align-items-center">
           <span
             class="p-1 pe-2 text-lg font-weight-bold"
@@ -319,40 +333,49 @@
         </div>
         </td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm" 
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ministro"
       >${ scale.resume_table.ministro }</td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm" 
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Backvocal"
       >${ scale.resume_table.backvocal }</td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm" 
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Violão"
       >${ scale.resume_table.violao }</td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm" 
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Baixo"
       >${ scale.resume_table.baixo }</td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm" 
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Guitarra"
       >${ scale.resume_table.guitarra }</td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm" 
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Teclado"
       >${ scale.resume_table.teclado }</td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm" 
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Bateria/Cajon"
       >
         ${ scale.resume_table.bateria != '-' ? scale.resume_table.bateria : scale.resume_table.cajon }
       </td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm"
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Datashow"
       >${ scale.resume_table.datashow }</td>
       <td
+        onclick="$(this).parent().children('.td-call-edit-scale').click();"
         class="text-sm"
         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Mesário"
       >${ scale.resume_table.mesario }</td>
