@@ -33,7 +33,10 @@
         <span
           class="opacity-7"
           onclick="$(this).next().toggle('slow');"
-        >Ministro</span>
+        >@include('utils.icons.search',['icon' => (object)[
+          'width' => '18px',
+          'height' => '18px'
+        ]])</span>
         <div class="card card-body p-3 border" style="
           position: absolute;
           display: none;
@@ -50,6 +53,7 @@
             />
           </div>
         </div>
+        <span class="opacity-7">Ministro</span>
       </th>
       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Vozes</th>
       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Violão</th>
