@@ -29,7 +29,7 @@ class AbilityController extends Controller
             'Habilidades Editadas'
         );
     }
-    public function search($ability, $json = true){
+    public function search($ability, $weekday = null, $json = true){
         if(!$ability = Ability::whereSlug($ability)->first()){
             $data = [
                 'result' => false,
@@ -42,7 +42,7 @@ class AbilityController extends Controller
             ->where('user_abilities.ability_id', $ability->id)
             ->get();
 
-        $users = $users->map(function($user){
+        $users = $users->map(function($user) use ($weekday){
             $user->name = $user->user->name;
             $user->profile_formatted = $user->user->getProfile();
             $user->email = $user->user->email;
@@ -51,12 +51,20 @@ class AbilityController extends Controller
                 return $user->user->getAvailabilityFormatted($availability);
             }, $user->availability);
             $user->outhers_availability = $user->user->outhers_availability;
+            $user->has_availability = $user->user->hasAvailability($weekday);
+
             return $user;
         });
 
+        $sortedUser = collect([]);
+        if($weekday) foreach($users->sortByDesc('has_availability')->map(function($user){ return $user; }) as $user){
+            $sortedUser->push($user);
+        }
+        else $sortedUser = $users;
+
         $data = [
             'result' => true,
-            'response' => $users
+            'response' => $sortedUser
         ];
         return $json ? response()->json($data) : (object) $data;
     }

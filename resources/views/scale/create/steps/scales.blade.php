@@ -243,6 +243,19 @@
     $('#users-available tbody').html('');
 
     let url = `{{ substr(route('ability.search', ['ability' => 0]),0,-1) }}${ ability == 'backvocal' ?'back-vocal' : ability }`;
+    if($('#scale-date').val()){
+      let date = new Date($('#scale-date').val() + ' 12:00:00');
+      let weekday = [
+        'sunday',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday'
+      ][date.getDay()];
+      if(weekday) url+= `/${weekday}`;
+    }
     $.get(url).done(data => {
       if(data.result){
         if(data.response.length > 0){

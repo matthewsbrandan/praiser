@@ -80,6 +80,17 @@ class User extends Authenticatable
     public function userMinistryId($ministry_id){
         return $this->userMinistries()->whereMinistryId($ministry_id)->first();
     }
+    public function hasAvailability($strOrArray){
+        $availabilities = $this->getAvailability();
+        if(is_array($strOrArray)){
+            foreach($strOrArray as $item){
+                if(!in_array($item, $availabilities)) return false;
+            }
+
+            return true;
+        }
+        return in_array($strOrArray, $availabilities);
+    }
     #region FORMATTE
     public function getProfile(){
         return $this->profile ?? User::getDefaultProfile();

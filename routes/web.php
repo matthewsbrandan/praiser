@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function () use ($controllersPath) {
 
     Route::name('ability.')->group(function() use ($controllersPath) {
         Route::post('/habilidade/vincular', "$controllersPath\AbilityController@bind")->name('bind');
-        Route::get('/habilidade/procurar/{ability}', "$controllersPath\AbilityController@search")->name('search');
+        Route::get('/habilidade/procurar/{ability}/{weekday?}', "$controllersPath\AbilityController@search")->name('search');
     });
 
     Route::name('user_ministry.')->group(function() use ($controllersPath) {
