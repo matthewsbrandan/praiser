@@ -1,6 +1,7 @@
 <table
   id="container-table"
   class="table table-hover align-items-center mb-0"
+  style="min-height: 12rem;"
 >
   <thead>
     <tr>
@@ -11,7 +12,10 @@
         <span
           class="opacity-7"
           onclick="$(this).next().toggle('slow');"
-        >Data/Tema</span>
+        >@include('utils.icons.search',['icon' => (object)[
+          'width' => '18px',
+          'height' => '18px'
+        ]]) Data/Tema</span>
         <div class="card card-body p-3 border" style="
           position: absolute;
           display: none;
