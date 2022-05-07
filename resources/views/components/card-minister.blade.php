@@ -1,9 +1,9 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
   <div class="d-flex align-items-center" style="flex: 1;">
     <a
-      href="{{ route('user.profile', ['email' => $minister->user->email]) }}" target="_blank"
+      href="javascript:;"
       class="avatar avatar-sm rounded-circle"
-      data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ministro"
+      data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ $minister->user->name }}"
     >
       <img
         alt="Ministro"
@@ -62,6 +62,7 @@
           ($praise->praise->name) . 
           ($praise->tone ? ' - ' . $praise->tone:'')
         }}
+        <em class="d-block text-xs">{{ $praise->praise->singer }}</em>
       </span>
       <div>
         @if($praise->youtube_link)

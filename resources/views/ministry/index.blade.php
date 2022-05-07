@@ -16,7 +16,7 @@
                 alt="{{ $ministry->name }}"
               />
             </div>
-            <div class="col-lg-7 col-md-7 z-index-2 position-relative px-md-2 px-sm-5 mt-sm-0 mt-4">
+            <div class="col-lg-9 col-md-7 z-index-2 position-relative px-md-2 px-sm-5 mt-sm-0 mt-4">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
                   <h4 class="mb-0">{{ $ministry->name }}</h4>
@@ -27,6 +27,11 @@
                 <!-- <div class="d-block">
                   <button type="button" class="btn btn-sm btn-outline-info text-nowrap mb-0">Editar</button>
                 </div> -->
+                @endif
+                @if($ministry->hasPermissionTo('can_manage_integrant'))
+                  <div class="d-block">
+                    <button type="button" class="btn btn-sm btn-outline-info text-nowrap mb-0">Postar</button>
+                  </div>
                 @endif
               </div>
               <div class="row mb-4">
