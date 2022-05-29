@@ -136,5 +136,16 @@
       </div>
     </div>
   @endif
+  @if($ministry->id)
+    <div class="col-12 mt-5">
+      <div class="card mx-auto" style="max-width: 30rem;">
+        <div class="card-body">
+          <h4>Articles</h4>
+          <p>Artigos de suporte, teoria e técnicas musicais</p>
+          <a class="btn bg-gradient-dark d-block" href="https://alive-slouch-54f.notion.site/Articles-Praiser-1b41757df37b4cfd985bb41333adf91a" target="_blank">Acessar</a>
+        </div>
+      </div>
+    </div>
+  @endif
   @include('scale.modals.scaled')
 </div>
