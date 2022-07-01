@@ -8,11 +8,20 @@
   <div class="container mt-7">
     <!-- BEGIN:: HEADER -->
     <div class="row py-4">
-      <div class="col-lg-6">
-        <h3 class="text-gradient text-primary mb-0 mt-2">
-          @isset($minister) Editar Ministração
-          @else Iniciar Ministração @endisset
-        </h3>
+      <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+          <h3 class="text-gradient text-primary mb-0 mt-2">
+            @isset($minister) Editar Ministração
+            @else Iniciar Ministração @endisset
+          </h3>
+          <button
+            type="button"
+            class="btn btn-link text-dark mb-0 pb-1"
+            onclick="help()"
+          >
+            @include('utils.icons.help')
+          </button>
+        </div>
         @if($scale)
           <div class="d-flex flex-wrap mx-auto mt-2 text-dark">
             <time style="font-size: 3rem; line-height: 3rem;">{{ $scale->date_formatted }}</time>
@@ -360,7 +369,11 @@
           praise.praise.name + 
           (praise.tone ? ` - ${praise.tone}` : '')
         ;
-        sharePraises.push(`- ${description.trim()}`);
+        sharePraises.push(
+          `- ${description.trim()}` + (
+            praise.praise.singer ? `\n_${praise.praise.singer}_\n` : '\n'
+          )
+        );
 
         return `
           <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
@@ -400,7 +413,8 @@
         `;
       }).join('');
 
-      if(scale.playlist) sharePraises.push(`\n${scale.playlist}`);
+      let link_see_scale = `{{ substr(route('scale_praise.show', ['id' => 0]),0,-1) }}${scale.id}`;
+      sharePraises.push(link_see_scale);
       if(scale.verse) sharePraises.push(`\n*${scale.verse}*`);
       if(scale.about) sharePraises.push(`${!scale.verse?'\n':''}${scale.about}`);
 
@@ -450,5 +464,17 @@
       handleRenderPraisesAdded();
       $('#finalize-scale').show('slow');
     @endisset
+    function help(){
+      callModalMessage(`
+        <video controls style="width: 100%;">
+          <source src="{{ asset('instrucoes/criar-ministracao.mp4') }}" type="video/mp4">
+          Seu navegador não suporta a tag vídeo.
+        </video>
+        <a
+          href="{{ asset('instrucoes/criar-ministracao.mp4') }}" target="_blank"
+          class="btn btn-sm btn-link text-muted mb-0"
+        >Ver em outra tela</a>
+      `,'Instruções','modal-lg');
+    }
   </script>
 @endsection

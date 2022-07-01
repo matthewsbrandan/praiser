@@ -14,10 +14,11 @@
   </div>
 </div>
 <script>
-  function callModalMessage(body, header = 'Praise'){
+  function callModalMessage(body, header = 'Praise', modal_length = 'modal-md'){
     $('#modalMessage .modal-title').html(header);
     $('#modalMessage .modal-body').html(body);
-
+    $('#modalMessage .modal-dialog').attr('class','')
+      .addClass(`modal-dialog modal-dialog-centered ${modal_length}`);
     $('#modalMessage').modal('show');
   }
   function callModalMessageConfirm(url, message = 'Tem certeza que deseja continuar?', header = 'Praise'){
