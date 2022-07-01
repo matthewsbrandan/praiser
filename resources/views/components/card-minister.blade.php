@@ -129,7 +129,11 @@
           praise.praise.name + 
           (praise.tone ? ` - ${praise.tone}` : '')
         ;
-        sharePraises.push(`- ${description.trim()}`);
+        sharePraises.push(
+          `- ${description.trim()}` + (
+            praise.praise.singer ? `\n_${praise.praise.singer}_\n` : '\n'
+          )
+        );
       });
 
       let link_see_scale = `{{ substr(route('scale_praise.show', ['id' => 0]),0,-1) }}${scale.id}`;
