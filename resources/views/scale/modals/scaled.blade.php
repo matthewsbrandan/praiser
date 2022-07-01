@@ -131,7 +131,12 @@
          praise.praise.name + 
         (praise.tone ? ` - ${praise.tone}` : '')
       ;
-      sharePraises.push(`- ${description.trim()}`);
+      sharePraises.push(
+        `- ${description.trim()}` + (
+          praise.praise.singer ? `\n_${praise.praise.singer}_\n` : '\n'
+        )
+      );
+
       return `
         <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
           <span>
@@ -170,7 +175,8 @@
       `;
     }).join('');
 
-    if(scale.playlist) sharePraises.push(`\n${scale.playlist}`);
+    let link_see_scale = `{{ substr(route('scale_praise.show', ['id' => 0]),0,-1) }}${scale.id}`;
+    sharePraises.push(link_see_scale);
     if(scale.verse) sharePraises.push(`\n*${scale.verse}*`);
     if(scale.about) sharePraises.push(`${!scale.verse?'\n':''}${scale.about}`);
 
@@ -201,7 +207,10 @@
       <ul class="list-group list-group-flush">
         ${listPraises}
       </ul>
-
+      <a
+        href="${link_see_scale}"
+        class="btn btn-sm bg-gradient-light mt-2 mb-2"
+      >Ver</a>
       ${scale.playlist ? `
         <a
           target="_blank"

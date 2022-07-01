@@ -138,6 +138,35 @@ class ScalePraiseController extends Controller
       'minister' => $minister
     ]);
   }
+  public function show($id){
+    if(!$minister = MinisterScale::whereId($id)->first()) return redirect()->back()->with(
+      'message', 'Escala não encontrada'
+    );
+        
+    if($scale = $minister->scale){
+      $date = Carbon::createFromFormat('Y-m-d', $scale->date);
+      $scale->date_formatted = $date->format('d/m');
+      $scale->weekday_formatted = User::getAvailableWeekdays($scale->weekday);
+    }
+
+    $minister->praises_added = $minister->scale_praises->map(function($scale_praise){
+      return (object)[
+        "id" => $scale_praise->praise_id,
+        "name" => $scale_praise->praise->name,
+        "singer" => $scale_praise->praise->singer,
+        "youtube" => $scale_praise->youtube_link,
+        "cipher" => $scale_praise->cipher_link,
+        "tone" => $scale_praise->tone,
+        "legend" => $scale_praise->legend,
+        "index" => $scale_praise->index
+      ];
+    });
+    
+    return view('scale_praise.show',[
+      'scale' => $scale,
+      'minister' => $minister
+    ]);
+  }
   public function store(Request $request){
     $data = [
       'scale_id' => $request->scale_id ?? null,

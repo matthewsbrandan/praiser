@@ -56,7 +56,7 @@
 <ul class="list-group list-group-flush">
   @foreach($minister->scale_praises as $praise)
     <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
-      <span>
+      <span class="praise-description">
         {{
           ($praise->legend ? $praise->legend . ': ' : '') .
           ($praise->praise->name) . 
@@ -68,7 +68,7 @@
         @if($praise->youtube_link)
           <a
             href="{{ $praise->youtube_link }}" target="_blank"
-            class="avatar avatar-xs rounded-circle"
+            class="avatar avatar-xs rounded-circle youtube_link"
             data-bs-toggle="tooltip" data-bs-placement="bottom" title="Youtube"
           >
             <img
@@ -81,7 +81,7 @@
         @if($praise->cipher_link)
           <a
             href="{{ $praise->cipher_link }}" target="_blank"
-            class="avatar avatar-xs rounded-circle"
+            class="avatar avatar-xs rounded-circle cipher_link"
             data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cifra"
           >
             <img
@@ -95,6 +95,10 @@
     </li>
   @endforeach
 </ul>
+<a
+  href="{{ route('scale_praise.show', ['id' => $minister->id]) }}"
+  class="btn btn-sm bg-gradient-light mt-2 mb-4 see-scale"
+>Ver</a>
 @if($minister->playlist)
   <a
     target="_blank"

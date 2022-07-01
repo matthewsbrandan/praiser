@@ -412,6 +412,10 @@
           ${listPraises}
         </ul>
 
+        <a
+          href="{{ substr(route('scale_praise.show', ['id' => 0]),0,-1) }}${scale.id}"
+          class="btn btn-sm bg-gradient-light mt-2 mb-4"
+        >Ver</a>
         ${scale.playlist ? `
           <a
             target="_blank"
