@@ -162,6 +162,25 @@ class ScalePraiseController extends Controller
       ];
     });
     
+    if($minister->scale){
+      $date = Carbon::createFromFormat('Y-m-d', $minister->scale->date);
+      $minister->scale->date_formatted = $date->format('d/m');
+      $minister->scale->weekday_formatted = User::getAvailableWeekdays($minister->scale->weekday);
+    
+      $arrDate = explode('-',$minister->scale->date);
+      $minister->scale->day = count($arrDate) == 3 ? $arrDate[2] : $minister->scale->date;
+      $minister->scale->month = count($arrDate) == 3 ? $arrDate[1] : $minister->scale->date;
+      $minister->scale->weekday_name = User::getAvailableWeekdays($minister->scale->weekday);
+      
+      $minister->header = "*Escala ".$minister->scale->day."/".$minister->scale->month;
+      $minister->header.= " | ".$minister->scale->weekday_name;
+      $minister->header.= " - ".$minister->scale->hour."*\n";
+      $minister->header.= "_".$minister->scale->theme."_\n\n";
+    }else{
+      $minister->header = "*Escala Particular*\n";
+      $minister->header.= "_".$minister->user->name."_\n\n";
+    }
+
     return view('scale_praise.show',[
       'scale' => $scale,
       'minister' => $minister

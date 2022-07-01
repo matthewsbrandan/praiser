@@ -132,7 +132,8 @@
         sharePraises.push(`- ${description.trim()}`);
       });
 
-      if(scale.playlist) sharePraises.push(`\n${scale.playlist}`);
+      let link_see_scale = `{{ substr(route('scale_praise.show', ['id' => 0]),0,-1) }}${scale.id}`;
+      sharePraises.push(link_see_scale);
       if(scale.verse) sharePraises.push(`\n*${scale.verse}*`);
       if(scale.about) sharePraises.push(`${!scale.verse?'\n':''}${scale.about}`);
 
