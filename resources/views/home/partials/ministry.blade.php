@@ -137,8 +137,8 @@
     </div>
   @endif
   @if($ministry->id)
-    <div class="col-12 mt-5">
-      <div class="card mx-auto" style="max-width: 30rem;">
+    <div class="col-lg-9 mx-auto mt-5">
+      <div class="card">
         <div class="card-body">
           <h4>Articles</h4>
           <p>Artigos de suporte, teoria e técnicas musicais</p>

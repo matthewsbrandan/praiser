@@ -136,6 +136,7 @@
         <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
           <span>
             ${description}
+            <em class="d-block text-xs">${ praise.praise.singer }</em>
           </span>
           <div>
             ${praise.youtube_link ? `

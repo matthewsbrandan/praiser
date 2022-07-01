@@ -31,17 +31,14 @@
       <div class="col-12">
         @include('utils.pagination',['pagination' => [
           (object)[
-            'id' => 'to-content-info', 'onclick' => 'handlePagination(1)'
+            'id' => 'to-content-praises', 'onclick' => 'handlePagination(1)'
           ],(object)[
-            'id' => 'to-content-praises', 'onclick' => 'handlePagination(2)'
-          ],(object)[
-            'id' => 'to-content-resume', 'onclick' => 'handlePagination(3)'
+            'id' => 'to-content-resume', 'onclick' => 'handlePagination(2)'
           ],
 
         ]])
       </div>
       <div class="col-md-6 mx-auto">
-        @include('scale_praise.create.steps.info')
         @include('scale_praise.create.steps.praises')
         @include('scale_praise.create.steps.resume')
       </div>
@@ -56,7 +53,6 @@
       lock: `@include('utils.icons.lock',['icon' => (object)['width' => '18px','height' => '18px']])`
     };
     const pages = [
-      'content-info',
       'content-praises',
       'content-resume',
     ];
@@ -192,6 +188,8 @@
       $('#minister-youtube').val(praise.main_youtube?.link);
       $('#minister-cipher').val(praise.main_cipher?.link);
       $('#minister-tone').val(praise.main_cipher?.original_tone);
+
+      handleShowPraise();
     }
     function handleAddPraiseToScale(){
       let id =  $('#minister-praise-id').val();
@@ -237,6 +235,8 @@
       else praises_added.push({ id, name, singer, youtube, cipher, tone, legend, index });
       
       $('#minister-praise-id,#minister-praise,#minister-singer,#minister-youtube,#minister-cipher,#minister-tone,#minister-legend').val('');
+
+      $('#modalPraise').modal('hide');
       $('#minister-praise').focus();
 
       handleRenderPraisesAdded();
@@ -299,6 +299,8 @@
       $('#minister-legend').val(praises_added[index].legend ?? '');
 
       praiseInEdition = praises_added[index];
+
+      handleShowPraise();
     }
     function handleRemovePraiseAdded(praise){
       let index = findPraiseAdded(praise);
@@ -345,7 +347,7 @@
         minister_scale_id = data.response.id;
         fillResume(data.response);
         // MONTAR A ESCALA NO TERCEIRO STEP
-        handlePagination(3);
+        handlePagination(2);
       }).fail(data => {
         notify('danger','Houve um erro ao criar a escala');
       });
@@ -362,7 +364,10 @@
 
         return `
           <li class="list-group-item py-1 d-flex align-items-center justify-content-between">
-            <span>${description}</span>
+            <span>
+              ${description}
+              <em class="d-block text-xs">${ praise.praise.singer }</em>
+            </span>
             <div>
               ${praise.youtube_link ? `
                 <a

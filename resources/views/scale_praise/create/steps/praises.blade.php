@@ -1,4 +1,4 @@
-<div class="page-contents" id="content-praises" style="display: none;">
+<div class="page-contents" id="content-praises">
   <input type="hidden" id="minister-praise-id"/>
   <div>
     <label>Louvor</label>
@@ -29,85 +29,21 @@
       </div>
     </div>
   </div>
-  <div>
-    <label>Cantor/Banda</label>
-    <div class="input-group mb-3">
-      <input
-        class="form-control"
-        placeholder="Nome do Cantor/Banda"
-        aria-label="Nome do Cantor/Banda"
-        type="text"
-        id="minister-singer"
-      />
-    </div>
-  </div>
-  <div>
-    <label>Link do Youtube</label>
-    <div class="input-group mb-3">
-      <input
-        class="form-control"
-        placeholder="Link do youtube"
-        aria-label="Link do youtube"
-        type="text"
-        id="minister-youtube"
-      />
-    </div>
-  </div>
-  <div>
-    <label>Cifra/Tom (opcional)</label>
-    <div class="input-group mb-3">
-      <input
-        class="form-control"
-        placeholder="Link da cifra"
-        aria-label="Link da cifra"
-        type="text"
-        id="minister-cipher"
-      />
-      <input
-        class="form-control border ps-2"
-        placeholder="Tom"
-        aria-label="Tom"
-        type="text"
-        id="minister-tone"
-        style="max-width: 5rem;"
-      />
-    </div>
-  </div>
-  <div>
-    <label>Legenda (opcional)</label>
-    <div class="input-group mb-3">
-      <input
-        class="form-control"
-        placeholder="Caso seja oferta, pós-palavra, ceia, etc..."
-        aria-label="Legenda"
-        type="text"
-        id="minister-legend"
-        list="complete-legend"
-      />
-    </div>
-    <datalist id="complete-legend">
-      <option value="Oferta">
-      <option value="Pós-palavra">
-      <option value="Ceia">
-      <option value="Abertura">
-      <option value="Encerramento">
-    </datalist>
-  </div>
+
   <div class="text-center">
     <button
       type="button"
       class="btn bg-gradient-primary mb-3 w-100"
-      onclick="handleAddPraiseToScale()"
-    >Adicionar</button>
+      onclick="handleShowPraise()"
+    >Continuar</button>
   </div>
-
   <div class="d-flex flex-column" id="content-praises-added">
   </div>
 
   <div id="finalize-scale" style="display: none;">
     <hr/>
     <div>
-      <label>Playlist do Youtube</label>
+      <label>Playlist do Youtube (opcional)</label>
       <div class="input-group mb-3">
         <input
           class="form-control"
@@ -120,7 +56,9 @@
         />
       </div>
     </div>
-  
+
+    @include('scale_praise.create.partials.info')
+
     <button
       type="button" class="btn bg-gradient-light mb-3 w-100"
       onclick="saveScale()"
@@ -129,4 +67,6 @@
       @else Criar Escala @endisset
     </button>
   </div>
+
+  @include('scale_praise.create.partials.modalPraise')
 </div>
