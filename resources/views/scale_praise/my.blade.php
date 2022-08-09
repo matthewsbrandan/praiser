@@ -11,7 +11,7 @@
         <div class="card-body p-3">
           <a
             class="btn btn-link text-dark text-center d-block mx-auto mb-0"
-            href="{{ route('ministry.create') }}"
+            href="{{ route('scale_praise.create') }}"
           >Adicionar Ministração</a>
         </div>
       </div>
