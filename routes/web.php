@@ -49,6 +49,8 @@ Route::get('/logout', "$controllersPath\Auth\LoginController@logout")->name('log
 Route::get('/politicas-de-privacidade', "$controllersPath\Controller@policy")->name('policy');
 Route::get('/termos-de-servico', "$controllersPath\Controller@terms")->name('terms');
 
+Route::post('/deploy', "$controllerPath\DeployController@deploy");
+  
 Route::middleware(['auth'])->group(function () use ($controllersPath) {
     Route::get('/home',"$controllersPath\HomeController@index")->name('home');
 
