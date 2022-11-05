@@ -4,12 +4,12 @@
         <div class="row">
           <div class="col-lg-7 text-center mx-auto">
             <h1 class="text-white pt-3 mt-n5">
-              @if(isset($header) && $header->title)
+              @if(isset($header) && isset($header->title))
                 {!! $header->title !!}
               @else Praiser @endif
             </h1>
             <p class="lead text-white mt-3">
-              @if(isset($header) && $header->subtitle)
+              @if(isset($header) && isset($header->subtitle))
                 {!! $header->subtitle !!}
               @elseif(auth()->user() && auth()->user()->current_ministry)
                 {{ auth()->user()->currentMinistry->name }}
