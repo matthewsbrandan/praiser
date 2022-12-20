@@ -90,7 +90,7 @@ class Controller extends BaseController
   public function terms(){
     return view('terms');
   }
-  // BEGIN:: LOCAL FUNCTIONS
+  #region LOCAL FUNCTIONS
   protected function generateSlug($str, $separator = '-'){
     $str = mb_strtolower($str);
     $str = preg_replace('/(â|á|ã)/', 'a', $str);
@@ -121,7 +121,7 @@ class Controller extends BaseController
       return view('errors.status');
     return null;
   }
-  // > BEGIN:: IMAGE FUNCTIONS
+  #region IMAGE FUNCTIONS
   protected function uploadImages($files,$path){
     $errors = [];
     $names = [];
@@ -161,8 +161,8 @@ class Controller extends BaseController
       'response' => 'Imagem excluida com sucesso!'
     ];
   }
-  // > END:: IMAGE FUNCTIONS
-  // > BEGIN:: API FUNCTIONS
+  #endregion IMAGE FUNCTIONS
+  #region API FUNCTIONS
   protected function authenticated(Request $request){
     if(!$request->hasHeader('access-token')) throw new \Exception('Essa rota é autenticada.');
     if(!$authUser = \App\Models\User::whereAccessToken(
@@ -170,6 +170,24 @@ class Controller extends BaseController
     )->first()) throw new \Exception('Token de Acesso Inválido');
     return $authUser;
   }
-  // > END:: API FUNCTIONS
-  // END:: LOCAL FUNCTIONS
+  /**
+   * @description Helper para diminuir a escrita na decisão de tipo de retorno entre JSON e Array/Objeto.
+   * @params
+   *  {
+   *    "json": {
+   *      "type": "boolean",
+   *      "description": "True se desejar que o retorno seja em json"
+   *    },
+   *    "data": {
+   *      "type": "array/object",
+   *      "description": "Dados a serem tratados"
+   *    }
+   *  }
+   * @endparams
+   */
+  protected function jsonOrArray($json, $data){
+    return $json ? response()->json($data) : $data;
+  }
+  #endregion API FUNCTIONS
+  #endregion LOCAL FUNCTIONS
 }
