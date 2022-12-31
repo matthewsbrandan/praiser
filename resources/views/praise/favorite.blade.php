@@ -68,7 +68,7 @@
                               @if($cipher = $praise->mainCipher())
                                 <a
                                   href="{{ $cipher->link }}" target="_blank"
-                                  class="avatar avatar-md rounded-circle"
+                                  class="avatar avatar-sm rounded-circle"
                                   data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cifra"
                                 >
                                   <img
@@ -81,7 +81,7 @@
                               @if($youtube = $praise->mainYoutube())
                                 <a
                                   href="{{ $youtube->link }}" target="_blank"
-                                  class="avatar avatar-md rounded-circle"
+                                  class="avatar avatar-sm rounded-circle"
                                   data-bs-toggle="tooltip" data-bs-placement="bottom" title="Youtube"
                                 >
                                   <img

@@ -29,12 +29,12 @@ class FavoritePraise extends Model
     public function mainYoutube(){
         return $this->youtube_link ? 
             (object)['link' => $this->youtube_link] :
-            $this->youtubes()->orderBy('updated_at','desc')->first();
+            $this->praise->youtubes()->orderBy('updated_at','desc')->first();
     }
     public function mainCipher(){
         return $this->cipher_link ? 
             (object)['link' => $this->cipher_link] :
-            $this->ciphers()->orderBy('updated_at','desc')->first();
+            $this->praise->ciphers()->orderBy('updated_at','desc')->first();
     }
     public function hasReference(){
         return $this->youtube_link || $this->cipher_link || $this->praise->hasReference();
