@@ -242,6 +242,7 @@
           if(scaleInEdition) handleScaleEdited(data.response);
           else $('#scales-created tbody').prepend(htmlScaleFinalized(data.response));
           handleNextScale();
+          notify('success','Escala Salva');
         }else callModalMessage(data.response);
       }catch(err){
         console.error(err);
