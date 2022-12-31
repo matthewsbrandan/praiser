@@ -58,68 +58,16 @@
         ></textarea>
       </div>
     </div>
-    <div class="col-12">
-      <div class="table-responsive" id="scale-in-creation">
-        <table class="table table-hover align-items-center mb-0">
-          <thead>
-            <tr>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('ministro','Ministro')"
-              >Ministro</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('backvocal','Vozes')"
-              >Vozes</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('violao','Violão')"
-              >Violão</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('baixo','Baixo')"
-              >Baixo</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('guitarra','Guitarra')"
-              >Guitarra</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('teclado','Teclado')"
-              >Teclado</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('bateria','Bateria')"
-              >Bateria</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('cajon','Cajon')"
-              >Cajon</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('datashow','Datashow')"
-              >Datashow</th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
-                onclick="handleAddScaleUser('mesario','Mesário')"
-              >Mesário</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="text-xs">
-              <td id="td-react-to-ministro"></td>
-              <td id="td-react-to-backvocal"></td>
-              <td id="td-react-to-violao"></td>
-              <td id="td-react-to-baixo"></td>
-              <td id="td-react-to-guitarra"></td>
-              <td id="td-react-to-teclado"></td>
-              <td id="td-react-to-bateria"></td>
-              <td id="td-react-to-cajon"></td>
-              <td id="td-react-to-datashow"></td>
-              <td id="td-react-to-mesario"></td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="col-md-6">
+      <div id="legend-of-dynamic-users" class="h-100">
+        <div
+          class="d-flex align-items-center justify-content-center h-100 px-2 py-3 bg-gradient-primary border-radius-xl opacity-9 text-center"
+          style="display: flex; background: linear-gradient(310deg, #7928CA19 0%, #FF008019 100%);"
+        >
+          <p class="text-sm font-weight-bold text-dark mb-0">
+            Selecione primeiro uma função<br>para depois adicionar o integrante<br>(Ex. como ministro)
+          </p>
+        </div>
       </div>
       <div id="dynamic-input-content" style="display: none;">
         <label></label>
@@ -133,7 +81,7 @@
         </div>
       </div>
       <div id="users-available" style="display: none;">
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 16rem;">
           <table class="table align-items-center mb-0">
             <thead>
               <tr>
@@ -145,6 +93,84 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-responsive" id="scale-in-creation">
+        <table class="table table-hover align-items-center my-2">
+          <tbody>
+            <tr class="text-xs">
+                            <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('ministro','Ministro')"
+              >Ministro</th>
+              <td id="td-react-to-ministro"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('backvocal','Vozes')"
+              >Vozes</th>
+              <td id="td-react-to-backvocal"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('violao','Violão')"
+              >Violão</th>
+              <td id="td-react-to-violao"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('baixo','Baixo')"
+              >Baixo</th>
+              <td id="td-react-to-baixo"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('guitarra','Guitarra')"
+              >Guitarra</th>
+              <td id="td-react-to-guitarra"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('teclado','Teclado')"
+              >Teclado</th>
+              <td id="td-react-to-teclado"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('bateria','Bateria')"
+              >Bateria</th>
+              <td id="td-react-to-bateria"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('cajon','Cajon')"
+              >Cajon</th>
+              <td id="td-react-to-cajon"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('datashow','Datashow')"
+              >Datashow</th>
+              <td id="td-react-to-datashow"></td>
+            </tr>
+            <tr class="text-xs">
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2"
+                onclick="handleAddScaleUser('mesario','Mesário')"
+              >Mesário</th>
+              <td id="td-react-to-mesario"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <div class="col-md-12 text-center">
@@ -255,7 +281,9 @@
     }).always(() => stopLoad());
   }
   // BEGIN:: HANDLE USER
+  let cacheAvailableUsers = {};
   async function handleAddScaleUser(ability, name){
+    $('#legend-of-dynamic-users').hide();
     $('#dynamic-input-content').show('slow');
     $('#dynamic-input-content label').html(name);
     currentAbilityInChange = ability;
@@ -280,29 +308,35 @@
       ][date.getDay()];
       if(weekday) url+= `/${weekday}`;
     }
+    
+    if(cacheAvailableUsers[url]){
+      handleFillAvailableUsers(cacheAvailableUsers[url]);
+      return;
+    }
     $.get(url).done(data => {
       if(data.result){
-        if(data.response.length > 0){
-          data.response.forEach(user => {
-            $('#users-available tbody').append(htmlAvailableUsers(user));
-          });
-        }else{
-          $('#users-available tbody').html(`
-            <tr>
-              <td colspan="2" class="text-sm text-center text-muted">
-                Nenhum integrante com essa habilidade
-              </td>
-            </tr>
-          `);
-        }
+        handleFillAvailableUsers(data.response);
+        cacheAvailableUsers[url] = data.response;
       }
       else callModalMessage(data.response);
+    });
+  }
+  function handleFillAvailableUsers(response){
+    if(response.length == 0) $('#users-available tbody').html(`
+      <tr>
+        <td colspan="2" class="text-sm text-center text-muted">
+          Nenhum integrante com essa habilidade
+        </td>
+      </tr>
+    `);
+    else response.forEach(user => {
+      $('#users-available tbody').append(htmlAvailableUsers(user));
     });
   }
   function htmlAvailableUsers(user){
     let availabilities = user.availability_formatted.map(availability => {
       return `
-        <span class="badge bg-dark">${ availability }</span>
+        <span class="badge bg-dark">${ availability.substr(0, 3) }</span>
       `;
     }).join(' ');
     return `
