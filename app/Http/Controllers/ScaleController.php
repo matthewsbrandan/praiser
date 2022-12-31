@@ -15,347 +15,354 @@ use App\Services\CalendarService;
 
 class ScaleController extends Controller
 {
-    public function week($date = null){
-        if(!$date) $date = Carbon::now();
-        else $date = Carbon::createFromFormat('d-m-Y', $date);
-        $prevWeek = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->subDays(7);
-        $nextWeek = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->addDays(7);
-        $link = (object) [
-            'prev' => $prevWeek->format('d-m-Y'),
-            'next' => $nextWeek->format('d-m-Y'),
-        ];
+  public function week($date = null){
+    if(!$date) $date = Carbon::now();
+    else $date = Carbon::createFromFormat('d-m-Y', $date);
+    $prevWeek = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->subDays(7);
+    $nextWeek = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->addDays(7);
+    $link = (object) [
+      'prev' => $prevWeek->format('d-m-Y'),
+      'next' => $nextWeek->format('d-m-Y'),
+    ];
 
-        $service = new CalendarService($date);
-        [$calendar, $week_name] = $service->getWeek();
-        [$calendar, $table] = $this->handleFillScaleInCalendar($calendar);
+    $service = new CalendarService($date);
+    [$calendar, $week_name] = $service->getWeek();
+    [$calendar, $table] = $this->handleFillScaleInCalendar($calendar);
 
-        return view('scale.week',[
-            'calendar' => $calendar,
-            'week_name' => $week_name,
-            'table' => $table,
-            'link' => $link
-        ]);
+    return view('scale.week',[
+      'calendar' => $calendar,
+      'week_name' => $week_name,
+      'table' => $table,
+      'link' => $link
+    ]);
+  }
+  public function month($date = null, $edition = false){
+    if(!$date) $date = Carbon::now();
+    else $date = Carbon::createFromFormat('d-m-Y', "01-".$date);
+    $neutro = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->startOfMonth();
+    $prevMonth = Carbon::createFromFormat('Y-m-d',$neutro->format('Y-m-d'))->subMonth();
+    $nextMonth = Carbon::createFromFormat('Y-m-d',$neutro->format('Y-m-d'))->addMonth();
+    $link = (object) [
+      'prev' => $prevMonth->format('m-Y'),
+      'next' => $nextMonth->format('m-Y'),
+    ];
+
+    $service = new CalendarService($date);
+    [$calendar,$month_name] = $service->getMonth();
+    
+    [$calendar, $table] = $this->handleFillScaleInCalendar($calendar, $edition);
+
+    return view('scale.month',[
+      'calendar' => $calendar,
+      'month_name' => $month_name,
+      'table' => $table,
+      'link' => $link,
+      'edition' => $edition
+    ]);
+  }
+  public function create($import = null){
+    $calendar = (new CalendarController())->getMonth(null, false);
+    return view('scale.create.index',[
+      'import' => $import,
+      'calendar' => $calendar
+    ]);
+  }
+  public function edit($id){
+    if(!$scale = Scale::whereId($id)->whereMinistryId(auth()->user()->current_ministry)->first()) return redirect()->back()->with(
+      'message',
+      'Escala não encontrada'
+    );
+    
+    $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
+      ->orderBy('date','desc')
+      ->whereNotIn('id',[$scale->id])
+      ->whereDate('date','>=',$scale->date)
+      ->get();
+
+    $scales->push($scale);
+
+    $scales = $scales->map(function($scale){
+      $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+      $scale->resume = $scale->getResume();
+      $scale->resume_table = $scale->getResumeTable($scale->resume);
+      $arrDate = explode('-',$scale->date);
+      $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+      return $scale;
+    });
+
+    $calendar = (new CalendarController())->getMonth();
+
+    return view('scale.create.index',[
+      'import' => null,
+      'scales' => $scales,
+      'calendar' => $calendar
+    ]);
+  }
+  public function store(Request $request){
+    if($request->file('import')){
+      return $this->handleImport($request->file('import'));
     }
-    public function month($date = null, $edition = false){
-        if(!$date) $date = Carbon::now();
-        else $date = Carbon::createFromFormat('d-m-Y', "01-".$date);
-        $neutro = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->startOfMonth();
-        $prevMonth = Carbon::createFromFormat('Y-m-d',$neutro->format('Y-m-d'))->subMonth();
-        $nextMonth = Carbon::createFromFormat('Y-m-d',$neutro->format('Y-m-d'))->addMonth();
-        $link = (object) [
-            'prev' => $prevMonth->format('m-Y'),
-            'next' => $nextMonth->format('m-Y'),
-        ];
 
-        $service = new CalendarService($date);
-        [$calendar,$month_name] = $service->getMonth();
-        
-        [$calendar, $table] = $this->handleFillScaleInCalendar($calendar, $edition);
+    try{
+      $date = Carbon::createFromFormat('Y-m-d',$request->date);
+    }catch(Exception $e){
+      return response()->json([
+        'result' => false,
+        'response' => 'Data inválida'
+      ]);
+    }
+    $weekdays = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+    $index = $date->dayOfWeek;
+    $data = [
+      'ministry_id' => auth()->user()->current_ministry,
+      'date' => $date->format('Y-m-d'),
+      'weekday' => $weekdays[$index],
+      'hour' => $request->hour,
+      'theme' => $request->theme,
+      'obs' => $request->obs
+    ];
 
-        return view('scale.month',[
-            'calendar' => $calendar,
-            'month_name' => $month_name,
-            'table' => $table,
-            'link' => $link,
-            'edition' => $edition
-        ]);
+    if($request->id){
+      if(!$scale = Scale::whereId($request->id)
+        ->whereMinistryId(auth()->user()->current_ministry)
+        ->first()
+      ) return response()->json([
+        'result' => false,
+        'response' => 'Escala não encontrada'
+      ]);
+      $scale->update($data);
+
+      foreach($scale->scaleUsers as $scaled){
+        $scaled->delete();
+      }
     }
-    public function create($import = null){
-        return view('scale.create.index',['import' => $import]);
+    else if(!$scale = Scale::create($data)) return response()->json([
+      'result' => false,
+      'response' => 'Houve um erro ao criar a escala'
+    ]);
+    $scaled = [];
+    $arrScaled = [
+      'ministro' => $request->users_scaled['ministro'],
+      'backvocal' => $request->users_scaled['backvocal'],
+      'violao' => $request->users_scaled['violao'],
+      'baixo' => $request->users_scaled['baixo'],
+      'guitarra' => $request->users_scaled['guitarra'],
+      'teclado' => $request->users_scaled['teclado'],
+      'bateria' => $request->users_scaled['bateria'],
+      'cajon' => $request->users_scaled['cajon'],
+      'datashow' => $request->users_scaled['datashow'],
+      'mesario' => $request->users_scaled['mesario'],
+    ];
+    foreach($arrScaled as $ability => $nicknames){
+      if(!$nicknames || strlen($nicknames) == 0) continue;
+      $nicknames = explode(',',$nicknames);
+      foreach($nicknames as $nickname){
+        $nickname = trim($nickname);
+        $index = array_search($nickname,array_column($scaled, 'user'));
+        if($index === false) $scaled[]= ['user' => $nickname, 'abilities' => [$ability]];
+        else $scaled[$index]['abilities'][]= $ability;
+      }
     }
-    public function edit($id){
-        if(!$scale = Scale::whereId($id)->whereMinistryId(auth()->user()->current_ministry)->first()) return redirect()->back()->with(
-            'message',
-            'Escala não encontrada'
+    
+    $errors = [];
+    foreach($scaled as $user){
+      try{
+        $nickname = $user['user'];
+        $user_id = ScaleUser::findUserByNickname(
+          $nickname,
+          auth()->user()->current_ministry
         );
-        
-        $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
-            ->orderBy('date','desc')
-            ->whereNotIn('id',[$scale->id])
-            ->whereDate('date','>=',$scale->date)
-            ->get();
-
-        $scales->push($scale);
-
-        $scales = $scales->map(function($scale){
-            $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
-            $scale->resume = $scale->getResume();
-            $scale->resume_table = $scale->getResumeTable($scale->resume);
-            $arrDate = explode('-',$scale->date);
-            $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
-            return $scale;
-        });
-
-        return view('scale.create.index',[
-            'import' => null,
-            'scales' => $scales,
-        ]);
-    }
-    public function store(Request $request){
-        if($request->file('import')){
-            return $this->handleImport($request->file('import'));
-        }
-
-        try{
-            $date = Carbon::createFromFormat('Y-m-d',$request->date);
-        }catch(Exception $e){
-            return response()->json([
-                'result' => false,
-                'response' => 'Data inválida'
-            ]);
-        }
-        $weekdays = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-        $index = $date->dayOfWeek;
         $data = [
-            'ministry_id' => auth()->user()->current_ministry,
-            'date' => $date->format('Y-m-d'),
-            'weekday' => $weekdays[$index],
-            'hour' => $request->hour,
-            'theme' => $request->theme,
-            'obs' => $request->obs
+          'scale_id' => $scale->id,
+          'user_id' => $user_id,
+          'nickname' => $nickname,
+          'ability' => implode(',',$user['abilities']),
         ];
+        ScaleUser::create($data);
+      }catch(Exception $e){
+        $errors[] = "Houve um erro ao escalar ".$user['user']." no dia ".$scale['date'];
+      }
+    }
 
-        if($request->id){
-            if(!$scale = Scale::whereId($request->id)
-                ->whereMinistryId(auth()->user()->current_ministry)
-                ->first()
-            ) return response()->json([
-                'result' => false,
-                'response' => 'Escala não encontrada'
-            ]);
-            $scale->update($data);
+    $scale = Scale::whereId($scale->id)->first();
+    $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+    $scale->resume = $scale->getResume();
+    $scale->resume_table = $scale->getResumeTable($scale->resume);
+    $arrDate = explode('-',$scale->date);
+    $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
 
-            foreach($scale->scaleUsers as $scaled){
-                $scaled->delete();
-            }
-        }
-        else if(!$scale = Scale::create($data)) return response()->json([
-            'result' => false,
-            'response' => 'Houve um erro ao criar a escala'
-        ]);
-        $scaled = [];
-        $arrScaled = [
-            'ministro' => $request->users_scaled['ministro'],
-            'backvocal' => $request->users_scaled['backvocal'],
-            'violao' => $request->users_scaled['violao'],
-            'baixo' => $request->users_scaled['baixo'],
-            'guitarra' => $request->users_scaled['guitarra'],
-            'teclado' => $request->users_scaled['teclado'],
-            'bateria' => $request->users_scaled['bateria'],
-            'cajon' => $request->users_scaled['cajon'],
-            'datashow' => $request->users_scaled['datashow'],
-            'mesario' => $request->users_scaled['mesario'],
-        ];
-        foreach($arrScaled as $ability => $nicknames){
-            if(!$nicknames || strlen($nicknames) == 0) continue;
-            $nicknames = explode(',',$nicknames);
-            foreach($nicknames as $nickname){
-                $nickname = trim($nickname);
-                $index = array_search($nickname,array_column($scaled, 'user'));
-                if($index === false) $scaled[]= ['user' => $nickname, 'abilities' => [$ability]];
-                else $scaled[$index]['abilities'][]= $ability;
-            }
-        }
-        
-        $errors = [];
-        foreach($scaled as $user){
+    return response()->json([
+      'result' => true,
+      'response' => $scale,
+      'errors' => $errors
+    ]);
+  }
+  public function lastScales($ids = ''){
+    $arrIds = array_filter(explode(',',$ids), function($id){ return !!$id; });
+    $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
+      ->whereNotIn('id',$arrIds)
+      ->orderBy('date','desc')
+      ->take(5)
+      ->get();
+
+    $scales = $scales->map(function($scale){
+      $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
+      $scale->resume = $scale->getResume();
+      $scale->resume_table = $scale->getResumeTable($scale->resume);
+      $arrDate = explode('-',$scale->date);
+      $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+      return $scale;
+    });
+
+    return response()->json([
+      'result' => true,
+      'response' => $scales
+    ]);
+  }
+  public function delete($id){
+    if(!$scale = Scale::whereId($id)
+      ->whereMinistryId(auth()->user()->current_ministry)
+      ->first()
+    ) return response()->json([
+      'result' => false,
+      'response' => 'Escala não encontrada'
+    ]);
+
+    foreach($scale->scaleUsers as $scaled){
+      $scaled->delete();
+    }
+    $scale->delete();
+
+    return response()->json([
+      'result' => true,
+      'response' => 'Escala excluída com sucesso'
+    ]);
+  }
+  public function togglePublish($id){
+    if(!$scale = Scale::whereId($id)
+      ->whereMinistryId(auth()->user()->current_ministry)
+      ->first()
+    ) return response()->json([
+      'result' => false,
+      'response' => 'Escala não encontrada'
+    ]);
+
+    $response = $scale->published ? 'Escala em edição' : 'Escala publicada';
+    $scale->update(['published' => !$scale->published]);
+
+    return response()->json([
+      'result'=> true,
+      'response' => $response
+    ]);
+  }
+  protected function handleImport($file){
+    $sheet = new OfficeService($file->getRealPath());
+    $scales = $sheet->loadScale();
+    $errors = [];
+    $countSuccess = 0;
+    foreach($scales as $scale){
+      $weekday = Scale::getWeekdayByIndex($scale['date']->dayOfWeek);
+      $hour = Scale::getAvailableHoursByWeekday($weekday);
+      $data = [
+        'ministry_id' => auth()->user()->current_ministry,
+        'date' => $scale['date'],
+        'weekday' => $weekday,
+        'hour' => $hour,
+        'theme' => $scale['theme'],
+      ];
+
+      try{
+        if($realScale = Scale::create($data)){
+          foreach($scale['scaled'] as $scaled){
             try{
-                $nickname = $user['user'];
-                $user_id = ScaleUser::findUserByNickname(
-                    $nickname,
-                    auth()->user()->current_ministry
-                );
-                $data = [
-                    'scale_id' => $scale->id,
-                    'user_id' => $user_id,
-                    'nickname' => $nickname,
-                    'ability' => implode(',',$user['abilities']),
-                ];
-                ScaleUser::create($data);
+              $nickname = $scaled['user'];
+              $user_id = ScaleUser::findUserByNickname(
+                $nickname,
+                auth()->user()->current_ministry
+              );
+              $data = [
+                'scale_id' => $realScale->id,
+                'user_id' => $user_id,
+                'nickname' => $nickname,
+                'ability' => implode(',',$scaled['abilities']),
+              ];
+              ScaleUser::create($data);
             }catch(Exception $e){
-                $errors[] = "Houve um erro ao escalar ".$user['user']." no dia ".$scale['date'];
+              $errors[] = "Houve um erro ao escalar ".$scaled['user']." no dia ".$scale['date'];
             }
+          }
+          $countSuccess++;
+        }else{
+          $errors[]= "Não foi possível criar a escala do dia ".$scale['date']->format('d/m/Y');
         }
+      }catch(Exception $e){
+        $errors[] = "Houve um erro ao criar a escala do dia ".$scale['date']->format('d/m/Y');
+      }
+    }
+    if($countSuccess == 0 && count($errors)) $message = "Nenhuma escala foi importada";
+    else{
+      $message = "";
+      if($countSuccess > 0){
+        $message.= $countSuccess == 1 ? "1 escala importada com sucesso<br/>":"$countSuccess escalas importadas com sucesso<br/>";
+      }
+      if(count($errors) > 0){
+        $message.=  count($errors) == 1 ? "1 escala não pode ser importada<br/>":count($errors)." escalas não puderam ser importadas:<br/>";
 
-        $scale = Scale::whereId($scale->id)->first();
+        $listErrors = array_map(function($error){
+          return "<pre>".json_encode($error)."</pre><hr/>";
+        }, $errors);
+
+        $message.= implode('<br/>',$listErrors);
+      }
+    }
+    return redirect()->route('scale.month')->with('message',$message);
+  }
+  protected function handleFillScaleInCalendar($calendar, $edition = false){
+    $table = collect([]);
+    foreach($calendar as &$day){
+      $scales = Scale::with(['ministerScales' => function($query){
+        $query->with(['user','scale_praises' => function($q){
+          $q->with('praise');
+        }])->where('privacy','public');
+      }])->whereMinistryId(auth()->user()->current_ministry)
+         ->whereDate('date',$day->date)
+         ->wherePublished(!$edition)
+         ->get();
+
+      $day->scales = $scales->map(function($scale) use ($day) {
         $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
         $scale->resume = $scale->getResume();
         $scale->resume_table = $scale->getResumeTable($scale->resume);
         $arrDate = explode('-',$scale->date);
         $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
+        $scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->date;
+        $scale->is_current_month = $day->is_current_month;
+        $scale->is_ministry = $scale->scaleUsers()
+          ->whereUserId(auth()->user()->id)
+          ->where('ability','like','%ministro%')
+          ->first();
+        $scale->minister_scales = $scale->ministerScales->where('privacy','public')->map(
+          function($minister){
+            $minister->user->profile_formatted = $minister->user->getProfile();
+            return $minister;
+          }
+        );
+        $scale->need_make_scale = $scale->is_ministry && !$scale->ministerScales
+          ->where('user_id', auth()->user()->id)
+          ->where('privacy', 'public')
+          ->first();
+          
+        return $scale;
+      });
 
-        return response()->json([
-            'result' => true,
-            'response' => $scale,
-            'errors' => $errors
-        ]);
+      $table = collect([
+        ...$table,
+        ...$day->scales
+      ]);
     }
-    public function lastScales($ids = ''){
-        $arrIds = array_filter(explode(',',$ids), function($id){ return !!$id; });
-        $scales = Scale::whereMinistryId(auth()->user()->current_ministry)
-            ->whereNotIn('id',$arrIds)
-            ->orderBy('date','desc')
-            ->take(5)
-            ->get();
-
-        $scales = $scales->map(function($scale){
-            $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
-            $scale->resume = $scale->getResume();
-            $scale->resume_table = $scale->getResumeTable($scale->resume);
-            $arrDate = explode('-',$scale->date);
-            $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
-            return $scale;
-        });
-
-        return response()->json([
-            'result' => true,
-            'response' => $scales
-        ]);
-    }
-    public function delete($id){
-        if(!$scale = Scale::whereId($id)
-            ->whereMinistryId(auth()->user()->current_ministry)
-            ->first()
-        ) return response()->json([
-            'result' => false,
-            'response' => 'Escala não encontrada'
-        ]);
-
-        foreach($scale->scaleUsers as $scaled){
-            $scaled->delete();
-        }
-        $scale->delete();
-
-        return response()->json([
-            'result' => true,
-            'response' => 'Escala excluída com sucesso'
-        ]);
-    }
-    public function togglePublish($id){
-        if(!$scale = Scale::whereId($id)
-            ->whereMinistryId(auth()->user()->current_ministry)
-            ->first()
-        ) return response()->json([
-            'result' => false,
-            'response' => 'Escala não encontrada'
-        ]);
-
-        $response = $scale->published ? 'Escala em edição' : 'Escala publicada';
-        $scale->update(['published' => !$scale->published]);
-
-        return response()->json([
-            'result'=> true,
-            'response' => $response
-        ]);
-    }
-    protected function handleImport($file){
-        $sheet = new OfficeService($file->getRealPath());
-        $scales = $sheet->loadScale();
-        $errors = [];
-        $countSuccess = 0;
-        foreach($scales as $scale){
-            $weekday = Scale::getWeekdayByIndex($scale['date']->dayOfWeek);
-            $hour = Scale::getAvailableHoursByWeekday($weekday);
-            $data = [
-                'ministry_id' => auth()->user()->current_ministry,
-                'date' => $scale['date'],
-                'weekday' => $weekday,
-                'hour' => $hour,
-                'theme' => $scale['theme'],
-            ];
-
-            try{
-                if($realScale = Scale::create($data)){
-                    foreach($scale['scaled'] as $scaled){
-                        try{
-                            $nickname = $scaled['user'];
-                            $user_id = ScaleUser::findUserByNickname(
-                                $nickname,
-                                auth()->user()->current_ministry
-                            );
-                            $data = [
-                                'scale_id' => $realScale->id,
-                                'user_id' => $user_id,
-                                'nickname' => $nickname,
-                                'ability' => implode(',',$scaled['abilities']),
-                            ];
-                            ScaleUser::create($data);
-                        }catch(Exception $e){
-                            $errors[] = "Houve um erro ao escalar ".$scaled['user']." no dia ".$scale['date'];
-                        }
-                    }
-                    $countSuccess++;
-                }else{
-                    $errors[]= "Não foi possível criar a escala do dia ".$scale['date']->format('d/m/Y');
-                }
-            }catch(Exception $e){
-                $errors[] = "Houve um erro ao criar a escala do dia ".$scale['date']->format('d/m/Y');
-            }
-        }
-        if($countSuccess == 0 && count($errors)) $message = "Nenhuma escala foi importada";
-        else{
-            $message = "";
-            if($countSuccess > 0){
-                $message.= $countSuccess == 1 ? "1 escala importada com sucesso<br/>":"$countSuccess escalas importadas com sucesso<br/>";
-            }
-            if(count($errors) > 0){
-                $message.=  count($errors) == 1 ? "1 escala não pode ser importada<br/>":count($errors)." escalas não puderam ser importadas:<br/>";
-
-                $listErrors = array_map(function($error){
-                    return "<pre>".json_encode($error)."</pre><hr/>";
-                }, $errors);
-
-                $message.= implode('<br/>',$listErrors);
-            }
-        }
-        return redirect()->route('scale.month')->with('message',$message);
-    }
-    protected function handleFillScaleInCalendar($calendar, $edition = false){
-        $table = collect([]);
-        foreach($calendar as &$day){
-            $scales = Scale::with(['ministerScales' => function($query){
-                $query->with(['user','scale_praises' => function($q){
-                    $q->with('praise');
-                }])->where('privacy','public');
-            }])->whereMinistryId(auth()->user()->current_ministry)
-               ->whereDate('date',$day->date)
-               ->wherePublished(!$edition)
-               ->get();
-
-            $day->scales = $scales->map(function($scale) use ($day) {
-                $scale->weekday_name = User::getAvailableWeekdays($scale->weekday);
-                $scale->resume = $scale->getResume();
-                $scale->resume_table = $scale->getResumeTable($scale->resume);
-                $arrDate = explode('-',$scale->date);
-                $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
-                $scale->month = count($arrDate) == 3 ? $arrDate[1] : $scale->date;
-                $scale->is_current_month = $day->is_current_month;
-                $scale->is_ministry = $scale->scaleUsers()
-                    ->whereUserId(auth()->user()->id)
-                    ->where('ability','like','%ministro%')
-                    ->first();
-                $scale->minister_scales = $scale->ministerScales->where('privacy','public')->map(
-                    function($minister){
-                        $minister->user->profile_formatted = $minister->user->getProfile();
-                        return $minister;
-                    }
-                );
-                $scale->need_make_scale = $scale->is_ministry && !$scale->ministerScales
-                    ->where('user_id', auth()->user()->id)
-                    ->where('privacy', 'public')
-                    ->first();
-                    
-                return $scale;
-            });
-
-            $table = collect([
-                ...$table,
-                ...$day->scales
-            ]);
-        }
-        return [
-            $calendar,
-            $table,
-        ];
-    }
+    return [
+      $calendar,
+      $table,
+    ];
+  }
 }

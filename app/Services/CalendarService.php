@@ -33,7 +33,7 @@ class CalendarService{
       $calendar[]= $this->formatteDateToCalendar($startMonth->addDay());
     }
     $lasDayOfWeek = $startMonth->dayOfWeek;
-    for($i = $lasDayOfWeek; $i < 6; $i++){
+    for($i = $lasDayOfWeek; $i < 7; $i++){
       $calendar[]= $this->formatteDateToCalendar($startMonth->addDay());
     }
     return [$calendar, $this->month_name];

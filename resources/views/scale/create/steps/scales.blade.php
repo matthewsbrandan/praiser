@@ -1,4 +1,4 @@
-<div class="page-contents" id="content-scale" style="display: none;">
+<div class="page-contents" id="content-scale">
   <div class="row">
     <div class="col-md-12 mb-3">
       <div
