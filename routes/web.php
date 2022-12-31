@@ -125,4 +125,12 @@ Route::middleware(['auth'])->group(function() use ($controllersPath) {
   Route::name('calendar.')->group(function() use ($controllersPath){
     Route::get('/calendario/mes/{date?}', "$controllersPath\CalendarController@getMonth")->name('month');
   });
+
+  Route::name('user_availability.')->group(function() use ($controllersPath){
+    Route::get('disponibilidades/mes/{date?}', "$controllersPath\UserAvailabilityController@getMonth")->name('month');
+    Route::post('disponibilidades/salvar', "$controllersPath\UserAvailabilityController@add")->name('store');
+    Route::post('disponibilidades/remover', "$controllersPath\UserAvailabilityController@remove")->name('delete');
+    Route::get('disponibilidades/data/{date}', "$controllersPath\UserAvailabilityController@get")->name('get');
+    Route::get('disponibilidades/usuario/{user_id}/{date_start}/{date_end}', "$controllersPath\UserAvailabilityController@getByUser")->name('user');
+  });
 });

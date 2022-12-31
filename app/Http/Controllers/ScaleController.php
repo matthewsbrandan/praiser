@@ -62,9 +62,19 @@ class ScaleController extends Controller
   }
   public function create($import = null){
     $calendar = (new CalendarController())->getMonth(null, false);
+    $userAvailabilities = (new UserAvailabilityController())->getMonth(null, false);
+    $usersOfMinistry = auth()->user()->currentMinistry->userMinistry->map(function($userM){
+      $user = $userM->user()->first();
+      $userM->name = $user->name;
+      $userM->profile_formatted = $user->getProfile();
+      return $userM;
+    });
+
     return view('scale.create.index',[
       'import' => $import,
-      'calendar' => $calendar
+      'calendar' => $calendar,
+      'userAvailabilities' => $userAvailabilities,
+      'usersOfMinistry' => $usersOfMinistry
     ]);
   }
   public function edit($id){

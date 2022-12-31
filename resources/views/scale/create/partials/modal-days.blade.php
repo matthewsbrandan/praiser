@@ -94,7 +94,6 @@
 <script>
   function callModalDays(){
     $('#modal-days').modal('show');
-    $('#scale-days').focus();
   }
   function handleAddOrRemoveDays(date, el){
     let class_name = {

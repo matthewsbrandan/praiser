@@ -49,12 +49,14 @@
                         class="btn bg-gradient-light mb-0"
                         onclick="callModalDays()"
                       >Adicionar Datas</button>
+                    @endif 
+                    @if($userAvailabilities->result)
+                      <button
+                        type="button"
+                        class="btn bg-gradient-light mb-0"
+                        onclick="callModalUserAvailability()"
+                      >Disp. / Indisp.</button>
                     @endif                    
-                    <button
-                      type="button"
-                      class="btn bg-gradient-light mb-0"
-                      {{-- onclick="handleAddDays()" --}}
-                    >Disp. / Indisp.</button>
                   </div>
                   @include('scale.create.partials.scales')
                 @endif
@@ -89,6 +91,11 @@
   @if($calendar->result)
     @include('scale.create.partials.modal-days', [
       'calendar' => (object) $calendar->response
+    ])
+  @endif
+  @if($userAvailabilities->result)
+    @include('scale.create.partials.modal-user-availability', [
+      'calendar' => (object) $userAvailabilities->response
     ])
   @endif
   <script>
