@@ -51,6 +51,7 @@
 
   @if(!(isset($disable) && array_search('footer', $disable) !== false)) @include('layout.footer') @endif
   @include('utils.modals.message')
+  @include('utils.loading')
   @include('utils.alerts')
   <!--   Core JS Files   -->
   <script src="{{ asset('assets/js/core/popper.min.js') }}" type="text/javascript"></script>
@@ -60,7 +61,7 @@
   <script src="{{ asset('assets/js/plugins/countup.min.js') }}"></script>
   <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
   <script src="{{ asset('assets/js/plugins/prism.min.js') }}"></script>
-  <script src="{{ asset('assets/js/plugins/highlight.min.js') }}"></script>
+  {{-- <script src="{{ asset('assets/js/plugins/highlight.min.js') }}"></script> --}}
   <!--  Plugin for Parallax, full documentation here: https://github.com/dixonandmoe/rellax -->
   <script src="{{ asset('assets/js/plugins/rellax.min.js') }}"></script>
   <!--  Plugin for TiltJS, full documentation here: https://gijsroge.github.io/tilt.js/ -->

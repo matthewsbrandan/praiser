@@ -25,6 +25,7 @@ class CalendarController extends Controller
 
     $calendar = array_map(function($day){
       $day->day = $day->date->format('d');
+      $day->date_Ymd = $day->date->format('Y-m-d');
       return $day;
     }, $calendar);
 

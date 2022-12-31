@@ -56,7 +56,7 @@
                       {{-- onclick="handleAddDays()" --}}
                     >Disp. / Indisp.</button>
                   </div>
-                  @include('scale.create.steps.scales')
+                  @include('scale.create.partials.scales')
                 @endif
               </div>
             </div>
@@ -92,26 +92,10 @@
     ])
   @endif
   <script>
-    function handlePagination(to){
-      pagesValidated = pagesValidated.filter(pages => pages != $('.to-page-contents.active').attr('id').substr(3));
-      switch(to){
-        case 2: $('#scale-theme').focus(); break;
-      }
-      $('.page-contents').hide();
-      $(`#${pages[to - 1]}`).show('slow');
-      $('.to-page-contents').removeClass('active');
-      $(`#to-${pages[to - 1]}`).removeClass('disabled').addClass('active');
-      $('html').scrollTop(0);
-    }
-    // BEGIN:: UTILS
     function focusInError(elem, timeout = 6000){
       elem.addClass('is-invalid').focus();
       setTimeout(() => elem.removeClass('is-invalid'), timeout);
     }
-    function handleAddCard(body, active = false, padding = 5){
-      return `<div class="info-horizontal ${ active ? 'bg-gradient-primary':'bg-gray-100' } border-radius-xl p-${padding}">${ body }</div>`;
-    }
-    // END:: UTILS
     @isset($scales)
       @foreach($scales as $scale)
         scale_ids.push({{ $scale->id }});

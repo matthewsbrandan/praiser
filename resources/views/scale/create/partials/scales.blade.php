@@ -48,11 +48,11 @@
     </div>
     <div class="col-12 mb-3">
       <div class="form-group mb-0 mt-md-0 mt-4">
-        <label>Observação (opcional)</label>
+        <label onclick="$(this).next().toggle('slow').focus(); ">+ Observação (opcional)</label>
         <textarea
           id="scale-obs"
           class="form-control"
-          rows="3"
+          rows="3" style="display: none;"
           placeholder="Digite aqui informações adicionais sobre a escala."
           maxlength="250"
         ></textarea>
@@ -210,6 +210,19 @@
   var scale_ids = [];
 
   async function createScale(){
+    if(!$('#scale-date').val()){
+      focusInError($('#scale-date'));
+      return;
+    }
+    if(!$('#scale-hour').val()){
+      focusInError($('#scale-hour'));
+      return;
+    }
+    if(!$('#scale-theme').val()){
+      focusInError($('#scale-theme'));
+      return;
+    }
+
     let obs = $('#scale-obs').val();
     let data = {
       date: $('#scale-date').val(),
@@ -219,18 +232,28 @@
       users_scaled,
       id: scaleInEdition ? scaleInEdition.id : null,
     };
-    
+
+    submitLoad();
     $.post('{{ route('scale.store') }}', data).done(data => {
-      if(data.result){
-        scale_ids.push(data.response.id);
-        if($('#tr-empty')[0])$('#tr-empty').remove();
-        console.log('>>>', data);
-        if(scaleInEdition) handleScaleEdited(data.response);
-        else $('#scales-created tbody').prepend(htmlScaleFinalized(data.response));
-        handleNextScale();
-      }else callModalMessage(data.response);
-    });
+      try{
+        if(data.result){
+          scale_ids.push(data.response.id);
+          if($('#tr-empty')[0])$('#tr-empty').remove();
+          if(scaleInEdition) handleScaleEdited(data.response);
+          else $('#scales-created tbody').prepend(htmlScaleFinalized(data.response));
+          handleNextScale();
+        }else callModalMessage(data.response);
+      }catch(err){
+        console.error(err);
+        stopLoad();
+        notify('danger','Houve um erro inesperado ao processar a resposta da solicitação');
+      }
+    }).fail(err => {
+      console.error(err);
+      notify('danger','Houve um erro ao criar/editar esta escala');
+    }).always(() => stopLoad());
   }
+  // BEGIN:: HANDLE USER
   async function handleAddScaleUser(ability, name){
     $('#dynamic-input-content').show('slow');
     $('#dynamic-input-content label').html(name);
@@ -309,7 +332,7 @@
     $('#dynamic-input').val(dynamic.join(', '));
     reactDynamicInput();
   }
-  
+  // END:: HANDLE USER
   function reactDynamicInput(){
     if(!currentAbilityInChange) return;
     let dynamic = $('#dynamic-input').val();
@@ -468,6 +491,7 @@
       <button
         type="button" class="btn bg-gradient-primary mt-3 mb-0"
         onclick="deleteScale(${id})"
+        data-bs-dismiss="modal"
       >Sim</button>
       <button
         type="button" class="btn btn-link text-dark mt-3 mb-0"
@@ -476,13 +500,14 @@
     `);
   }
   function deleteScale(id){
+    submitLoad();
     $.get(`{{ substr(route('scale.delete',['id' => 0]),0,-1) }}${id}`).done(data => {
       if(data.result){
         notify('success', data.response);
         $(`#tr-scale-id-${id}`).remove();
       }
       else notify('danger', data.response);
-    })
+    }).always(() => stopLoad());
   }
   function handlePublish(id, elem, is_published) {
     $.get(`{{ substr(route('scale.toggle-publish',['id' => 0]),0,-1) }}${id}`).done(data => {
@@ -493,4 +518,12 @@
       else notify('danger', data.response);
     })
   }
+
+  $('#scale-date').on('change', function(){
+    let day = $(this).val();
+    let date = new Date(day);
+    let weekday = weekdays[date.getDay()];
+
+    handleSelectDay(day, weekday, false);
+  });
 </script>
