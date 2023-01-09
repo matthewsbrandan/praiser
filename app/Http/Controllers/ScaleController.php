@@ -98,14 +98,23 @@ class ScaleController extends Controller
       $arrDate = explode('-',$scale->date);
       $scale->day = count($arrDate) == 3 ? $arrDate[2] : $scale->date;
       return $scale;
-    });
+    });    
 
-    $calendar = (new CalendarController())->getMonth();
+    $calendar = (new CalendarController())->getMonth(null, false);
+    $userAvailabilities = (new UserAvailabilityController())->getMonth(null, false);
+    $usersOfMinistry = auth()->user()->currentMinistry->userMinistry->map(function($userM){
+      $user = $userM->user()->first();
+      $userM->name = $user->name;
+      $userM->profile_formatted = $user->getProfile();
+      return $userM;
+    });
 
     return view('scale.create.index',[
       'import' => null,
       'scales' => $scales,
-      'calendar' => $calendar
+      'calendar' => $calendar,
+      'userAvailabilities' => $userAvailabilities,
+      'usersOfMinistry' => $usersOfMinistry
     ]);
   }
   public function store(Request $request){
