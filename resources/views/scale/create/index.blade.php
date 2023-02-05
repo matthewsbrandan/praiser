@@ -42,18 +42,18 @@
                     </div>
                   </form>
                 @else
-                  <div class="d-flex flex-wrap mb-3" style="gap: .4rem;">
+                  <div class="d-flex flex-wrap mb-1" style="gap: .4rem;">
                     @if($calendar->result)
                       <button
                         type="button"
-                        class="btn bg-gradient-light mb-0"
+                        class="btn btn-sm bg-gradient-light mb-0"
                         onclick="callModalDays()"
                       >Adicionar Datas</button>
                     @endif 
                     @if($userAvailabilities->result)
                       <button
                         type="button"
-                        class="btn bg-gradient-light mb-0"
+                        class="btn btn-sm bg-gradient-light mb-0"
                         onclick="callModalUserAvailability()"
                       >Disp. / Indisp.</button>
                     @endif                    

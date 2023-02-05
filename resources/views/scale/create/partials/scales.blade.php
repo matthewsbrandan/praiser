@@ -7,43 +7,57 @@
         id="container-days-to-scale"
       ></div>
     </div>
-    <div class="col-md-4">
-      <label>Data</label>
-      <div class="input-group mb-3">
-        <input
-          class="form-control"
-          placeholder="Data"
-          aria-label="Data"
-          type="date"
-          id="scale-date"
-          required
-        />
+    <div class="col-md-6 col-lg-7">
+      <div class="row">
+        <div class="col-lg-6">
+          <label>Data</label>
+          <div class="input-group mb-3">
+            <input
+              class="form-control"
+              placeholder="Data"
+              aria-label="Data"
+              type="date"
+              id="scale-date"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <label>Hora</label>
+          <div class="input-group mb-3">
+            <input
+              class="form-control"
+              placeholder="Hora"
+              aria-label="Hora"
+              type="time"
+              id="scale-hour"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-12">
+          <label>Tema</label>
+          <div class="input-group mb-3">
+            <input
+              class="form-control"
+              placeholder="Tema"
+              aria-label="Tema"
+              type="text"
+              id="scale-theme"
+              required
+            />
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <label>Hora</label>
-      <div class="input-group mb-3">
-        <input
-          class="form-control"
-          placeholder="Hora"
-          aria-label="Hora"
-          type="time"
-          id="scale-hour"
-          required
-        />
-      </div>
-    </div>
-    <div class="col-md-4">
-      <label>Tema</label>
-      <div class="input-group mb-3">
-        <input
-          class="form-control"
-          placeholder="Tema"
-          aria-label="Tema"
-          type="text"
-          id="scale-theme"
-          required
-        />
+    <div class="col-md-6 col-lg-5">
+      <div
+        class="h-100 px-2 py-3 bg-gradient-primary border-radius-xl opacity-9 text-center"
+        style="background: linear-gradient(310deg, #7928CA19 0%, #FF008019 100%);"
+      >
+        <strong class="text-xxs text-uppercase text-center d-block w-100">Disponibilidades</strong>
+        <div class="p-2 pt-1 w-100" id="current-availability-container" style="max-height: 13.5rem; overflow-y-auto">
+        </div>
       </div>
     </div>
     <div class="col-12 mb-3">

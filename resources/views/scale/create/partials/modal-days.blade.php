@@ -160,6 +160,24 @@
 
     $('.card-to-add-days').removeClass(cn.active).addClass(cn.normal);
     $(`.card-to-add-days[data-date=${day}]`).removeClass(cn.normal).addClass(cn.active);
+
+    handleAvailabilityDay(day);
+  }
+  function handleAvailabilityDay(day){
+    let data = findUserAvailability(day);
+    let container = $('#current-availability-container');
+    container.html('');
+    if(!data || !data.data) return;
+
+    data.data.forEach((user) => container.append(`
+      <p class="text-sm mb-1 d-flex user-item text-start">
+        <span
+          class="badge d-block my-auto  me-2 p-0 ${ user.is_unavailable ? 'bg-gradient-danger' : 'bg-gradient-success' }"
+          style="width: .4rem; height: .4rem;"
+        ></span>
+        ${ user.name }
+      </p>
+    `))
   }
   // BEGIN:: HANDLE CALENDAR
   let cacheCalendar = {};
