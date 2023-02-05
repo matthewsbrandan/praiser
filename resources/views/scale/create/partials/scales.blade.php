@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-12 mb-3">
       <div
-        class="table-responsive d-flex"
+        class="table-responsive d-flex pb-2 pt-3"
         style="gap: .6rem;"
         id="container-days-to-scale"
       ></div>
@@ -533,6 +533,8 @@
     $('#scale-theme').val(scale.theme).focus();
     $('#scale-date').val(scale.date);
     $('#scale-hour').val(scale.hour);
+    
+    handleAvailabilityDay(scale.date);
   }
   function handleDelete(id){
     callModalMessage(`
