@@ -22,25 +22,23 @@ class LoginController extends Controller
         if($request->google_id) return $this->handleLoginWithGoogle($request);
 
         if(!User::whereEmail($request->email)->first()) return redirect()
-            ->route('index')
-            ->with('auth-error-type','email')
-            ->with('auth-data', $request->all());
+            ->route('login')
+            ->with('notify','Email não encontrado')
+            ->with('notify-type','danger');
 
         $credentials = $request->only('email', 'password');
 
         if (!Auth::attempt($credentials, true)) return redirect()
-            ->route('index')
-            ->with('auth-error-type','password')
-            ->with('auth-data', $request->all());
+            ->route('login')
+            ->with('notify','Senha inválida')
+            ->with('notify-type','danger');
 
         auth()->user()->closeTunel();
         
         return redirect()->route('home');
     }
 
-    public function login(){
-        return view('login');
-    }
+    public function login(){ return view('login'); }
     public function authenticateEmail(Request $request){
         if(!$user = User::whereEmail($request->email)->first()) return redirect()
             ->route('register',['email' => $request->email]);
