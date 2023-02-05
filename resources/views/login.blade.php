@@ -13,10 +13,12 @@
           <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
             <div class="card card-plain">
               <div class="card-header pb-0 text-left">
-                <h4 class="font-weight-bolder">Entrar</h4>
                 @isset($email)
+                  <h4 class="font-weight-bolder mb-0">Entrar com senha</h4>
+                  <span class="text-muted text-sm d-block mb-2">{{ $email }}</span>
                   <p class="mb-0">Digite sua senha para entrar</p>
                 @else
+                  <h4 class="font-weight-bolder">Entrar com email</h4>
                   <p class="mb-0">Digite seu email para entrar</p>
                 @endisset
               </div>
