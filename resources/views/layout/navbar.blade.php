@@ -37,10 +37,8 @@
           @else          
             <a class="navbar-brand font-weight-bolder ms-sm-3"
               href="{{ route('index') }}" rel="tooltip"
-              title="Praiser" data-placement="bottom" target="_blank"
-            >
-              Praiser
-            </a>
+              title="Praiser" data-placement="bottom"
+            >Praiser</a>
           @endif
           <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse"
             data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false"

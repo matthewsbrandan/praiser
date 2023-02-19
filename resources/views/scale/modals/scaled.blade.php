@@ -35,7 +35,6 @@
         @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))
           <a
             href="#"
-            target="_blank"
             class="btn btn-sm bg-gradient-info d-block mt-3 text-center mx-auto"
             style="width: fit-content; max-width: 100%;"
             id="to-edit-scale"
@@ -185,7 +184,7 @@
     return `
       <div class="d-flex align-items-center mb-1 mt-3">
         <a
-          href="{{ route('user.profile') }}/${scale.user.email}" target="_blank"
+          href="{{ route('user.profile') }}/${scale.user.email}"
           class="avatar avatar-sm rounded-circle"
           data-bs-toggle="tooltip" data-bs-placement="bottom" title="Youtube"
         >
