@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\CashController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -132,5 +134,9 @@ Route::middleware(['auth'])->group(function() use ($controllersPath) {
     Route::post('disponibilidades/remover', "$controllersPath\UserAvailabilityController@remove")->name('delete');
     Route::get('disponibilidades/data/{date}', "$controllersPath\UserAvailabilityController@get")->name('get');
     Route::get('disponibilidades/usuario/{user_id}/{date_start}/{date_end}', "$controllersPath\UserAvailabilityController@getByUser")->name('user');
+  });
+
+  Route::name('cash.')->group(function(){
+    Route::get('caixa', [CashController::class, 'index'])->name('index');
   });
 });
