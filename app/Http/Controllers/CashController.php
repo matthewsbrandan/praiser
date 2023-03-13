@@ -55,6 +55,16 @@ class CashController extends Controller
           'description' => 'Sthefany'
         ];
 
+        $value = 20.00;
+        $cash[]= (object)[
+          'date_formatted' => '09/03/2023',
+          'type' => 'income',
+          'value' => $value,
+          'value_formatted' => self::FormatMoney($value),
+          'title' => 'Contribuição',
+          'description' => 'Sérgio'
+        ];
+
         return array_reverse($cash);
       default: return null;
     }
