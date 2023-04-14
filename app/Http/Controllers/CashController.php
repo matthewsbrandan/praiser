@@ -103,7 +103,7 @@ class CashController extends Controller
         $valueToGoal = $nextGoal->value - $total;
         if($valueToGoal < 0) $valueToGoal = 0; 
   
-        $parcentToGoal = $valueToGoal > 0 ? round(($total * 100) / $valueToGoal) : 0;
+        $parcentToGoal = $valueToGoal > 0 ? round(($total * 100) / $valueToGoal) : 100;
       }
     }
 
@@ -111,7 +111,7 @@ class CashController extends Controller
       'total' => $total,
       'total_formatted' => $this->formatMoney($total),
       'value_to_goal' => $valueToGoal,
-      'value_to_goal_formatted' => $valueToGoal ? $this->FormatMoney($valueToGoal) : null,
+      'value_to_goal_formatted' => $valueToGoal ? $this->FormatMoney($valueToGoal) : 0,
       'percent_to_goal' => (int) $parcentToGoal
     ];
   }
@@ -160,7 +160,7 @@ class CashController extends Controller
         $goals[]= (object)[
           'title' => "Manutenção caixa da direita",
           'image' => "https://images.tcdn.com.br/img/img_prod/607502/caixa_de_som_amplificada_300w_rms_ps15auwb_jef_3157_1_ed2468dc9eba41cc7f510b8be6ebf36c.png",
-          'on_budget' => true,
+          'on_budget' => false,
           'value' => $value,
           'value_max' => $value_max,
           'value_formatted' => self::FormatMoney($value),
