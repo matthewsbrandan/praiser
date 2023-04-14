@@ -70,7 +70,7 @@ class CashController extends Controller
           'date_formatted' => '12/04/2023',
           'type' => 'income',
           'value' => $value,
-          'value_formatted' => self:FormatMoney($value),
+          'value_formatted' => self::FormatMoney($value),
           'title' => 'Contribuição',
           'description' => 'Sérgio'
         ];
