@@ -103,7 +103,7 @@ class CashController extends Controller
         $valueToGoal = $nextGoal->value - $total;
         if($valueToGoal < 0) $valueToGoal = 0; 
   
-        $parcentToGoal = round(($total * 100) / $valueToGoal);
+        $parcentToGoal = $valueToGoal > 0 ? round(($total * 100) / $valueToGoal) : 0;
       }
     }
 
@@ -156,7 +156,7 @@ class CashController extends Controller
         // ];
 
         $value = 90;
-        $value_max = null;
+        $value_max = 90;
         $goals[]= (object)[
           'title' => "Manutenção caixa da direita",
           'image' => "https://images.tcdn.com.br/img/img_prod/607502/caixa_de_som_amplificada_300w_rms_ps15auwb_jef_3157_1_ed2468dc9eba41cc7f510b8be6ebf36c.png",
