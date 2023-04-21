@@ -84,6 +84,68 @@ class CashController extends Controller
           'title' => 'Contribuição',
           'description' => 'Mateus'
         ];
+
+        $value = 75.00;
+        $cash[] = (object)[
+          'date_formatted' => '14/04/2023',
+          'type' => 'income',
+          'value' => $value,
+          'value_formatted' => self::FormatMoney($value),
+          'title' => 'Contribuição',
+          'description' => 'Lucas - Para Compra do Tato(Amplificador de fone)'
+        ];
+
+        $value = 75.00;
+        $cash[] = (object)[
+          'date_formatted' => '14/04/2023',
+          'type' => 'income',
+          'value' => $value,
+          'value_formatted' => self::FormatMoney($value),
+          'title' => 'Contribuição',
+          'description' => 'Diego - Para Compra do Tato(Amplificador de fone)'
+        ];
+
+        $value = -150.00;
+        $cash[] = (object)[
+          'date_formatted' => '14/04/2023',
+          'type' => 'expense',
+          'value' => $value,
+          'value_formatted' => self::FormatMoney($value),
+          'title' => 'Investimento',
+          'description' => 'Compra do Tato(Amplificador de fone p/ Bateria)'
+        ];
+
+        $value = 10.00;
+        $cash[] = (object)[
+          'date_formatted' => '17/04/2023',
+          'type' => 'income',
+          'value' => $value,
+          'value_formatted' => self::FormatMoney($value),
+          'title' => 'Contribuição',
+          'description' => 'Lucas'
+        ];
+
+
+        $value = -90.00;
+        $cash[] = (object)[
+          'date_formatted' => '18/04/2023',
+          'type' => 'expense',
+          'value' => $value,
+          'value_formatted' => self::FormatMoney($value),
+          'title' => 'Pagamento de Manutenção',
+          'description' => 'Manutenção da caixa da direita'
+        ];
+
+        $value = 20.00;
+        $cash[] = (object)[
+          'date_formatted' => '19/04/2023',
+          'type' => 'income',
+          'value' => $value,
+          'value_formatted' => self::FormatMoney($value),
+          'title' => 'Contribuição',
+          'description' => 'Aparecido'
+        ];
+
         return array_reverse($cash);
       default: return null;
     }
@@ -155,17 +217,17 @@ class CashController extends Controller
         //   ]
         // ];
 
-        $value = 90;
-        $value_max = 90;
-        $goals[]= (object)[
-          'title' => "Manutenção caixa da direita",
-          'image' => "https://images.tcdn.com.br/img/img_prod/607502/caixa_de_som_amplificada_300w_rms_ps15auwb_jef_3157_1_ed2468dc9eba41cc7f510b8be6ebf36c.png",
-          'on_budget' => false,
-          'value' => $value,
-          'value_max' => $value_max,
-          'value_formatted' => self::FormatMoney($value),
-          'value_max_formatted' => self::FormatMoney($value_max)
-        ];
+        // $value = 90;
+        // $value_max = 90;
+        // $goals[]= (object)[
+        //   'title' => "Manutenção caixa da direita",
+        //   'image' => "https://images.tcdn.com.br/img/img_prod/607502/caixa_de_som_amplificada_300w_rms_ps15auwb_jef_3157_1_ed2468dc9eba41cc7f510b8be6ebf36c.png",
+        //   'on_budget' => false,
+        //   'value' => $value,
+        //   'value_max' => $value_max,
+        //   'value_formatted' => self::FormatMoney($value),
+        //   'value_max_formatted' => self::FormatMoney($value_max)
+        // ];
 
         return $goals;
       default: return [];
