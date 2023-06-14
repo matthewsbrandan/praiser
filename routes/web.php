@@ -137,6 +137,6 @@ Route::middleware(['auth'])->group(function() use ($controllersPath) {
   });
 
   Route::name('cash.')->group(function(){
-    Route::get('caixa', [CashController::class, 'index'])->name('index');
+    Route::get('caixa/{id}', [CashController::class, 'index'])->name('index');
   });
 });

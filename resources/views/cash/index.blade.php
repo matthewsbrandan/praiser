@@ -1,7 +1,5 @@
 @php
-  $header = (object)[
-    'title' => 'Caixa do Ministério'
-  ];
+  $header = (object)['title' => 'Caixa: ' . $cash->name];
 @endphp
 @extends('layout.app')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.2.0/css/glide.core.min.css" integrity="sha512-YQlbvfX5C6Ym6fTUSZ9GZpyB3F92hmQAZTO5YjciedwAaGRI9ccNs4iw2QTCJiSPheUQZomZKHQtuwbHkA9lgw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -43,46 +41,54 @@
                     </p>
                   @endif
                 </div>
-
-                <div class="timeline timeline-one-side">
-                  @foreach($launchs as $launch)
-                    <div class="timeline-block mb-3">
-                      <span class="timeline-step">
-                        @if($launch->type === 'income')
-                          <i class="ni ni-bold-up text-success text-gradient"></i>
-                        @elseif($launch->type === 'expense')
-                          <i class="ni ni-bold-down text-danger text-gradient"></i>
-                        @endif
-                      </span>
-                      <div class="timeline-content">
-                        <div class="d-flex flex-column flex-md-row align-items-md-center">
-                          <div class="me-md-3 align-self-start">
-                            <h6 
-                              class="text-sm font-weight-bold mb-0 {{ $launch->type === 'income' ? 'text-dark ': 'text-danger' }}"
-                              style="white-space: nowrap;"
-                            >{{ $launch->value_formatted }}</h6>
-                            <p class="text-secondary font-weight-bold text-xs mb-1">{{ $launch->date_formatted ?? '-' }}</p>
+                <div style="
+                  max-height: 20rem;
+                  overflow-y: auto;
+                ">
+                  <div class="timeline timeline-one-side">
+                    @foreach($launchs as $launch)
+                      <div class="timeline-block mb-3">
+                        <span class="timeline-step">
+                          @if($launch->type === 'income')
+                            <i class="ni ni-bold-up text-success text-gradient"></i>
+                          @elseif($launch->type === 'expense')
+                            <i class="ni ni-bold-down text-danger text-gradient"></i>
+                          @endif
+                        </span>
+                        <div class="timeline-content">
+                          <div class="d-flex flex-column flex-md-row align-items-md-center">
+                            <div class="me-md-3 align-self-start">
+                              <h6 
+                                class="text-sm font-weight-bold mb-0 {{ $launch->type === 'income' ? 'text-dark ': 'text-danger' }}"
+                                style="white-space: nowrap;"
+                              >{{ $launch->value_formatted }}</h6>
+                              <p class="text-secondary font-weight-bold text-xs mb-1">{{ $launch->date_formatted ?? '-' }}</p>
+                            </div>
+                            <p class="text-secondary text-sm mb-0">
+                              <span class="font-weight-bold">{{ $launch->title }}:</span><br/>
+                              {{ $launch->description }}
+                            </p>
                           </div>
-                          <p class="text-secondary text-sm mb-0">
-                            <span class="font-weight-bold">{{ $launch->title }}:</span><br/>
-                            {{ $launch->description }}
-                          </p>
                         </div>
                       </div>
-                    </div>
-                  @endforeach
+                    @endforeach
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        @if(count($goals) > 0)
+        @php
+          $unCompletedGoals = $goals->filter(function($goal){ return !$goal->is_completed; });
+          // [ ] LISTAR GOALS COMPLETED
+        @endphp
+        @if(count($unCompletedGoals) > 0)
           <div class="col-12 mt-6">
             <h3 class="text-center mb-4">Objetivos de Compra</h3>
             <div class="glide">
               <div data-glide-el="track" class="glide__track">
                 <ul class="glide__slides">
-                  @foreach($goals as $goal)
+                  @foreach($unCompletedGoals as $goal)
                   <li class="glide__slide">
                       <div class="d-flex flex-column mx-auto" style="max-width: 18rem;">
                         <img
@@ -114,7 +120,7 @@
                   @endforeach
                 </ul>
               </div>
-              @if(count($goals) > 1)
+              @if(count($unCompletedGoals) > 1)
                 <div class="glide__arrows" data-glide-el="controls">
                   <button class="glide__arrow glide__arrow--left" data-glide-dir="<">
                     <i class="ni ni-bold-left text-dark text-gradient"></i>

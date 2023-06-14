@@ -139,7 +139,7 @@
   @if($ministry->id)
     <div class="col-lg-9 mx-auto mt-5">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 mb-5">
           <div class="card h-100">
             <div class="card-body">
               <div class="h-100 d-flex flex-column justify-content-between">
@@ -154,45 +154,56 @@
         </div>
 
         @php
+          $cashes = App\Models\Cash::whereMinistryId(
+            auth()->user()->current_ministry
+          )->get();
           $cashController = new App\Http\Controllers\CashController();
-          $resume = $cashController->getResume(auth()->user()->current_ministry);
         @endphp
-        @if($resume)
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h4>Caixa</h4>
-                <strong class="text-lg">{{ $resume->total_formatted }}</strong>
-                  
-                @if($resume->value_to_goal !== null)
-                  <div class="progress-wrapper mx-auto mt-2">
-                    <div class="progress">
-                      <div
-                        class="progress-bar bg-primary"
-                        role="progressbar"
-                        aria-valuenow="{{ $resume->percent_to_goal }}"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        style="width: {{ $resume->percent_to_goal }}%;"
-                      ></div>
+        @foreach($cashes as $cash)
+          @php
+            $resume = $cashController->getResume(
+              auth()->user()->current_ministry,
+              $cash->id,
+              $cash
+            );
+          @endphp
+          @if($resume)
+            <div class="col-md-6 mb-5">
+              <div class="card">
+                <div class="card-body">
+                  <h4>Caixa: {{ $cash->name }}</h4>
+                  <strong class="text-lg">{{ $resume->total_formatted }}</strong>
+                    
+                  @if($resume->value_to_goal !== null)
+                    <div class="progress-wrapper mx-auto mt-2">
+                      <div class="progress">
+                        <div
+                          class="progress-bar bg-primary"
+                          role="progressbar"
+                          aria-valuenow="{{ $resume->percent_to_goal }}"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style="width: {{ $resume->percent_to_goal }}%;"
+                        ></div>
+                      </div>
                     </div>
-                  </div>
-                  <p class="text-secondary text-xs mt-2 mb-0">
-                    @if($resume->value_to_goal > 0)
-                      Faltam {{  $resume->value_to_goal_formatted }} para alcançar o objetivo
-                    @else
-                      Vocês já têm caixa o suficiente para o objetivo atual
-                    @endif
-                  </p>
-                @endif
-                <a
-                  class="btn bg-gradient-dark d-block mt-4 mb-0"
-                  href="{{ route('cash.index') }}"
-                >Acessar</a>
+                    <p class="text-secondary text-xs mt-2 mb-0">
+                      @if($resume->value_to_goal > 0)
+                        Faltam {{  $resume->value_to_goal_formatted }} para alcançar o objetivo
+                      @else
+                        Vocês já têm caixa o suficiente para o objetivo atual
+                      @endif
+                    </p>
+                  @endif
+                  <a
+                    class="btn bg-gradient-dark d-block mt-4 mb-0"
+                    href="{{ route('cash.index', ['id' => $cash->id]) }}"
+                  >Acessar</a>
+                </div>
               </div>
             </div>
-          </div>
-        @endif
+          @endif
+        @endforeach
       </div>
     </div>
   @endif
