@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CashController;
+use App\Http\Controllers\CashLaunchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,5 +139,9 @@ Route::middleware(['auth'])->group(function() use ($controllersPath) {
 
   Route::name('cash.')->group(function(){
     Route::get('caixa/{id}', [CashController::class, 'index'])->name('index');
+
+    Route::name('launch.')->group(function(){
+      Route::post('caixa/{id}/lancamento', [CashLaunchController::class, 'store'])->name('store');
+    });
   });
 });

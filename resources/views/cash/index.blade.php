@@ -74,6 +74,19 @@
                     @endforeach
                   </div>
                 </div>
+                @if($cash->ministry->user_id === auth()->user()->id)
+                  <div class="d-flex justify-content-center mt-3" style="gap: .5rem;">
+                    <button
+                      type="button"
+                      class="btn btn-sm bg-gradient-light text-center mb-1"
+                      onclick="$('#modalAddLaunch').modal('show')"
+                      style="min-width: 10rem;"
+                    >+ Lançamento</button>
+                    <button type="button" class="btn btn-sm bg-gradient-light text-center mb-1" style="min-width: 10rem;">
+                      + Objetivo
+                    </button>
+                  </div>
+                @endif
               </div>
             </div>
           </div>
@@ -212,6 +225,8 @@
   </section>
 @endsection
 @section('scripts')
+  @include('cash.partials.modal-add-launch')
+  @include('cash.partials.modal-add-goal')
   <script>
     new Glide('.glide',{
       type: 'slider',
