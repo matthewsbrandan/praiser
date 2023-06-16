@@ -27,7 +27,9 @@ class CashLaunch extends Model{
     $this->value_formatted = CashController::FormatMoney(
       $this->value
     );
-
+    $this->date_formatted = implode('/', array_reverse(
+      explode('-', $this->date)
+    ));
     return $this;
   }
 }

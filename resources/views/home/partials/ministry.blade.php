@@ -139,27 +139,8 @@
   @if($ministry->id)
     <div class="col-lg-9 mx-auto mt-5">
       <div class="row">
-        <div class="col-md-6 mb-5">
-          <div class="card h-100">
-            <div class="card-body">
-              <div class="h-100 d-flex flex-column justify-content-between">
-                <div>
-                  <h4>Articles</h4>
-                  <p>Artigos de suporte, teoria e técnicas musicais</p>
-                </div>
-                <a class="btn bg-gradient-dark d-block mb-0" href="https://alive-slouch-54f.notion.site/Articles-Praiser-1b41757df37b4cfd985bb41333adf91a" target="_blank">Acessar</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        @php
-          $cashes = App\Models\Cash::whereMinistryId(
-            auth()->user()->current_ministry
-          )->get();
-          $cashController = new App\Http\Controllers\CashController();
-        @endphp
-        @foreach($cashes as $cash)
+        @php $cashController = new App\Http\Controllers\CashController(); @endphp
+        @foreach(auth()->user()->currentMinistry->cashes as $cash)
           @php
             $resume = $cashController->getResume(
               auth()->user()->current_ministry,
@@ -204,6 +185,19 @@
             </div>
           @endif
         @endforeach
+        <div class="col-md-6 mb-5">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <h4>Articles</h4>
+                  <p>Artigos de suporte, teoria e técnicas musicais</p>
+                </div>
+                <a class="btn bg-gradient-dark d-block mb-0" href="https://alive-slouch-54f.notion.site/Articles-Praiser-1b41757df37b4cfd985bb41333adf91a" target="_blank">Acessar</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   @endif

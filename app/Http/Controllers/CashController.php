@@ -23,7 +23,7 @@ class CashController extends Controller
     $launchs = [...$cash->cashLaunches->map(function($launch){
       return $launch->loadData();
     })->reverse()];
-    
+
     $goals = $cash->cashGoals->map(function($goal){
       return $goal->loadData();
     });
@@ -80,7 +80,7 @@ class CashController extends Controller
   }
   #region STATIC FUNCTIONS
   public static function FormatMoney($value){
-    if(!$value && $value !== 0) return '??';
+    if(!$value && ($value !== 0 && $value !== 0.0)) return '??';
     return ($value < 0 ? 
       '-R$ ' . number_format($value * -1, 2 ,',','.'):
       'R$ ' . number_format($value, 2 ,',','.')

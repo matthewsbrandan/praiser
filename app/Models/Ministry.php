@@ -28,6 +28,9 @@ class Ministry extends Model
     public function users(){
         return $this->belongsToMany(User::class, 'user_ministries', 'ministry_id', 'user_id');
     }
+    public function cashes(){
+        return $this->hasMany(Cash::class, 'ministry_id');
+    }
 
     #endregion RELATIONSHIP
     #region FORMATTE
