@@ -15,58 +15,78 @@
   <div class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto pt-3 blur shadow-blur">
     <div class="row">
       <div class="col-md-12 position-relative">
-        <div class="p-3">
-          <h5 class="mt-3 text-gradient text-primary text-center">Próxima Escala</h5>
-          @if($next_scale = $next_scales->first())
-            <div class="d-flex flex-column align-items-center" id="next-scale">
-              <div class="d-flex flex-wrap date-theme" onclick='callModalScaled({!! $next_scale->toJson() !!})'>
-                <time style="
-                  font-size: 3rem;
-                  line-height: 3rem;
-                  margin: auto;
-                ">{{ $next_scale->date_formatted }}</time>
-                <div
-                  class="d-flex flex-column px-3"
-                  style="margin: auto;"
-                >              
-                  <strong>{{ $next_scale->weekday_name }}</strong>
-                  <span>Tema: {{ $next_scale->theme }}</span>
+        <div class="p-3 d-flex flex-column" style="gap: .4rem;">
+          <div style="flex: 1">
+            <h5 class="mt-3 text-gradient text-primary text-center">Próxima Escala</h5>
+            @if($next_scale = $next_scales->first())
+              <div class="d-flex flex-column align-items-center" id="next-scale">
+                <div class="d-flex flex-wrap date-theme" onclick='callModalScaled({!! $next_scale->toJson() !!})'>
+                  <time style="
+                    font-size: 3rem;
+                    line-height: 3rem;
+                    margin: auto;
+                  ">{{ $next_scale->date_formatted }}</time>
+                  <div
+                    class="d-flex flex-column px-3"
+                    style="margin: auto;"
+                  >              
+                    <strong>{{ $next_scale->weekday_name }}</strong>
+                    <span>Tema: {{ $next_scale->theme }}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="avatar-group d-flex align-items-center mt-2 mb-3">
-                @foreach($next_scale->abilities as $ability)
+                <div class="avatar-group d-flex align-items-center mt-2 mb-3">
+                  @foreach($next_scale->abilities as $ability)
+                    <a
+                      href="javascript:;"
+                      class="avatar avatar-sm rounded-circle"
+                      data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ $ability->name }}"
+                    >
+                      <img
+                        alt="Image placeholder"
+                        src="{{ $ability->getImage() }}"
+                        style="height: 100%; object-fit: cover;"
+                      />
+                    </a>
+                  @endforeach
+                </div>
+                @foreach($next_scale->minister_scales as $minister)
+                  <div class="w-100">
+                    @include('components.card-minister',[
+                      'minister' => $minister,
+                      'minister_config' => (object)['mode' => 'home']
+                    ])
+                  </div>
+                @endforeach              
+                @if($next_scale->need_make_scale)
                   <a
-                    href="javascript:;"
-                    class="avatar avatar-sm rounded-circle"
-                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ $ability->name }}"
-                  >
-                    <img
-                      alt="Image placeholder"
-                      src="{{ $ability->getImage() }}"
-                      style="height: 100%; object-fit: cover;"
-                    />
-                  </a>
-                @endforeach
+                    href="{{ route('scale_praise.create',['scale_id' => $next_scale->scale_id]) }}"
+                    class="btn bg-gradient-primary text-center mx-auto"
+                  >Adicionar Ministração</a>
+                @elseif($next_scale->minister_scales->count() == 0)
+                  <p class="text-muted text-sm mt-2 mb-0 bg-light w-100 p-3 rounded">A escala de louvores ainda não foi adicionada</p>
+                @endif
               </div>
-              @foreach($next_scale->minister_scales as $minister)
-                <div class="w-100">
-                  @include('components.card-minister',[
-                    'minister' => $minister,
-                    'minister_config' => (object)['mode' => 'home']
-                  ])
+            @else
+              <p class="text-sm text-center">Ainda não há escalas futuras para você.</p>
+            @endif
+          </div>
+          @if($week['table']->count() > 0)
+            <div class="table-responsive d-flex flex-column pt-3" style="gap: .6rem;">
+              @foreach($week['table'] as $weekday)
+                <div class="info-horizontal border-radius-xl p-2 {{
+                  $next_scales->count() > 0 && $next_scales[0]->id === $weekday->id ? 'bg-gradient-primary text-light':'bg-gray-100'
+                }}" onclick='callModalScaled({!! $weekday->toJson() !!})'>
+                  <div class="d-flex flex-column text-center">
+                    <div class="d-flex flex-column text-center">
+                      <b class="text-uppercase text-xxs">{{ $weekday->weekday_name }}</b>
+                      <span style="font-size: 1rem; line-height: 1.2rem;">
+                        {{ implode('/', [$weekday->day,$weekday->month]) }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               @endforeach              
-              @if($next_scale->need_make_scale)
-                <a
-                  href="{{ route('scale_praise.create',['scale_id' => $next_scale->scale_id]) }}"
-                  class="btn bg-gradient-primary text-center mx-auto"
-                >Adicionar Ministração</a>
-              @elseif($next_scale->minister_scales->count() == 0)
-                <p class="text-muted text-sm mt-2 mb-0 bg-light w-100 p-3 rounded">A escala de louvores ainda não foi adicionada</p>
-              @endif
             </div>
-          @else
-            <p class="text-sm text-center">Ainda não há escalas futuras para você.</p>
           @endif
         </div>
       </div>

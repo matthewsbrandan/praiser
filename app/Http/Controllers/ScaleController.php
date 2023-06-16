@@ -15,7 +15,9 @@ use App\Services\CalendarService;
 
 class ScaleController extends Controller
 {
-  public function week($date = null){
+  public function week($date = null, $format = 'view'){
+    if(!in_array($format,['view','object','json'])) throw new Error('Formato de reposta inválido');
+
     if(!$date) $date = Carbon::now();
     else $date = Carbon::createFromFormat('d-m-Y', $date);
     $prevWeek = Carbon::createFromFormat('Y-m-d',$date->format('Y-m-d'))->subDays(7);
@@ -29,12 +31,16 @@ class ScaleController extends Controller
     [$calendar, $week_name] = $service->getWeek();
     [$calendar, $table] = $this->handleFillScaleInCalendar($calendar);
 
-    return view('scale.week',[
+    $params = [
       'calendar' => $calendar,
       'week_name' => $week_name,
       'table' => $table,
       'link' => $link
-    ]);
+    ];
+
+    return $format === 'view' ? view('scale.week',$params) : (
+      $format === 'json' ? response()->json($params) : $params
+    );
   }
   public function month($date = null, $edition = false){
     if(!$date) $date = Carbon::now();
@@ -274,6 +280,7 @@ class ScaleController extends Controller
       'response' => $response
     ]);
   }
+  #region PROTECTED FUNCTIONS
   protected function handleImport($file){
     $sheet = new OfficeService($file->getRealPath());
     $scales = $sheet->loadScale();
@@ -384,4 +391,5 @@ class ScaleController extends Controller
       $table,
     ];
   }
+  #endregion PROTECTED FUNCTIONS
 }

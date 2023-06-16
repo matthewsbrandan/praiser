@@ -18,6 +18,7 @@ use App\Http\Controllers\CashLaunchController;
 
 $controllersPath = "App\Http\Controllers";
 Route::get('/', function () {
+  if(auth()->user()) return redirect()->route('home');
   return view('welcome',[
     'verse' => \App\Http\Controllers\Controller::getVerses(true),
   ]);

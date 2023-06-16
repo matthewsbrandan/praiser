@@ -15,23 +15,23 @@
           style="background: #34476708;"
         >
           <div
-            class="col-6 text-center text-sm opacity-7 btn btn-link mb-0"
-            onclick="tooglePraiseToIntegrants(false)"
-            id="btn-to-scale-praises"
-          >LOUVORES</div>
-          <div
             class="col-6 text-center text-sm opacity-7 btn btn-link text-dark mb-0"
             onclick="tooglePraiseToIntegrants()"
             id="btn-to-integrants"
           >INTEGRANTES</div>
+          <div
+            class="col-6 text-center text-sm opacity-7 btn btn-link mb-0"
+            onclick="tooglePraiseToIntegrants(false)"
+            id="btn-to-scale-praises"
+          >LOUVORES</div>
         </div>
-        <div id="scale-praises"></div>
         <div class="table-responsive mt-3 scale-table-scaled">
           <table class="table table-hover align-items-center mb-3">
             <tbody class="text-sm"></tbody>
           </table>
           <div class="text-center content-btn-share"></div>
         </div>
+        <div id="scale-praises"></div>
         @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))
           <a
             href="#"
@@ -99,7 +99,7 @@
       handleHtmlShare(shareScaled)
     );
 
-    tooglePraiseToIntegrants(false);
+    tooglePraiseToIntegrants();
 
     @if(auth()->user()->currentMinistry->hasPermissionTo('can_manage_scale'))
       $("#to-edit-scale").attr('href',`{{ substr(route('scale.edit', ['id' => 0]),0,-1) }}${scale.id}`);

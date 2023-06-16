@@ -13,6 +13,10 @@ use App\Models\Ability;
 class HomeController extends Controller
 {
   public function index(){
+    $scaleCtrl = new ScaleController();
+    $week = $scaleCtrl->week(null, 'object');
+    // dd($week);
+    #region NEXT SCALE
     $next_scales = Scale::with(['ministerScales' => function($query){
       $query->with(['user','scale_praises' => function($q){
           $q->with('praise');
@@ -66,9 +70,11 @@ class HomeController extends Controller
 
       return $next_scale;
     });
+    #endregion NEXT SCALE
 
     return view('home.index',[
-      'next_scales' => $next_scales
+      'next_scales' => $next_scales,
+      'week' => $week
     ]);
   }
 }
