@@ -101,8 +101,8 @@ Route::middleware(['auth'])->group(function() use ($controllersPath) {
 
   Route::name('scale.')->group(function() use ($controllersPath) {
     Route::get('/escala/semanal/{date?}', "$controllersPath\ScaleController@week")->name('week');
-    Route::get('/escala/mesal/{date?}', "$controllersPath\ScaleController@month")->name('month');
-    Route::get('/escala/mesal-edicao/{date?}', function($date = null) {
+    Route::get('/escala/mensal/{date?}', "$controllersPath\ScaleController@month")->name('month');
+    Route::get('/escala/mensal-edicao/{date?}', function($date = null) {
       $controller = new \App\Http\Controllers\ScaleController();
       return $controller->month($date, true);
     })->name('month.edition');
