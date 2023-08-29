@@ -82,7 +82,12 @@
                       onclick="$('#modalAddLaunch').modal('show')"
                       style="min-width: 10rem;"
                     >+ Lançamento</button>
-                    <button type="button" class="btn btn-sm bg-gradient-light text-center mb-1" style="min-width: 10rem;">
+                    <button
+                      type="button"
+                      class="btn btn-sm bg-gradient-light text-center mb-1"
+                      onclick="$('#modalAddGoal').modal('show')"
+                      style="min-width: 10rem;"
+                    >
                       + Objetivo
                     </button>
                   </div>
