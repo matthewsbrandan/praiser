@@ -55,7 +55,7 @@ class CashController extends Controller
       return $goal->loadData();
     });
 
-    $goals = $goals->filter(function($goal){ return !$goal->is_completed; });
+    $goals = [...$goals->filter(function($goal){ return !$goal->is_completed; })];
 
     $total = array_sum(array_column($launchs, 'value'));
     $valueToGoal = null;
