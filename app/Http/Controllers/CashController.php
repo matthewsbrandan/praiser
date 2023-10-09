@@ -66,8 +66,8 @@ class CashController extends Controller
         $valueToGoal = $nextGoal->value - $total;
         if($valueToGoal < 0) $valueToGoal = 0; 
   
-        $parcentToGoal = $valueToGoal > 0 ? round(($total * 100) / (
-          $valueToGoal + $total
+        $parcentToGoal = $nextGoal->value > 0 ? round(($total * 100) / (
+          $nextGoal->value
         )) : 100;
       }
     }
