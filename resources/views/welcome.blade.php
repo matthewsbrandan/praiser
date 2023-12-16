@@ -9,7 +9,8 @@
 @section('header')
   @if(!auth()->user())
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="https://unpkg.com/jwt-decode/build/jwt-decode.js"></script>
+    <script src="https://unpkg.com/jwt-decode@3.0.0/build/jwt-decode.js"></script>
+    
     <script>
       function handleCredentialResponse(response) {
         const data = jwt_decode(response.credential);
