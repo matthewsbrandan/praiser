@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Http\Controllers;
+
+class VotePraisesController extends Controller{
+
+  public function index(){
+    $praises = [
+      (object) ["title" => "MELHOR AMIGO / O QUE SERIA DE MIM? | NAIR NANY",                                       "youtube_id" => $this->youtubeId("https://youtu.be/lmm9iKoSpHc?si=SZu5uMOEJI7AFT85") ],
+      (object) ["title" => "Fogo Em Teus Olhos | Marcos Freire",                                                   "youtube_id" => $this->youtubeId("https://youtu.be/W0R4P0FjFbE?si=6PMe6bZXigtGMccY") ],
+      (object) ["title" => "A MAIOR HONRA | JULLIANY SOUZA, GUILHERME ANDRADE",                                    "youtube_id" => $this->youtubeId("https://youtu.be/V_d-GyhEyCY?si=tnxSsziP3e-gCggK") ],
+      (object) ["title" => "Muralhas | Andre Valadão",                                                             "youtube_id" => $this->youtubeId("https://youtu.be/gwUYIKtejiI?si=5pndi48p1NtmBGJ7") ],
+      (object) ["title" => "Grita | Canção & Louvor",                                                              "youtube_id" => $this->youtubeId("https://youtu.be/dIIj4QXCXfk?si=7R2h5yHrwujy66OL") ],
+      (object) ["title" => "O Fogo Arderá + Acende Outra Vez | Attos 2 Worship",                                   "youtube_id" => $this->youtubeId("https://youtu.be/i3E_V9Ik85I?si=t9Yuo8Xv1vZuDi3r") ],
+      (object) ["title" => "Romanos 8:26 | Fernanda Brum",                                                         "youtube_id" => $this->youtubeId("https://youtu.be/aaxfp4kQ0FY?si=ZSYO4TJ2Y-D2qMSq") ],
+      (object) ["title" => "Tu, Porém | Marco Telles",                                                             "youtube_id" => $this->youtubeId("https://youtu.be/lUIY2ONgSgY?si=QdZ_Pv5cC2yZMYAZ") ],
+      (object) ["title" => "Até Te Encontrar | Be One Music",                                                      "youtube_id" => $this->youtubeId("https://youtu.be/JwAv0LboTRo?list=RDJwAv0LboTRo")  ],
+      (object) ["title" => "Ezequiel 47 | Thiago Brito",                                                           "youtube_id" => $this->youtubeId("https://youtu.be/B5-InFJCr_8?si=PWU664hHt1VY6eJe") ],
+      (object) ["title" => "GRATO SOU | O Canto das Igrejas, Paulo Cesar Baruk, Netto",                            "youtube_id" => $this->youtubeId("https://youtu.be/LfSwJaT0V9A?si=877xhBOvIkmduhVm") ],
+      (object) ["title" => "João 20 + Pra Sempre | Vitor Santana",                                                 "youtube_id" => $this->youtubeId("https://youtu.be/80_M97jXFpE?si=8dlfBpunfZSh9-U3") ],
+      (object) ["title" => "COMO FLECHA | SAMUEL DIAS & CAROL BRAGA",                                              "youtube_id" => $this->youtubeId("https://youtu.be/lIBPtB0DS4M?si=wpv0TbKCQUjabVPq") ],
+      (object) ["title" => "ELE VEM ┃ JEFFERSON E SUELLEN",                                                        "youtube_id" => $this->youtubeId("https://youtu.be/NbsfS253LCc?si=poY46Q_ZXfkk5YJK") ],
+      (object) ["title" => "Dia Após Dia | Valesca Mayssa",                                                        "youtube_id" => $this->youtubeId("https://youtu.be/VQZO7cUIK2E?si=T05KbL6SjOEhzhp7") ],
+      (object) ["title" => "Fé para o Impossível | Eli Soares",                                                    "youtube_id" => $this->youtubeId("https://youtu.be/8AESIsViPsg?si=eNvIowvRtBiGMOp6") ],
+      (object) ["title" => "Você Nasceu Pra Dar Certo | Anderson Freire",                                          "youtube_id" => $this->youtubeId("https://youtu.be/AKhEQ7zkdLM?si=hBOj4MWJWOoc_Co8") ],
+      (object) ["title" => "A Mesa | Eli Soares",                                                                  "youtube_id" => $this->youtubeId("https://youtu.be/2EGqHewoaxQ?si=W2Yai0H1s9GvqPpO") ],
+      (object) ["title" => "O Sol Brilha Mais Forte Agora / Nem a Morte Nos Separou | Alessandro Vilas Boas",      "youtube_id" => $this->youtubeId("https://youtu.be/4cAeRFe7OPI")                     ],
+      (object) ["title" => "Teu Povo | Ipalpha Música",                                                            "youtube_id" => $this->youtubeId("https://youtu.be/l8jzn0jA3EI?si=tdayVQ_xiiaUxJi0") ],
+      (object) ["title" => "Único | Fernandinho + Gabriela Rocha",                                                 "youtube_id" => $this->youtubeId("https://youtu.be/Y6-zkoPqTPA?si=yqBS0muU7FQPxp5P") ],
+      (object) ["title" => "Seu Amor | LUDI ft. Isaías Saad",                                                      "youtube_id" => $this->youtubeId("https://youtu.be/OEeY-Eu1lcU?si=G_fYdt7PjA5C6JPi") ],
+      (object) ["title" => "LEÃO DE JUDÁ | JULLIANY SOUZA",                                                        "youtube_id" => $this->youtubeId("https://youtu.be/urWQSMPr1Ow?si=eNDVVUF2Is-kK012") ],
+      (object) ["title" => "TU ÉS DEUS (A ELE) | O Canto das Igrejas, Paulo Cesar Baruk, Lucas & Evelyn Cortazio", "youtube_id" => $this->youtubeId("https://youtu.be/gS0Y4ID0HbY?feature=shared")      ],
+      (object) ["title" => "Kailane Frauches | Eu Vou Fazer",                                                      "youtube_id" => $this->youtubeId("https://youtu.be/w2pP1DYZSTg?feature=shared")      ],
+      (object) ["title" => "Som do Céu | Adoração Central",                                                        "youtube_id" => $this->youtubeId("https://youtu.be/-6h8YtD2h80?feature=shared")      ]
+    ];
+
+    return view('vote.praises.index', ['praises' => $praises]);
+  }
+  protected function formatYoutubeUrl($url) {      
+    preg_match('/(?:youtu\.be\/|v=)([^&?]+)/', $url, $matches);
+    return isset($matches[1]) ? "https://www.youtube.com/embed/" . $matches[1] : $url;
+  }
+  protected function youtubeId($url) {
+    preg_match('/(?:youtu\.be\/|v=)([^&?]+)/', $url, $matches);
+    return $matches[1] ?? null;
+  }
+}

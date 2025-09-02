@@ -48,6 +48,25 @@ class LoginController extends Controller
         );
         return view('login',['email' => $request->email]);
     }
+    public function authenticatePhone(Request $request){
+        if(Auth::check()) Auth::logout();
+
+        if(!$user = User::whereWhatsapp($request->whatsapp)->first()) return redirect()
+            ->route('login')
+            ->with('notify','Nº de Whatsapp não encontrado')
+            ->with('notify-type','danger');
+        
+        $credentials = $request->only('whatsapp', 'password');
+
+        if (!Auth::attempt($credentials, true)) return redirect()
+            ->route('login')
+            ->with('notify','Senha inválida')
+            ->with('notify-type','danger');
+
+        auth()->user()->closeTunel();
+        
+        return redirect()->route('home');
+    }
 
     public function logout(){
         Auth::logout();
