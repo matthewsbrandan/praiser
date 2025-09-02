@@ -55,7 +55,7 @@ class VotePraisesController extends Controller{
 
     $vote = VotePraises::updateOrCreate(
       ['user_id' => $userId, 'youtube_id' => $data['youtube_id']],
-      ['like' => $data['type']]
+      ['type' => $data['type']]
     );
 
     return response()->json([
