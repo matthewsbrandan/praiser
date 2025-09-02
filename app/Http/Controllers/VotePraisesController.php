@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VotePraises;
+use Illuminate\Http\Request;
+
 class VotePraisesController extends Controller{
 
   public function index(){
@@ -34,7 +37,31 @@ class VotePraisesController extends Controller{
       (object) ["title" => "Som do Céu | Adoração Central",                                                        "youtube_id" => $this->youtubeId("https://youtu.be/-6h8YtD2h80?feature=shared")      ]
     ];
 
+    $votes = VotePraises::where('user_id', auth()->user()->id)->get()->keyBy('youtube_id');
+    foreach ($praises as $praise) {
+      $praise->vote = $votes[$praise->youtube_id]->type ?? null;
+    }
+
     return view('vote.praises.index', ['praises' => $praises]);
+  }
+  public function register(Request $request){     
+    $data = $request->validate([
+      'youtube_id' => 'required|string|max:50',
+      'type'       => 'required|in:like,dislike',
+    ]);
+
+    $userId = auth()->user()->id;
+    if (!$userId) return response()->json(['error' => 'Usuário não autenticado'], 401);
+
+    $vote = VotePraises::updateOrCreate(
+      ['user_id' => $userId, 'youtube_id' => $data['youtube_id']],
+      ['like' => $data['type']]
+    );
+
+    return response()->json([
+      'success' => true,
+      'vote'    => $vote,
+    ]);
   }
   protected function formatYoutubeUrl($url) {      
     preg_match('/(?:youtu\.be\/|v=)([^&?]+)/', $url, $matches);
