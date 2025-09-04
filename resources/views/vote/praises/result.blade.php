@@ -58,7 +58,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach($topLikes as $praise)
+                    @foreach($topBalance as $praise)
                       <tr>
                         <td class="text-start">{{ $praise->title }}</td>
                         <td>{{ $praise->balance }}</td>
