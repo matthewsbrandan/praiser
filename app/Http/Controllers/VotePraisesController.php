@@ -24,13 +24,13 @@ class VotePraisesController extends Controller{
   }
   public function result(){
     if(auth()->user()->type !== 'dev') dd('Você não tem permissão de acessar essa tela');
-    
+
     $praises = $this->praisesInVoting();
 
     $votes = DB::table('vote_praises')
       ->select('youtube_id')
       ->selectRaw("SUM(CASE WHEN type = 'like' THEN 1 ELSE 0 END) as likes")
-      ->selectRaw("SUM(CASE WHEN type = 'deslike' THEN 1 ELSE 0 END) as deslikes")
+      ->selectRaw("SUM(CASE WHEN type = 'dislike' THEN 1 ELSE 0 END) as deslikes")
       ->groupBy('youtube_id')
       ->get();
     
