@@ -23,45 +23,58 @@
     </style>
     <div class="container">
       <div class="row">
-        <div class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto pt-3 blur shadow-blur">
-          <div class="row">
-            @foreach($praises as $praise)              
-              <div class="col-md-12 position-relative">
-                <div class="p-3 d-flex" style="gap: 1rem;">
-                  <div
-                    class="video-wrapper"
-                    style="position: relative; width: 18rem; height: 12rem; cursor: pointer;"
-                    tabindex="{{ $loop->index }}" aria-label="Reproduzir vídeo: {{ $praise->title }}"
-                    data-video-id="{{ $praise->youtube_id }}"
-                  >
-                    <img
-                      src="https://img.youtube.com/vi/{{ $praise->youtube_id }}/hqdefault.jpg"
-                      alt="{{ $praise->title }}"
-                      style="width: 100%; height: 100%; object-fit: cover; border: 1px solid #eef;"
+        @if($status === 'Em Apuração')
+          <div class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto py-3 blur shadow-blur d-flex">
+            <div class="m-auto d-flex flex-column">
+              <strong class="text-center text-lg mb-3">Votação encerrada, em apuração de dados.</strong>
+              @if(auth()->user()->type === 'dev')
+                <a class="btn btn-primary mx-auto" href="{{ route('vote.praises.result') }}">
+                  Acessar Resultados
+                </a>
+              @endif
+            </div>
+          </div>
+        @else
+          <div class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto pt-3 blur shadow-blur">
+            <div class="row">
+              @foreach($praises as $praise)              
+                <div class="col-md-12 position-relative">
+                  <div class="p-3 d-flex" style="gap: 1rem;">
+                    <div
+                      class="video-wrapper"
+                      style="position: relative; width: 18rem; height: 12rem; cursor: pointer;"
+                      tabindex="{{ $loop->index }}" aria-label="Reproduzir vídeo: {{ $praise->title }}"
+                      data-video-id="{{ $praise->youtube_id }}"
                     >
-                    <div style="
-                      position: absolute; top: 50%; left: 50%;
-                      transform: translate(-50%, -50%);
-                      font-size: 3rem; color: white;
-                      background: rgba(0,0,0,0.5); border-radius: 50%; padding: 0rem 1rem;"
-                    >▶</div>
-                  </div>
-                  <div class="d-flex flex-column justify-content-center">
-                    <strong>{{ $praise->title }}</strong>
-                    <div class="mt-4 d-flex gap-2">
-                      <button class="btn {{ $praise->vote === 'like' ? 'btn-primary':'btn-light' }} btn-like" data-id="{{ $praise->youtube_id }}">
-                        👍 Like
-                      </button>
-                      <button class="btn {{ $praise->vote === 'dislike' ? 'btn-primary':'btn-light' }} btn-dislike" data-id="{{ $praise->youtube_id }}">
-                        👎 Dislike
-                      </button>
+                      <img
+                        src="https://img.youtube.com/vi/{{ $praise->youtube_id }}/hqdefault.jpg"
+                        alt="{{ $praise->title }}"
+                        style="width: 100%; height: 100%; object-fit: cover; border: 1px solid #eef;"
+                      >
+                      <div style="
+                        position: absolute; top: 50%; left: 50%;
+                        transform: translate(-50%, -50%);
+                        font-size: 3rem; color: white;
+                        background: rgba(0,0,0,0.5); border-radius: 50%; padding: 0rem 1rem;"
+                      >▶</div>
+                    </div>
+                    <div class="d-flex flex-column justify-content-center">
+                      <strong>{{ $praise->title }}</strong>
+                      <div class="mt-4 d-flex gap-2">
+                        <button class="btn {{ $praise->vote === 'like' ? 'btn-primary':'btn-light' }} btn-like" data-id="{{ $praise->youtube_id }}">
+                          👍 Like
+                        </button>
+                        <button class="btn {{ $praise->vote === 'dislike' ? 'btn-primary':'btn-light' }} btn-dislike" data-id="{{ $praise->youtube_id }}">
+                          👎 Dislike
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            @endforeach
+              @endforeach
+            </div>
           </div>
-        </div>
+        @endif
       </div>
     </div>
   </section>

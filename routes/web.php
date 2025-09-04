@@ -149,5 +149,6 @@ Route::middleware(['auth'])->group(function() use ($controllersPath) {
   Route::name('vote.')->group(function(){
     Route::get('votacao/louvores', [VotePraisesController::class, 'index'])->name('praises.index');
     Route::post('votacao/louvores/votar', [VotePraisesController::class, 'register'])->name('praises.register');
+    Route::get('votacao/louvores/resultado', [VotePraisesController::class, 'result'])->name('praises.result');
   });
 });
