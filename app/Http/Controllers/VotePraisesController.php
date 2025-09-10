@@ -8,9 +8,16 @@ use Illuminate\Support\Facades\DB;
 
 class VotePraisesController extends Controller{
   public function index(){
-    $status = 'Em Apuração'; // Em Votação | Em Apuração | Finalizado
+    $status = 'Finalizado'; // Em Votação | Em Apuração | Finalizado
 
-    $praises = $status === 'Em Votação' ? $this->praisesInVoting():[];
+    $praises = $status === 'Em Apuração' ? [] : $this->praisesInVoting();
+
+    if($status === 'Finalizado'){
+      $selecteds = ['i3E_V9Ik85I', 'Y6-zkoPqTPA'];
+      $praises = array_filter($praises, function ($praise) use ($selecteds) {
+        return in_array($praise->youtube_id, $selecteds);
+      });
+    }
 
     $votes = VotePraises::where('user_id', auth()->user()->id)->get()->keyBy('youtube_id');
     foreach ($praises as $praise) {

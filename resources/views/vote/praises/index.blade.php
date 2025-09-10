@@ -1,5 +1,5 @@
 @php
-  $header = (object)['title' => 'Votação: Louvores p/ Setembro'];
+  $header = (object)['title' => 'Votação Encerrada: Louvores de Setembro'];
 @endphp
 @extends('layout.app')
 @section('content')
@@ -23,13 +23,52 @@
     </style>
     <div class="container">
       <div class="row">
-        @if($status === 'Em Apuração')
+        @if($status === 'Finalizado')
+          <div class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto py-3 blur shadow-blur d-flex">
+            <div class="row">
+              @foreach($praises as $praise)              
+                <div class="col-md-6 position-relative">
+                  <div class="p-3">
+                    <div
+                      class="video-wrapper"
+                      style="position: relative; width: 18rem; height: 12rem; cursor: pointer; margin: 0 auto .6rem;"
+                      tabindex="{{ $loop->index }}" aria-label="Reproduzir vídeo: {{ $praise->title }}"
+                      data-video-id="{{ $praise->youtube_id }}"
+                    >
+                      <img
+                        src="https://img.youtube.com/vi/{{ $praise->youtube_id }}/hqdefault.jpg"
+                        alt="{{ $praise->title }}"
+                        style="width: 100%; height: 100%; object-fit: cover; border: 1px solid #eef;"
+                      >
+                      <div style="
+                        position: absolute; top: 50%; left: 50%;
+                        transform: translate(-50%, -50%);
+                        font-size: 3rem; color: white;
+                        background: rgba(0,0,0,0.5); border-radius: 50%; padding: 0rem 1rem;"
+                      >▶</div>
+                    </div>
+                    
+                    <strong class="text-center d-block">{{ $praise->title }}</strong>
+                  </div>
+                </div>
+              @endforeach
+
+              @if(auth()->user()->type === 'dev')
+                <div class="px-3">
+                  <a class="btn btn-primary mx-auto mt-3 d-block" href="{{ route('vote.praises.result') }}">
+                    Acessar Votação
+                  </a>
+                </div>
+              @endif
+            </div>
+          </div>
+        @elseif($status === 'Em Apuração')
           <div class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto py-3 blur shadow-blur d-flex">
             <div class="m-auto d-flex flex-column">
               <strong class="text-center text-lg mb-3">Votação encerrada, em apuração de dados.</strong>
               @if(auth()->user()->type === 'dev')
                 <a class="btn btn-primary mx-auto" href="{{ route('vote.praises.result') }}">
-                  Acessar Resultados
+                  Acessar Votação
                 </a>
               @endif
             </div>
