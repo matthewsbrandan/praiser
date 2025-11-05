@@ -34,8 +34,9 @@ class VotePraisesController extends Controller{
     return view('vote.praises.index', [
       'praises' => $praises,
       'title' => (
-        $status === 'Em Votação' ? 'Votação Aberta: ':
-        $status === 'Em Apuração' ? 'Votação em Apuração: ':'Votação Encerrada: '
+        $status === 'Em Votação' ? 'Votação Aberta: ': (
+          $status === 'Em Apuração' ? 'Votação em Apuração: ':'Votação Encerrada: '
+        )
       ) . 'Louvores de Novembro',
       'status' => $status
     ]);
