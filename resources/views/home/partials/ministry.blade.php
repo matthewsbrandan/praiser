@@ -223,8 +223,8 @@
             <div class="card-body">
               <div class="h-100 d-flex flex-column justify-content-between">
                 <div>
-                  <h4>Votação: Louvores de Setembro</h4>
-                  <p>Votação para eleger 2 louvores novos para o mês 09</p>
+                  <h4>Votação: Louvores de Novembro</h4>
+                  <p>Votação para eleger 2 louvores novos para o mês 11</p>
                 </div>
                 <a class="btn bg-gradient-dark d-block mb-0" href="{{ route('vote.praises.index') }}">Acessar</a>
               </div>

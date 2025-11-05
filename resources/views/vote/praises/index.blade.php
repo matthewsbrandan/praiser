@@ -1,5 +1,5 @@
 @php
-  $header = (object)['title' => 'Votação Encerrada: Louvores de Setembro'];
+  $header = (object)['title' => 'Votação Encerrada: Louvores de Novembro'];
 @endphp
 @extends('layout.app')
 @section('content')
