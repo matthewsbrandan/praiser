@@ -13,7 +13,9 @@ class VotePraisesController extends Controller{
     $praises = [];
     if($status ===  'Em Levantamento'){
       return view('vote.praises.create', [
-        'praises' => $praises
+        'praises' => $praises,
+        'title' => 'Votação em Levantamento: Louvores de Novembro',
+        'status' => $status
       ]);
     }
     if($status === 'Em Votação' || $status === 'Finalizado') $praises = $this->praisesInVoting();
@@ -31,6 +33,10 @@ class VotePraisesController extends Controller{
 
     return view('vote.praises.index', [
       'praises' => $praises,
+      'title' => (
+        $status === 'Em Votação' ? 'Votação Aberta: ':
+        $status === 'Em Apuração' ? 'Votação em Apuração: ':'Votação Encerrada: '
+      ) . 'Louvores de Novembro',
       'status' => $status
     ]);
   }

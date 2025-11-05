@@ -1,6 +1,3 @@
-@php
-  $header = (object)['title' => 'Votação Encerrada: Louvores de Novembro'];
-@endphp
 @extends('layout.app')
 @section('content')
   <section class="pt-3 pb-4">
