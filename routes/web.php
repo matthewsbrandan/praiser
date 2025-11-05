@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CashController;
 use App\Http\Controllers\CashLaunchController;
+use App\Http\Controllers\VotePraisesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,7 @@ use App\Http\Controllers\CashLaunchController;
 $controllersPath = "App\Http\Controllers";
 Route::get('/', function () {
   if(auth()->user()) return redirect()->route('home');
-  return view('welcome',[
-    'verse' => \App\Http\Controllers\Controller::getVerses(true),
-  ]);
+  return redirect()->route('login');
 })->name('index');
 Route::get('/cadastrar/{email?}', "$controllersPath\UserController@create")->name('register');
 Route::post('/usuario/cadastrar', "$controllersPath\UserController@store")->name('user.store');
@@ -47,6 +46,7 @@ Route::name('redefine-password.')->group(function() use ($controllersPath){
 
 Route::post('/login', "$controllersPath\Auth\LoginController@authenticate")->name('login');
 Route::get('/login', "$controllersPath\Auth\LoginController@login")->name('login');
+Route::post('/login-phone', "$controllersPath\Auth\LoginController@authenticatePhone")->name('login.phone');
 Route::post('/login-email', "$controllersPath\Auth\LoginController@authenticateEmail")->name('login.email');
 Route::get('/logout', "$controllersPath\Auth\LoginController@logout")->name('logout');
 
@@ -144,5 +144,11 @@ Route::middleware(['auth'])->group(function() use ($controllersPath) {
     Route::name('launch.')->group(function(){
       Route::post('caixa/{id}/lancamento', [CashLaunchController::class, 'store'])->name('store');
     });
+  });
+
+  Route::name('vote.')->group(function(){
+    Route::get('votacao/louvores', [VotePraisesController::class, 'index'])->name('praises.index');
+    Route::post('votacao/louvores/votar', [VotePraisesController::class, 'register'])->name('praises.register');
+    Route::get('votacao/louvores/resultado', [VotePraisesController::class, 'result'])->name('praises.result');
   });
 });

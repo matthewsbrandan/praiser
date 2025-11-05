@@ -13,47 +13,48 @@
           <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
             <div class="card card-plain">
               <div class="card-header pb-0 text-left">
-                <h4 class="font-weight-bolder mb-0">Entrar com Whatsapp</h4>
-                <p class="mb-2">Utilize o número de telefone que está adicionado no grupo do whatsapp.</p>
+                @isset($email)
+                  <h4 class="font-weight-bolder mb-0">Entrar com senha</h4>
+                  <span class="text-muted text-sm d-block mb-2">{{ $email }}</span>
+                  <p class="mb-0">Digite sua senha para entrar</p>
+                @else
+                  <h4 class="font-weight-bolder">Entrar com email</h4>
+                  <p class="mb-0">Digite seu email para entrar</p>
+                @endisset
               </div>
               <div class="card-body pt-2">
                 <form
                   role="form"
                   method="POST"
-                  action="{{ route('login.phone') }}"
+                  action="{{ isset($email) ? route('login') : route('login.email') }}"
                 >
-                  {{ csrf_field() }}                  
-
-                  <p class="mb-0">Digite seu número</p>
-                  <div class="mb-2">
-                    <input
-                      type="phone"
-                      class="form-control form-control-lg"
-                      placeholder="(00) 00000-0000"
-                      aria-label="Whatsapp"
-                      name="whatsapp"
-                      id="info-whatsapp"
-                      aria-describedby="whatsapp-addon"
-                      required
-                    />
-                  </div>
-
-                  <p class="mb-0">Digite sua senha para entrar</p>
-                  <div>
-                    <input
-                      type="password"
-                      name="password"
-                      class="form-control form-control-lg"
-                      placeholder="Senha"
-                      aria-label="password"
-                      aria-describedby="password-addon"
-                      required
-                    />
-                  </div>
-                  <small class="mb-0">
-                    Se não souber a senha confira na descrição do grupo
-                  </small>
-                  
+                  {{ csrf_field() }}
+                  @isset($email)
+                    <input type="hidden" name="email" value="{{ $email }}"/>
+                    <div class="mb-2">
+                      <input
+                        type="password"
+                        name="password"
+                        class="form-control form-control-lg"
+                        placeholder="Senha"
+                        aria-label="password"
+                        aria-describedby="password-addon"
+                        required
+                      />
+                    </div>
+                  @else
+                    <div class="mb-2">
+                      <input
+                        type="email"
+                        class="form-control form-control-lg"
+                        placeholder="Email"
+                        aria-label="Email"
+                        name="email"
+                        aria-describedby="email-addon"
+                        required
+                      />
+                    </div>
+                  @endisset
                   <div class="text-center">
                     <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Entrar</button>
                   </div>
@@ -75,12 +76,4 @@
       </div>
     </div>
   </section>
-@endsection
-@section('scripts')
-<script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
-  <script>
-    $(function() {
-      $("#info-whatsapp").mask("(00) 00000-0000");
-    });
-  </script>
 @endsection
