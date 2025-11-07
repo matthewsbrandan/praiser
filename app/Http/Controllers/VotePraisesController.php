@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class VotePraisesController extends Controller{
   public function index(){
-    $status = 'Em Apuração'; // Levantamento | Em Votação | Em Apuração | Finalizado
+    $status = 'Finalizado'; // Levantamento | Em Votação | Em Apuração | Finalizado
     
     $praises = [];
     if($status ===  'Em Levantamento'){
@@ -20,7 +20,10 @@ class VotePraisesController extends Controller{
     }
     if($status === 'Em Votação' || $status === 'Finalizado') $praises = $this->praisesInVoting();
     if($status === 'Finalizado'){
-      $selecteds = ['i3E_V9Ik85I', 'Y6-zkoPqTPA'];
+      $selecteds = [
+        0 => ['i3E_V9Ik85I', 'Y6-zkoPqTPA']
+        1 => ['7GWZwO0MdsY', 'ozJIN6Pej8w']
+      ];
       $praises = array_filter($praises, function ($praise) use ($selecteds) {
         return in_array($praise->youtube_id, $selecteds);
       });
