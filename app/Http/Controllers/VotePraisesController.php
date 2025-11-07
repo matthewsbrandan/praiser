@@ -21,7 +21,7 @@ class VotePraisesController extends Controller{
     if($status === 'Em Votação' || $status === 'Finalizado') $praises = $this->praisesInVoting();
     if($status === 'Finalizado'){
       $selecteds = [
-        0 => ['i3E_V9Ik85I', 'Y6-zkoPqTPA']
+        0 => ['i3E_V9Ik85I', 'Y6-zkoPqTPA'],
         1 => ['7GWZwO0MdsY', 'ozJIN6Pej8w']
       ][VotePraisesController::getIndexVotation()];
       $praises = array_filter($praises, function ($praise) use ($selecteds) {
