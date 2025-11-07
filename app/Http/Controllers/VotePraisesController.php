@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class VotePraisesController extends Controller{
   public function index(){
-    $status = 'Em Votação'; // Levantamento | Em Votação | Em Apuração | Finalizado
+    $status = 'Em Apuração'; // Levantamento | Em Votação | Em Apuração | Finalizado
     
     $praises = [];
     if($status ===  'Em Levantamento'){
